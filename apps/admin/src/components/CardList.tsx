@@ -123,6 +123,7 @@ import { auth } from "@clerk/nextjs/server";
 // ];
 
 const CardList = async ({ title }: { title: string }) => {
+
   let products: ProductsType = [];
   let orders: OrderType[] = [];
 
@@ -130,18 +131,36 @@ const CardList = async ({ title }: { title: string }) => {
   const token = await getToken();
 
   if (title === "Popular Products") {
-    products = await fetch(
-      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products?limit=5&popular=true`
-    ).then((res) => res.json());
-  } else {
-    orders = await fetch(
-      `${process.env.NEXT_PUBLIC_ORDER_SERVICE_URL}/orders?limit=5`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products?limit=5&popular=true`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        products = Array.isArray(data) ? JSON.parse(JSON.stringify(data)) : [];
       }
-    ).then((res) => res.json());
+    } catch (error) {
+      console.error('Failed to fetch products:', error);
+      products = [];
+    }
+  } else {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_ORDER_SERVICE_URL}/orders?limit=5`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        orders = Array.isArray(data) ? JSON.parse(JSON.stringify(data)) : [];
+      }
+    } catch (error) {
+      console.error('Failed to fetch orders:', error);
+      orders = [];
+    }
   }
 
   return (
