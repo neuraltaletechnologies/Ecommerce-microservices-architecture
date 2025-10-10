@@ -12,6 +12,7 @@ export type StripeProductType = {
 };
 
 export const colors = [
+  // Traditional colors
   "blue",
   "green",
   "red",
@@ -23,30 +24,52 @@ export const colors = [
   "gray",
   "black",
   "white",
+  
+  // Tech product colors
+  "Natural Titanium",
+  "Blue Titanium", 
+  "White Titanium",
+  "Black Titanium",
+  "Titanium Gray",
+  "Titanium Black",
+  "Titanium Violet",
+  "Titanium Yellow",
+  "Space Black",
+  "Silver",
+  "Platinum Silver",
+  "Graphite",
+  "Off Black",
+  "Storm Grey",
+  "White Smoke",
+  "Moonstone Blue",
+  "Pale Gray",
+  "Off-White",
+  "Dark Grey",
+  "Natural",
+  "Platinum",
+  "Sapphire",
+  "Dune",
+  "Black/Cyan",
+  "White/Black",
 ] as const;
 
 export const sizes = [
+  // Traditional clothing sizes
   "xs",
-  "s",
+  "s", 
   "m",
   "l",
   "xl",
   "xxl",
-  "34",
-  "35",
-  "36",
-  "37",
-  "38",
-  "39",
-  "40",
-  "41",
-  "42",
-  "43",
-  "44",
-  "45",
-  "46",
-  "47",
-  "48",
+  
+  // Shoe sizes
+  "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48",
+  
+  // Tech product sizes/capacities
+  "128GB", "256GB", "512GB", "1TB", "2TB", "4TB",
+  "Standard", "Compact", "Tenkeyless",
+  "27-inch", "32-inch",
+  "43mm", "47mm", "49mm",
 ] as const;
 
 export const ProductFormSchema = z

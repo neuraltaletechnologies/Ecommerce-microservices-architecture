@@ -27,24 +27,33 @@ const Homepage = async () => {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
-      <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
-        <AppBarChart data={orderChartData} />
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg">
+        <h1 className="text-3xl font-bold mb-2">Neuraltale Admin Dashboard</h1>
+        <p className="text-blue-100">Manage your premium tech products and track sales performance</p>
       </div>
-      <div className="bg-primary-foreground p-4 rounded-lg">
-        <CardList title="Latest Transactions" />
-      </div>
-      <div className="bg-primary-foreground p-4 rounded-lg">
-        <AppPieChart />
-      </div>
-      <div className="bg-primary-foreground p-4 rounded-lg">
-        <TodoList />
-      </div>
-      <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
-        <AppAreaChart />
-      </div>
-      <div className="bg-primary-foreground p-4 rounded-lg">
-        <CardList title="Popular Products" />
+
+      {/* Main Dashboard Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-4 gap-4">
+        <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
+          <AppBarChart data={orderChartData} />
+        </div>
+        <div className="bg-primary-foreground p-4 rounded-lg">
+          <CardList title="Latest Tech Orders" />
+        </div>
+        <div className="bg-primary-foreground p-4 rounded-lg">
+          <AppPieChart />
+        </div>
+        <div className="bg-primary-foreground p-4 rounded-lg">
+          <TodoList />
+        </div>
+        <div className="bg-primary-foreground p-4 rounded-lg lg:col-span-2 xl:col-span-1 2xl:col-span-2">
+          <AppAreaChart />
+        </div>
+        <div className="bg-primary-foreground p-4 rounded-lg">
+          <CardList title="Trending Tech Products" />
+        </div>
       </div>
     </div>
   );
