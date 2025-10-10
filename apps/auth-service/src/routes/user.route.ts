@@ -5,8 +5,21 @@ import { producer } from "../utils/kafka";
 const router: Router = Router();
 
 router.get("/", async (req, res) => {
-  const users = await clerkClient.users.getUserList();
-  res.status(200).json(users);
+  try {
+    const users = await clerkClient.users.getUserList();
+    // Clerk returns { data: User[], totalCount: number }
+    res.status(200).json({
+      data: users.data || [],
+      totalCount: users.totalCount || 0
+    });
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    res.status(500).json({
+      data: [],
+      totalCount: 0,
+      error: "Failed to fetch users"
+    });
+  }
 });
 
 router.get("/:id", async (req, res) => {

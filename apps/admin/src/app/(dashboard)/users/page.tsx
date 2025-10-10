@@ -14,10 +14,21 @@ const getData = async (): Promise<{ data: User[]; totalCount: number }> => {
         },
       }
     );
+    
+    if (!res.ok) {
+      console.error(`Failed to fetch users: ${res.status} ${res.statusText}`);
+      return { data: [], totalCount: 0 };
+    }
+    
     const data = await res.json();
-    return data;
+    
+    // Ensure data has the expected structure
+    return {
+      data: Array.isArray(data.data) ? data.data : [],
+      totalCount: typeof data.totalCount === 'number' ? data.totalCount : 0
+    };
   } catch (err) {
-    console.log(err);
+    console.error("Error fetching users:", err);
     return { data: [], totalCount: 0 };
   }
 };

@@ -1,4 +1,5 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import {
   Smartphone,
   Laptop,
@@ -10,94 +11,184 @@ import {
   Keyboard,
   Network,
   Code,
+  Tablet,
+  Mouse,
+  Headphones,
+  Watch,
+  Car,
+  Home,
+  Camera,
+  Wifi,
+  Speaker,
+  Lightbulb,
+  Shield,
+  Zap,
+  Package,
+  Grid3X3,
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-const categories = [
-  {
-    name: "All",
-    icon: <ShoppingBasket className="w-4 h-4" />,
-    slug: "all",
-    count: 150,
-  },
-  {
-    name: "Laptops",
-    icon: <Laptop className="w-4 h-4" />,
-    slug: "laptops",
-    count: 35,
-    subcategories: ["Gaming Laptops", "Business Laptops", "Ultrabooks", "MacBooks"]
-  },
-  {
-    name: "Desktops",
-    icon: <Monitor className="w-4 h-4" />,
-    slug: "desktops",
-    count: 28,
-    subcategories: ["Gaming PCs", "Workstations", "All-in-One PCs", "Mini PCs"]
-  },
-  {
-    name: "Computer Monitors",
-    icon: <Monitor className="w-4 h-4" />,
-    slug: "monitors",
-    count: 22,
-    subcategories: ["Gaming Monitors", "4K Monitors", "Ultrawide", "Professional"]
-  },
-  {
-    name: "Storage",
-    icon: <HardDrive className="w-4 h-4" />,
-    slug: "storage",
-    count: 18,
-    subcategories: ["SSDs", "Hard Drives", "External Storage", "NAS"]
-  },
-  {
-    name: "Components",
-    icon: <Cpu className="w-4 h-4" />,
-    slug: "components",
-    count: 42,
-    subcategories: ["Processors", "Graphics Cards", "Motherboards", "RAM"]
-  },
-  {
-    name: "Peripherals",
-    icon: <Keyboard className="w-4 h-4" />,
-    slug: "peripherals",
-    count: 31,
-    subcategories: ["Keyboards", "Mice", "Headsets", "Webcams"]
-  },
-  {
-    name: "Networking",
-    icon: <Network className="w-4 h-4" />,
-    slug: "networking",
-    count: 16,
-    subcategories: ["Routers", "WiFi Adapters", "Switches", "Access Points"]
-  },
-  {
-    name: "Gadgets",
-    icon: <Smartphone className="w-4 h-4" />,
-    slug: "gadgets",
-    count: 25,
-    subcategories: ["Smartphones", "Tablets", "Smartwatches", "Audio"]
-  },
-  {
-    name: "Gaming",
-    icon: <Gamepad2 className="w-4 h-4" />,
-    slug: "gaming",
-    count: 19,
-    subcategories: ["Gaming Chairs", "Controllers", "VR Headsets", "Gaming Accessories"]
-  },
-  {
-    name: "Software & Digital",
-    icon: <Code className="w-4 h-4" />,
-    slug: "software",
-    count: 12,
-    subcategories: ["Operating Systems", "Productivity", "Security", "Games"]
-  },
-];
+// Icon mapping for categories
+const iconMap: Record<string, React.ReactElement> = {
+  all: <ShoppingBasket className="w-4 h-4" />,
+  smartphones: <Smartphone className="w-4 h-4" />,
+  laptops: <Laptop className="w-4 h-4" />,
+  "gaming-laptops": <Gamepad2 className="w-4 h-4" />,
+  tablets: <Tablet className="w-4 h-4" />,
+  monitors: <Monitor className="w-4 h-4" />,
+  audio: <Headphones className="w-4 h-4" />,
+  accessories: <Mouse className="w-4 h-4" />,
+  wearables: <Watch className="w-4 h-4" />,
+  "graphics-cards": <Monitor className="w-4 h-4" />,
+  processors: <Cpu className="w-4 h-4" />,
+  ram: <HardDrive className="w-4 h-4" />,
+  ssds: <HardDrive className="w-4 h-4" />,
+  "hard-drives": <HardDrive className="w-4 h-4" />,
+  keyboards: <Keyboard className="w-4 h-4" />,
+  mice: <Mouse className="w-4 h-4" />,
+  webcams: <Camera className="w-4 h-4" />,
+  speakers: <Speaker className="w-4 h-4" />,
+  networking: <Network className="w-4 h-4" />,
+  routers: <Wifi className="w-4 h-4" />,
+  "wifi-adapters": <Wifi className="w-4 h-4" />,
+  storage: <HardDrive className="w-4 h-4" />,
+  "gaming-chairs": <Gamepad2 className="w-4 h-4" />,
+  desks: <Grid3X3 className="w-4 h-4" />,
+  lighting: <Lightbulb className="w-4 h-4" />,
+  cables: <Zap className="w-4 h-4" />,
+  "power-supplies": <Zap className="w-4 h-4" />,
+  cooling: <Zap className="w-4 h-4" />,
+  cases: <Package className="w-4 h-4" />,
+  motherboards: <Cpu className="w-4 h-4" />,
+  "smart-home": <Home className="w-4 h-4" />,
+  drones: <Car className="w-4 h-4" />,
+  "vr-headsets": <Gamepad2 className="w-4 h-4" />,
+  "action-cameras": <Camera className="w-4 h-4" />,
+  "home-security": <Shield className="w-4 h-4" />,
+  "fitness-tech": <Watch className="w-4 h-4" />,
+  "productivity-software": <Code className="w-4 h-4" />,
+  "security-software": <Shield className="w-4 h-4" />,
+  "digital-games": <Gamepad2 className="w-4 h-4" />,
+};
+
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+interface CategoryWithCount extends Category {
+  count?: number;
+  icon: React.ReactElement;
+}
+
+// We'll fetch categories dynamically from the database
 
 const Categories = () => {
+  const [categories, setCategories] = useState<CategoryWithCount[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [debugInfo, setDebugInfo] = useState<string>('');
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
   const selectedCategory = searchParams.get("category") || "all";
+
+  // Fetch categories from the database
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setDebugInfo('FETCH STARTED');
+        console.log('FETCH STARTED - Categories component mounting');
+        console.log('Fetching categories from:', `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`);
+        const apiUrl = '/api/categories'; // Use Next.js API route to avoid CORS
+        console.log('API URL:', apiUrl);
+        console.log('Environment variable set:', !!process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL);
+        
+        setDebugInfo('FETCHING...');
+        const res = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-store'
+        });
+        console.log('Response received:', res);
+        console.log('Response status:', res.status);
+        console.log('Response ok:', res.ok);
+        
+        if (res.ok) {
+          setDebugInfo('PARSING DATA...');
+          const data: Category[] = await res.json();
+          console.log('Categories data received:', data);
+          console.log('Categories data length:', data.length);
+          console.log('First few categories:', data.slice(0, 3));
+          
+          // Fetch total product count
+          const productsRes = await fetch('/api/products');
+          let totalProducts = 150; // fallback
+          if (productsRes.ok) {
+            const productsData = await productsRes.json();
+            totalProducts = productsData.Count || 150;
+            console.log('Total products from API:', totalProducts);
+          }
+          
+          setDebugInfo(`SUCCESS: ${data.length} categories loaded`);
+          // Add "All" category and map icons
+          const categoriesWithIcons: CategoryWithCount[] = [
+            {
+              id: 0,
+              name: "All",
+              slug: "all",
+              count: totalProducts,
+              icon: iconMap.all!,
+            },
+            ...data.map(category => ({
+              ...category,
+              icon: iconMap[category.slug] || <Package className="w-4 h-4" />,
+              count: Math.floor(totalProducts / data.length), // Distribute products evenly for now
+            }))
+          ];
+          
+          setCategories(categoriesWithIcons);
+          console.log('Categories loaded successfully:', categoriesWithIcons.length, 'total categories');
+          console.log('Final categories array:', categoriesWithIcons.map(c => c.name));
+        } else {
+          setDebugInfo(`FETCH FAILED: ${res.status} ${res.statusText}`);
+          console.error('Failed to fetch categories:', res.statusText);
+          // Fallback to default categories if fetch fails
+          setCategories([
+            {
+              id: 0,
+              name: "All",
+              slug: "all",
+              count: 150,
+              icon: iconMap.all!,
+            }
+          ]);
+        }
+      } catch (error) {
+        setDebugInfo(`ERROR: ${error instanceof Error ? error.message : String(error)}`);
+        console.error("Error fetching categories:", error);
+        console.error("Error details:", error instanceof Error ? error.message : String(error));
+        // Fallback to default "All" category if API fails
+        setCategories([
+          {
+            id: 0,
+            name: "All",
+            slug: "all",
+            count: 150,
+            icon: iconMap.all!,
+          }
+        ]);
+        console.log('Using fallback categories due to error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
@@ -109,11 +200,33 @@ const Categories = () => {
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
+  if (loading) {
+    return (
+      <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Browse Categories</h3>
+          <p className="text-sm text-gray-500 hidden sm:block">Loading categories...</p>
+        </div>
+        <div className="flex gap-3 overflow-x-auto pb-2">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="flex-shrink-0 min-w-[100px]">
+              <div className="animate-pulse bg-gray-200 rounded-xl h-20"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white border border-gray-200 rounded-xl p-4 mb-6 shadow-sm">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">Browse Categories</h3>
-        <p className="text-sm text-gray-500 hidden sm:block">Find exactly what you&apos;re looking for</p>
+        <h3 className="text-lg font-semibold text-gray-900">
+          Browse Categories 
+        </h3>
+        <div className="text-sm text-gray-500 hidden sm:block">
+          Find exactly what you&apos;re looking for
+        </div>
       </div>
       
       {/* Horizontal Scrollable Categories */}
@@ -151,21 +264,6 @@ const Categories = () => {
                     </div>
                   </div>
                 </button>
-                
-                {/* Subcategories Tooltip */}
-                {category.subcategories && (
-                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10">
-                    <div className="bg-gray-900 text-white text-xs rounded-lg py-2 px-3 whitespace-nowrap shadow-lg">
-                      <div className="font-medium mb-1">Popular:</div>
-                      <div className="space-y-0.5">
-                        {category.subcategories.slice(0, 2).map((sub, index) => (
-                          <div key={index} className="text-gray-300">• {sub}</div>
-                        ))}
-                      </div>
-                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
-                    </div>
-                  </div>
-                )}
               </div>
             );
           })}
@@ -183,8 +281,11 @@ const Categories = () => {
       {/* Compact Stats */}
       <div className="mt-4 pt-3 border-t border-gray-200">
         <div className="flex items-center justify-center text-xs text-gray-600">
-          <span>{categories.reduce((sum, cat) => sum + (cat.slug === 'all' ? 0 : cat.count), 0)} Products • {categories.length - 1} Categories</span>
+          <span>
+            {categories.find(cat => cat.slug === 'all')?.count || 0} Products • {categories.length > 0 ? categories.length - 1 : 0} Categories
+          </span>
         </div>
+       
       </div>
     </div>
   );

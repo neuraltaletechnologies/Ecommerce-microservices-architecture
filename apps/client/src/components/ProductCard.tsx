@@ -11,8 +11,8 @@ import { toast } from "react-toastify";
 
 const ProductCard = ({ product }: { product: ProductType }) => {
   const [productTypes, setProductTypes] = useState({
-    size: product.sizes[0]!,
-    color: product.colors[0]!,
+    size: product.sizes?.[0] || "",
+    color: product.colors?.[0] || "",
   });
   const [isWishlisted, setIsWishlisted] = useState(false);
 

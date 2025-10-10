@@ -1,4 +1,5 @@
 import ProductInteraction from "@/components/ProductInteraction";
+import { formatTzs } from "@/utils/currency";
 import { ProductType } from "@repo/types";
 import Image from "next/image";
 
@@ -57,8 +58,8 @@ const ProductPage = async ({
 
   const product = await fetchProduct(id);
 
-  const selectedSize = size || (product.sizes[0] as string);
-  const selectedColor = color || (product.colors[0] as string);
+  const selectedSize = size || (product.sizes?.[0] as string) || "";
+  const selectedColor = color || (product.colors?.[0] as string) || "";
   return (
     <div className="flex flex-col gap-4 lg:flex-row md:gap-12 mt-12">
       {/* IMAGE */}
@@ -76,7 +77,7 @@ const ProductPage = async ({
       <div className="w-full lg:w-7/12 flex flex-col gap-4">
         <h1 className="text-2xl font-medium">{product.name}</h1>
         <p className="text-gray-500">{product.description}</p>
-        <h2 className="text-2xl font-semibold">${product.price.toFixed(2)}</h2>
+        <h2 className="text-2xl font-semibold">{formatTzs(product.price / 100, true)}</h2>
         <ProductInteraction
           product={product}
           selectedSize={selectedSize}

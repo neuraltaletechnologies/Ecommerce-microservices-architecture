@@ -54,42 +54,50 @@ const ProductInteraction = ({
       <div className="flex flex-col gap-2 text-xs">
         <span className="text-gray-500">Size</span>
         <div className="flex items-center gap-2">
-          {product.sizes.map((size) => (
-            <div
-              className={`cursor-pointer border-1 p-[2px] ${
-                selectedSize === size ? "border-gray-600" : "border-gray-300"
-              }`}
-              key={size}
-              onClick={() => handleTypeChange("size", size)}
-            >
+          {product.sizes?.length > 0 ? (
+            product.sizes.map((size) => (
               <div
-                className={`w-6 h-6 text-center flex items-center justify-center ${
-                  selectedSize === size
-                    ? "bg-black text-white"
-                    : "bg-white text-black"
+                className={`cursor-pointer border-1 p-[2px] ${
+                  selectedSize === size ? "border-gray-600" : "border-gray-300"
                 }`}
+                key={size}
+                onClick={() => handleTypeChange("size", size)}
               >
-                {size.toUpperCase()}
+                <div
+                  className={`w-6 h-6 text-center flex items-center justify-center ${
+                    selectedSize === size
+                      ? "bg-black text-white"
+                      : "bg-white text-black"
+                  }`}
+                >
+                  {size.toUpperCase()}
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <span className="text-gray-400">No sizes available</span>
+          )}
         </div>
       </div>
       {/* COLOR */}
       <div className="flex flex-col gap-2 text-sm">
         <span className="text-gray-500">Color</span>
         <div className="flex items-center gap-2">
-          {product.colors.map((color) => (
-            <div
-              className={`cursor-pointer border-1 p-[2px] ${
-                selectedColor === color ? "border-gray-300" : "border-white"
-              }`}
-              key={color}
-              onClick={() => handleTypeChange("color", color)}
-            >
-              <div className={`w-6 h-6`} style={{ backgroundColor: color }} />
-            </div>
-          ))}
+          {product.colors?.length > 0 ? (
+            product.colors.map((color) => (
+              <div
+                className={`cursor-pointer border-1 p-[2px] ${
+                  selectedColor === color ? "border-gray-300" : "border-white"
+                }`}
+                key={color}
+                onClick={() => handleTypeChange("color", color)}
+              >
+                <div className={`w-6 h-6`} style={{ backgroundColor: color }} />
+              </div>
+            ))
+          ) : (
+            <span className="text-gray-400">No colors available</span>
+          )}
         </div>
       </div>
       {/* QUANTITY */}

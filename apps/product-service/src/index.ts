@@ -8,7 +8,7 @@ import { consumer, producer } from "./utils/kafka.js";
 const app = express();
 app.use(
   cors({
-    origin: ["http://localhost:3002", "http://localhost:3003"],
+    origin: ["http://localhost:3002", "http://localhost:3003", "http://localhost:3004"],
     credentials: true,
   })
 );
@@ -39,7 +39,14 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 
 const start = async () => {
   try {
-    Promise.all([await producer.connect(), await consumer.connect()]);
+    // Try to connect to Kafka, but don't fail if it's not available
+    try {
+      await Promise.all([producer.connect(), consumer.connect()]);
+      console.log("Kafka connected successfully");
+    } catch (kafkaError) {
+      console.log("Kafka connection failed (service will run without it):", kafkaError.message);
+    }
+    
     app.listen(8000, () => {
       console.log("Product service is running on 8000");
     });

@@ -25,8 +25,8 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
   // Initialize selected options when product changes
   useEffect(() => {
     if (product) {
-      setSelectedSize(product.sizes[0] || "");
-      setSelectedColor(product.colors[0] || "");
+      setSelectedSize(product.sizes?.[0] || "");
+      setSelectedColor(product.colors?.[0] || "");
       setSelectedImageIndex(0);
       setQuantity(1);
       setIsWishlisted(false);
