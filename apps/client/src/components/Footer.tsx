@@ -65,17 +65,27 @@ const Footer = () => {
             <p className="text-gray-600 mb-4 leading-relaxed">
               Discover the future of technology. Premium tech products, cutting-edge innovation, and exceptional quality.
             </p>
+            <div className="mb-4">
+              <a 
+                href="https://www.neuraltale.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors"
+              >
+                Visit our company website →
+              </a>
+            </div>
             <div className="flex space-x-4">
-              <a href="https://twitter.com/neuraltale" className="text-gray-400 hover:text-blue-500 transition-colors">
+              <a href="https://twitter.com/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 transition-colors" aria-label="Twitter">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="https://instagram.com/neuraltale" className="text-gray-400 hover:text-pink-500 transition-colors">
+              <a href="https://instagram.com/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-500 transition-colors" aria-label="Instagram">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="https://youtube.com/neuraltale" className="text-gray-400 hover:text-red-500 transition-colors">
+              <a href="https://youtube.com/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors" aria-label="YouTube">
                 <Youtube className="w-5 h-5" />
               </a>
-              <a href="https://linkedin.com/company/neuraltale" className="text-gray-400 hover:text-blue-600 transition-colors">
+              <a href="https://linkedin.com/company/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors" aria-label="LinkedIn">
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>
@@ -94,16 +104,16 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Services Section */}
+          {/* Support Section */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-4">Services</h4>
+            <h4 className="text-gray-900 font-semibold mb-4">Support</h4>
             <ul className="space-y-3">
-              <li><Link href="/services" className="text-gray-600 hover:text-gray-900 transition-colors">All Services</Link></li>
-              <li><Link href="/solutions" className="text-gray-600 hover:text-gray-900 transition-colors">Solutions</Link></li>
-              <li><Link href="/industries" className="text-gray-600 hover:text-gray-900 transition-colors">Industries</Link></li>
-              <li><Link href="/case-studies" className="text-gray-600 hover:text-gray-900 transition-colors">Case Studies</Link></li>
-              <li><Link href="/support" className="text-gray-600 hover:text-gray-900 transition-colors">Support</Link></li>
-              <li><Link href="/careers" className="text-gray-600 hover:text-gray-900 transition-colors">Careers</Link></li>
+              <li><Link href="/help" className="text-gray-600 hover:text-gray-900 transition-colors">Help Center</Link></li>
+              <li><Link href="/contact" className="text-gray-600 hover:text-gray-900 transition-colors">Contact Us</Link></li>
+              <li><Link href="/shipping" className="text-gray-600 hover:text-gray-900 transition-colors">Shipping Info</Link></li>
+              <li><Link href="/returns" className="text-gray-600 hover:text-gray-900 transition-colors">Returns</Link></li>
+              <li><Link href="/warranty" className="text-gray-600 hover:text-gray-900 transition-colors">Warranty</Link></li>
+              <li><Link href="/track-order" className="text-gray-600 hover:text-gray-900 transition-colors">Track Order</Link></li>
             </ul>
           </div>
 
@@ -111,11 +121,11 @@ const Footer = () => {
           <div>
             <h4 className="text-gray-900 font-semibold mb-4">Company</h4>
             <ul className="space-y-3 mb-6">
-              <li><Link href="/about" className="text-gray-600 hover:text-gray-900 transition-colors">About Us</Link></li>
-              <li><Link href="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">Blog</Link></li>
-              <li><Link href="/press" className="text-gray-600 hover:text-gray-900 transition-colors">Press</Link></li>
-              <li><Link href="/careers" className="text-gray-600 hover:text-gray-900 transition-colors">Careers</Link></li>
-              <li><Link href="/sitemap-page" className="text-gray-600 hover:text-gray-900 transition-colors">Sitemap</Link></li>
+              <li><a href="https://www.neuraltale.com/about" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">About Us</a></li>
+              <li><a href="https://www.neuraltale.com/careers" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Careers</a></li>
+              <li><a href="https://www.neuraltale.com/press" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Press</a></li>
+              <li><a href="https://www.neuraltale.com/blog" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Blog</a></li>
+              <li><a href="https://www.neuraltale.com/case-studies" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Case Studies</a></li>
             </ul>
             
             {/* Contact Info */}
@@ -132,6 +142,16 @@ const Footer = () => {
                 <MapPin className="w-4 h-4 mr-2" />
                 <span className="text-sm">San Francisco, CA</span>
               </div>
+              <div className="mt-3">
+                <a 
+                  href="https://www.neuraltale.com/support" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+                >
+                  Technical Support →
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -146,15 +166,18 @@ const Footer = () => {
                 © 2025 Neuraltale. All rights reserved.
               </p>
               <div className="hidden md:flex items-center space-x-4">
-                <Link href="/privacy" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">
+                <a href="https://www.neuraltale.com/privacy" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">
                   Privacy Policy
-                </Link>
+                </a>
                 <Link href="/terms" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">
                   Terms of Service
                 </Link>
-                <Link href="/support" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">
-                  Support
+                <Link href="/cookies" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">
+                  Cookie Policy
                 </Link>
+                <a href="https://www.neuraltale.com/sitemap-page" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">
+                  Sitemap
+                </a>
               </div>
             </div>
             <div className="flex items-center space-x-4">

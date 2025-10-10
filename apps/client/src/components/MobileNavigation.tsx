@@ -15,15 +15,12 @@ const MobileNavigation = () => {
 
   const navigationItems = [
     { name: "Home", href: "/" },
-    { name: "Services", href: "/services" },
     { name: "Products", href: "/products" },
-    { name: "Solutions", href: "/solutions" },
-    { name: "Industries", href: "/industries" },
-    { name: "Case Studies", href: "/case-studies" },
-    { name: "Blog", href: "/blog" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/contact" },
-    { name: "Support", href: "/support" },
+    { name: "Categories", href: "/products?category=all" },
+    { name: "Deals", href: "/products?sort=price-asc" },
+    { name: "Services", href: "https://www.neuraltale.com/services", external: true },
+    { name: "About", href: "https://www.neuraltale.com/about", external: true },
+    { name: "Contact", href: "https://www.neuraltale.com/contact", external: true },
   ];
 
   const categories = [
@@ -166,14 +163,27 @@ const MobileNavigation = () => {
             <div className="p-4">
               <nav className="space-y-1">
                 {navigationItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    className="block py-3 px-4 text-gray-700 hover:bg-gray-50 rounded-lg font-medium"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
+                  item.external ? (
+                    <a
+                      key={item.name}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block py-3 px-4 text-gray-700 hover:bg-gray-50 rounded-lg font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </a>
+                  ) : (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="block py-3 px-4 text-gray-700 hover:bg-gray-50 rounded-lg font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  )
                 ))}
               </nav>
             </div>

@@ -200,7 +200,7 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden">
+    <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden h-[70vh] min-h-[500px] max-h-[800px] mt-0">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -209,22 +209,22 @@ const HeroSection = () => {
         }} />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 h-full flex flex-col justify-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center flex-1">
           {/* Product Content */}
-          <div className="space-y-8">
+          <div className="space-y-6">
             {/* Brand Header */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-center space-x-2 text-blue-300">
                 {getCategoryIcon(currentProduct.category)}
                 <span className="text-sm font-medium uppercase tracking-wider">
                   {currentProduct.category}
                 </span>
               </div>
-              <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
+              <h1 className="text-3xl lg:text-5xl font-bold leading-tight">
                 {currentProduct.name}
               </h1>
-              <p className="text-xl text-blue-100 leading-relaxed">
+              <p className="text-lg text-blue-100 leading-relaxed">
                 {currentProduct.description}
               </p>
             </div>
@@ -235,7 +235,7 @@ const HeroSection = () => {
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`w-5 h-5 ${
+                    className={`w-4 h-4 ${
                       i < Math.floor(currentProduct.rating)
                         ? "text-yellow-400 fill-current"
                         : "text-gray-400"
@@ -243,17 +243,17 @@ const HeroSection = () => {
                   />
                 ))}
               </div>
-              <span className="text-lg font-semibold">{currentProduct.rating}</span>
-              <span className="text-blue-200">(2,847 reviews)</span>
+              <span className="text-base font-semibold">{currentProduct.rating}</span>
+              <span className="text-blue-200 text-sm">(2,847 reviews)</span>
             </div>
 
             {/* Key Features */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-blue-200">Key Features</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {currentProduct.keyFeatures.map((feature, index) => (
+            <div className="space-y-3">
+              <h3 className="text-base font-semibold text-blue-200">Key Features</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {currentProduct.keyFeatures.slice(0, 4).map((feature, index) => (
                   <div key={index} className="flex items-center space-x-2">
-                    <div className="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0" />
+                    <div className="w-1.5 h-1.5 bg-blue-400 rounded-full flex-shrink-0" />
                     <span className="text-sm text-blue-100">{feature}</span>
                   </div>
                 ))}
@@ -261,25 +261,25 @@ const HeroSection = () => {
             </div>
 
             {/* Pricing */}
-            <div className="space-y-4">
-              <div className="flex items-baseline space-x-4">
-                <span className="text-4xl font-bold text-white">
-                  ${currentProduct.price}
+            <div className="space-y-3">
+              <div className="flex items-baseline space-x-3">
+                <span className="text-3xl font-bold text-white">
+                  TZs {(currentProduct.price * 2300).toLocaleString()}
                 </span>
                 {currentProduct.originalPrice && (
-                  <span className="text-xl text-gray-400 line-through">
-                    ${currentProduct.originalPrice}
+                  <span className="text-lg text-gray-400 line-through">
+                    TZs {(currentProduct.originalPrice * 2300).toLocaleString()}
                   </span>
                 )}
                 {currentProduct.originalPrice && (
-                  <span className="bg-red-500 text-white px-2 py-1 rounded text-sm font-medium">
-                    SAVE ${(currentProduct.originalPrice - currentProduct.price).toFixed(2)}
+                  <span className="bg-red-500 text-white px-2 py-1 rounded text-xs font-medium">
+                    SAVE TZs {((currentProduct.originalPrice - currentProduct.price) * 2300).toLocaleString()}
                   </span>
                 )}
               </div>
               <div className="flex items-center space-x-2">
                 <div
-                  className={`w-3 h-3 rounded-full ${
+                  className={`w-2.5 h-2.5 rounded-full ${
                     currentProduct.availability === "In Stock"
                       ? "bg-green-400"
                       : currentProduct.availability === "Limited Stock"
@@ -292,16 +292,16 @@ const HeroSection = () => {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href={`/products/${currentProduct.id}`}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105 text-center"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 text-center"
               >
                 Shop Now
               </Link>
               <Link
                 href={`/products/${currentProduct.id}`}
-                className="border-2 border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 text-center"
+                className="border-2 border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 text-center"
               >
                 View Details
               </Link>
@@ -310,7 +310,7 @@ const HeroSection = () => {
 
           {/* Product Image */}
           <div className="relative">
-            <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20">
+            <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20 max-w-md mx-auto">
               <Image
                 src={currentProduct.image}
                 alt={currentProduct.name}
@@ -319,10 +319,10 @@ const HeroSection = () => {
                 priority
               />
               {/* Floating Spec Card */}
-              <div className="absolute bottom-4 right-4 bg-black/70 backdrop-blur-sm rounded-lg p-4 max-w-xs">
+              <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm rounded-lg p-3 max-w-[200px]">
                 <h4 className="font-semibold text-sm mb-2">Specifications</h4>
                 <ul className="space-y-1">
-                  {currentProduct.specifications.slice(0, 3).map((spec, index) => (
+                  {currentProduct.specifications.slice(0, 2).map((spec, index) => (
                     <li key={index} className="text-xs text-gray-300">
                       • {spec}
                     </li>
@@ -334,15 +334,15 @@ const HeroSection = () => {
         </div>
 
         {/* Navigation Controls */}
-        <div className="flex justify-center items-center mt-12 space-x-4">
+        <div className="flex justify-center items-center mt-6 space-x-4">
           <button
             onClick={prevSlide}
-            className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200"
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200"
             onMouseEnter={() => setIsAutoPlaying(false)}
             onMouseLeave={() => setIsAutoPlaying(true)}
             aria-label="Previous product"
           >
-            <ChevronLeft className="w-6 h-6" />
+            <ChevronLeft className="w-5 h-5" />
           </button>
 
           {/* Slide Indicators */}
@@ -351,7 +351,7 @@ const HeroSection = () => {
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                className={`w-2.5 h-2.5 rounded-full transition-all duration-200 ${
                   index === currentSlide ? "bg-blue-400" : "bg-white/30 hover:bg-white/50"
                 }`}
                 onMouseEnter={() => setIsAutoPlaying(false)}
@@ -363,12 +363,12 @@ const HeroSection = () => {
 
           <button
             onClick={nextSlide}
-            className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200"
+            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200"
             onMouseEnter={() => setIsAutoPlaying(false)}
             onMouseLeave={() => setIsAutoPlaying(true)}
             aria-label="Next product"
           >
-            <ChevronRight className="w-6 h-6" />
+            <ChevronRight className="w-5 h-5" />
           </button>
         </div>
       </div>

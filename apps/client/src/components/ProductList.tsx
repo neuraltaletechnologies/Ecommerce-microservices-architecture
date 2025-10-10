@@ -359,20 +359,12 @@ const ProductList = async ({
   return (
     <div className="w-full">
       {/* Section Header */}
-      <div className="text-center mb-12">
-        <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-          Premium Tech Products
-        </h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Discover cutting-edge technology from leading brands. From smartphones to gaming gear, 
-          find the perfect tech products for your lifestyle.
-        </p>
-      </div>
+
 
       <Categories />
       {params === "products" && <Filter />}
       
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 lg:gap-12">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
         {Array.isArray(products) && products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

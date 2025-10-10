@@ -153,12 +153,12 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
                 {/* Price */}
                 <div className="mb-6">
                   <span className="text-3xl font-bold text-gray-900">
-                    ${product.price.toLocaleString()}
+                    TZs {(product.price * 2300).toLocaleString()}
                   </span>
                   {product.id % 4 === 0 && (
                     <div className="flex items-center gap-2 mt-2">
                       <span className="text-lg text-gray-500 line-through">
-                        ${(product.price * 1.15).toLocaleString()}
+                        TZs {(product.price * 1.15 * 2300).toLocaleString()}
                       </span>
                       <span className="bg-red-100 text-red-700 px-2 py-1 rounded-full text-sm font-medium">
                         Save 15%
@@ -276,7 +276,7 @@ const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, isOpen, onClos
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
                 >
                   <ShoppingCart className="w-5 h-5" />
-                  Add to Cart - ${(product.price * quantity).toLocaleString()}
+                  Add to Cart - TZs {(product.price * quantity * 2300).toLocaleString()}
                 </button>
                 
                 <div className="grid grid-cols-3 gap-3">

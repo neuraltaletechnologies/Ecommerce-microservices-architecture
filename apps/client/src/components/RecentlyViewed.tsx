@@ -125,7 +125,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
                 {product.name}
               </h4>
               <p className="text-sm font-semibold text-gray-900">
-                ${product.price.toLocaleString()}
+                TZs {(product.price * 2300).toLocaleString()}
               </p>
             </Link>
           );

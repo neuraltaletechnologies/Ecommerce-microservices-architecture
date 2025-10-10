@@ -123,10 +123,10 @@ const EnhancedCart = () => {
                     
                     <div className="text-right">
                       <div className="font-semibold text-gray-900">
-                        ${(item.price * item.quantity).toLocaleString()}
+                        TZs {(item.price * item.quantity * 2300).toLocaleString()}
                       </div>
                       <div className="text-sm text-gray-600">
-                        ${item.price.toLocaleString()} each
+                        TZs {(item.price * 2300).toLocaleString()} each
                       </div>
                     </div>
                   </div>
