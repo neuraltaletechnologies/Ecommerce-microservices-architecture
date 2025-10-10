@@ -1,6 +1,7 @@
 "use client";
 
 import useCartStore from "@/stores/cartStore";
+import { formatTzs } from "@/utils/currency";
 import { ProductType } from "@repo/types";
 import { ShoppingCart, Star, Heart } from "lucide-react";
 import Image from "next/image";
@@ -172,13 +173,13 @@ const ProductCard = ({ product }: { product: ProductType }) => {
           <div className="flex items-center justify-between mb-2">
             <div>
               <span className="text-lg font-bold text-gray-900">
-                TZs {(product.price * 2300).toLocaleString()}
+                {formatTzs(product.price, true)}
               </span>
               {/* Show savings if applicable */}
               {product.id % 4 === 0 && (
                 <div className="flex items-center gap-1 mt-1">
                   <span className="text-xs text-gray-500 line-through">
-                    TZs {(product.price * 1.15 * 2300).toLocaleString()}
+                    {formatTzs(product.price * 1.15, true)}
                   </span>
                   <span className="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-medium">
                     Save 15%

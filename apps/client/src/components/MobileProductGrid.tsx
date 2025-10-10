@@ -126,7 +126,7 @@ const MobileProductListItem = ({ product }: { product: ProductType }) => {
         <div className="flex items-center justify-between">
           <div>
             <span className="font-semibold text-gray-900">
-              ${product.price.toLocaleString()}
+              TZs {(product.price * 2300).toLocaleString()}
             </span>
             {product.id % 4 === 0 && (
               <span className="ml-2 text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">

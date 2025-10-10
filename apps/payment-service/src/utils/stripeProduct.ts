@@ -7,8 +7,8 @@ export const createStripeProduct = async (item: StripeProductType) => {
       id: item.id,
       name: item.name,
       default_price_data: {
-        currency: "usd",
-        unit_amount: item.price * 100,
+        currency: "tzs", // Tanzanian Shilling
+        unit_amount: item.price * 100 * 2300, // Convert USD to TZS (1 USD ≈ 2300 TZS) and to cents
       },
     });
     return res;

@@ -13,7 +13,7 @@ const EnhancedCart = () => {
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
 
   const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-  const shipping = subtotal > 100 ? 0 : 15; // Free shipping over $100
+  const shipping = subtotal > 100 ? 0 : 15; // Free shipping over TZs 230,000 (equivalent of $100)
   const discount = appliedPromo === "NEURALTALE10" ? subtotal * 0.1 : 0;
   const tax = (subtotal - discount) * 0.08; // 8% tax
   const total = subtotal + shipping + tax - discount;
@@ -200,13 +200,13 @@ const EnhancedCart = () => {
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-600">Subtotal</span>
-            <span className="text-gray-900">${subtotal.toFixed(2)}</span>
+            <span className="text-gray-900">TZs {(subtotal * 2300).toLocaleString()}</span>
           </div>
           
           {discount > 0 && (
             <div className="flex justify-between text-green-600">
               <span>Discount</span>
-              <span>-${discount.toFixed(2)}</span>
+              <span>-TZs {(discount * 2300).toLocaleString()}</span>
             </div>
           )}
           
@@ -216,26 +216,26 @@ const EnhancedCart = () => {
               Shipping
             </span>
             <span className="text-gray-900">
-              {shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}
+              {shipping === 0 ? "Free" : `TZs ${(shipping * 2300).toLocaleString()}`}
             </span>
           </div>
           
           <div className="flex justify-between">
             <span className="text-gray-600">Tax</span>
-            <span className="text-gray-900">${tax.toFixed(2)}</span>
+            <span className="text-gray-900">TZs {(tax * 2300).toLocaleString()}</span>
           </div>
           
           <div className="border-t border-gray-300 pt-2 mt-2">
             <div className="flex justify-between text-lg font-semibold">
               <span className="text-gray-900">Total</span>
-              <span className="text-gray-900">${total.toFixed(2)}</span>
+              <span className="text-gray-900">TZs {(total * 2300).toLocaleString()}</span>
             </div>
           </div>
         </div>
         
         {shipping > 0 && (
           <div className="mt-4 text-sm text-blue-600">
-            Add ${(100 - subtotal).toFixed(2)} more for free shipping!
+            Add TZs {((100 - subtotal) * 2300).toLocaleString()} more for free shipping!
           </div>
         )}
         

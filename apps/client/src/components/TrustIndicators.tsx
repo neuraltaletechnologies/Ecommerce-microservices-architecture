@@ -11,7 +11,7 @@ const TrustIndicators = () => {
     {
       icon: <Truck className="w-5 h-5 text-green-600" />,
       label: "Free Shipping",
-      description: "On orders over $50"
+      description: "On orders over TZs 115,000"
     },
     {
       icon: <Shield className="w-5 h-5 text-blue-600" />,

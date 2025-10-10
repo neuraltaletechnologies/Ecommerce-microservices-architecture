@@ -15,7 +15,7 @@ sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
       const unitAmount = await getStripeProductPrice(item.id);
       return {
         price_data: {
-          currency: "usd",
+          currency: "tzs", // Tanzanian Shilling
           product_data: {
             name: item.name,
           },
