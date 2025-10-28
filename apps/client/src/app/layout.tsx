@@ -49,9 +49,10 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
         >
+          {/* Main page layout: Navbar at top, content in the middle, Footer at bottom */}
           <div className="min-h-screen flex flex-col">
             <Navbar />
-            <main className="flex-1">
+            <main className="flex-1 ">
               {children}
             </main>
             <Footer />

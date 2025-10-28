@@ -200,7 +200,7 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden h-[70vh] min-h-[500px] max-h-[800px] mt-0">
+    <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden h-screen min-h-[600px] -mt-2 sm:-mt-4 md:-mt-6">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -209,22 +209,22 @@ const HeroSection = () => {
         }} />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12 h-full flex flex-col justify-center">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center flex-1">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-4 sm:pt-24 sm:pb-6 lg:pt-28 lg:pb-8 h-full flex flex-col justify-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center flex-1 min-h-0">
           {/* Product Content */}
-          <div className="space-y-6">
+          <div className="space-y-3 sm:space-y-4 lg:space-y-6 flex flex-col justify-center">
             {/* Brand Header */}
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <div className="flex items-center space-x-2 text-blue-300">
                 {getCategoryIcon(currentProduct.category)}
                 <span className="text-sm font-medium uppercase tracking-wider">
                   {currentProduct.category}
                 </span>
               </div>
-              <h1 className="text-3xl lg:text-5xl font-bold leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold leading-tight">
                 {currentProduct.name}
               </h1>
-              <p className="text-lg text-blue-100 leading-relaxed">
+              <p className="text-base sm:text-lg text-blue-100 leading-relaxed">
                 {currentProduct.description}
               </p>
             </div>
@@ -261,13 +261,13 @@ const HeroSection = () => {
             </div>
 
             {/* Pricing */}
-            <div className="space-y-3">
-              <div className="flex items-baseline space-x-3">
-                <span className="text-3xl font-bold text-white">
+            <div className="space-y-2 sm:space-y-3">
+              <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
+                <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
                   TZs {(currentProduct.price * 2300).toLocaleString()}
                 </span>
                 {currentProduct.originalPrice && (
-                  <span className="text-lg text-gray-400 line-through">
+                  <span className="text-sm sm:text-base lg:text-lg text-gray-400 line-through">
                     TZs {(currentProduct.originalPrice * 2300).toLocaleString()}
                   </span>
                 )}
@@ -309,18 +309,18 @@ const HeroSection = () => {
           </div>
 
           {/* Product Image */}
-          <div className="relative">
-            <div className="relative aspect-square rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20 max-w-md mx-auto">
+          <div className="relative flex items-center justify-center order-first lg:order-last">
+            <div className="relative w-full max-w-sm sm:max-w-md h-64 sm:h-80 lg:h-[450px] rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20">
               <Image
                 src={currentProduct.image}
                 alt={currentProduct.name}
                 fill
-                className="object-cover"
+                className="object-contain p-3 sm:p-4"
                 priority
               />
-              {/* Floating Spec Card */}
-              <div className="absolute bottom-3 right-3 bg-black/70 backdrop-blur-sm rounded-lg p-3 max-w-[200px]">
-                <h4 className="font-semibold text-sm mb-2">Specifications</h4>
+              {/* Floating Spec Card - Hidden on very small screens */}
+              <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 bg-black/70 backdrop-blur-sm rounded-lg p-2 sm:p-3 max-w-[160px] sm:max-w-[200px] hidden sm:block">
+                <h4 className="font-semibold text-xs sm:text-sm mb-1 sm:mb-2">Specifications</h4>
                 <ul className="space-y-1">
                   {currentProduct.specifications.slice(0, 2).map((spec, index) => (
                     <li key={index} className="text-xs text-gray-300">

@@ -11,7 +11,7 @@ const Homepage = async ({
   return (
     <div className="min-h-screen">
       {/* Hero Section - Full width */}
-      <HeroSection />
+      <HeroSection  />
       
      
       
