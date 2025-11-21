@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+
 import { ChevronLeft, ChevronRight, Star, Zap, Headphones, Gamepad2 } from "lucide-react";
 
 interface FeaturedProduct {
@@ -209,7 +210,7 @@ const HeroSection = () => {
         }} />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-4 sm:pt-24 sm:pb-6 lg:pt-28 lg:pb-8 h-full flex flex-col justify-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-4 sm:pt-24 sm:pb-6 lg:pt-28 lg:pb-8 h-full flex flex-col justify-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-center flex-1 min-h-0">
           {/* Product Content */}
           <div className="space-y-3 sm:space-y-4 lg:space-y-6 flex flex-col justify-center">
@@ -334,7 +335,7 @@ const HeroSection = () => {
         </div>
 
         {/* Navigation Controls */}
-        <div className="flex justify-center items-center mt-6 space-x-4">
+        <div className="flex justify-center items-center mb-10  space-x-4">
           <button
             onClick={prevSlide}
             className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200"

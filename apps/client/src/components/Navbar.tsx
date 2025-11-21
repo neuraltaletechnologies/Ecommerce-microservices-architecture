@@ -4,6 +4,7 @@ import Link from "next/link";
 import SearchBar from "./SearchBar";
 import { User, Menu, X, ChevronDown } from "lucide-react";
 import ShoppingCartIcon from "./ShoppingCartIcon";
+
 import {
   SignedIn,
   SignedOut,
@@ -134,9 +135,7 @@ const Navbar = () => {
             {/* Logo */}
             <Link href="/" className="flex items-center group">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">N</span>
-                </div>
+                
                 <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-200">
                   Neuraltale
                 </span>

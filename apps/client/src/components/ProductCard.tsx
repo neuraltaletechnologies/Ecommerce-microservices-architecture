@@ -146,26 +146,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
             </div>
           </div>
 
-          {/* Color Options - Show only 3 on mobile */}
-          <div className="sm:block hidden">
-            <span className="text-xs font-medium text-gray-700 block mb-1">Color</span>
-            <div className="flex gap-1">
-              {product.colors.slice(0, 3).map((color) => (
-                <button
-                  key={color}
-                  onClick={() => handleProductType({ type: "color", value: color })}
-                  className={`w-5 h-5 rounded-full border-2 transition-all ${
-                    productTypes.color === color
-                      ? "border-blue-500 ring-1 ring-blue-200"
-                      : "border-gray-300 hover:border-gray-400"
-                  }`}
-                  data-color={color}
-                  aria-label={`Select ${color} color`}
-                  title={`Select ${color} color`}
-                />
-              ))}
-            </div>
-          </div>
+ 
         </div>
 
         {/* PRICE AND ACTIONS */}
@@ -197,12 +178,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
             <span className="text-xs sm:text-sm">Add to Cart</span>
           </button>
           
-          <Link
-            href={`/products/${product.id}`}
-            className="block w-full text-center text-xs text-blue-600 hover:text-blue-700 font-medium mt-1 py-1"
-          >
-            View Details
-          </Link>
+      
         </div>
       </div>
     </div>
