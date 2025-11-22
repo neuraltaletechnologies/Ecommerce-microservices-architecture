@@ -5,6 +5,9 @@
   "scripts": {
     "dev": "next dev --turbopack --port 3004",
     "build": "next build",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "preview": "npx wrangler pages dev .vercel/output/static",
+    "deploy": "npx wrangler pages deploy .vercel/output/static",
     "start": "next start",
     "lint": "next lint",
     "check-types": "tsc --noEmit"
@@ -24,6 +27,7 @@
     "zustand": "^5.0.7"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
     "@repo/eslint-config": "workspace:*",
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
