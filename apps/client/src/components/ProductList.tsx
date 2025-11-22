@@ -92,7 +92,7 @@ const ProductList = async ({
       <Categories />
       {params === "products" && <Filter />}
       
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
         {Array.isArray(products) && products.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

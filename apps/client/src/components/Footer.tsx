@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import { Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin,Github } from "lucide-react";
 import { useState } from "react";
 
 const Footer = () => {
@@ -16,56 +17,28 @@ const Footer = () => {
 
   return (
     <footer className="bg-white border-t border-gray-100">
-      {/* Newsletter Section */}
-      <div className="bg-gradient-to-r from-gray-900 to-gray-800 ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h3 className="text-2xl font-bold text-white mb-2">
-                Stay ahead of the tech curve
-              </h3>
-              <p className="text-gray-300">
-                Get exclusive access to new products, deals, and tech insights delivered to your inbox.
-              </p>
-            </div>
-            <form onSubmit={handleNewsletterSubmit} className="flex gap-3">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg border-0 bg-white/10 backdrop-blur-sm text-white placeholder-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                required
-              />
-              <button
-                type="submit"
-                className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 flex items-center gap-2"
-              >
-                Subscribe
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-
       {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {/* Brand Section */}
           <div className="md:col-span-1">
-            <Link href="/" className="flex items-center group mb-4">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center mr-2">
-                <span className="text-white font-bold text-sm">N</span>
+            <Link href="/" className="flex items-center group mb-3">
+              <div className="relative w-8 h-8 mr-2">
+                <Image
+                  src="/favicon.png"
+                  alt="Neuraltale Logo"
+                  fill
+                  className="object-contain"
+                />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+              <span className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
                 Neuraltale
               </span>
             </Link>
-            <p className="text-gray-600 mb-4 leading-relaxed">
-              Discover the future of technology. Premium tech products, cutting-edge innovation, and exceptional quality.
+            <p className="text-gray-600 mb-3 leading-relaxed text-sm">
+              Discover the future of technology and exceptional quality.
             </p>
-            <div className="mb-4">
+            <div className="mb-3">
               <a 
                 href="https://www.neuraltale.com" 
                 target="_blank" 
@@ -75,11 +48,38 @@ const Footer = () => {
                 Visit our company website →
               </a>
             </div>
-            <div className="flex space-x-4">
+            
+            {/* Newsletter - Integrated */}
+            <div className="mt-4 pt-4 border-t border-gray-100">
+              <h5 className="text-xs font-semibold text-gray-900 mb-1.5">
+                Stay Updated
+              </h5>
+              <p className="text-xs text-gray-600 mb-2">
+                Get exclusive deals and tech insights.
+              </p>
+              <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email"
+                  className="flex-1 px-2 py-1.5 text-xs rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
+                  required
+                />
+                <button
+                  type="submit"
+                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition-colors duration-200 flex items-center gap-1"
+                >
+                  Subscribe
+                </button>
+              </form>
+            </div>
+            
+            <div className="flex space-x-3 mt-4">
               <a href="https://twitter.com/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 transition-colors" aria-label="Twitter">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="https://instagram.com/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-500 transition-colors" aria-label="Instagram">
+              <a href="https://instagram.com/neuraltaletechnologiestz" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-500 transition-colors" aria-label="Instagram">
                 <Instagram className="w-5 h-5" />
               </a>
               <a href="https://youtube.com/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors" aria-label="YouTube">
@@ -88,13 +88,16 @@ const Footer = () => {
               <a href="https://linkedin.com/company/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors" aria-label="LinkedIn">
                 <Linkedin className="w-5 h-5" />
               </a>
+              <a href="https://github.com/neuraltaletechnologies" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors" aria-label="LinkedIn">
+                <Github className="w-5 h-5" />
+              </a>
             </div>
           </div>
 
           {/* Shop Section */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-4">Shop</h4>
-            <ul className="space-y-3">
+            <h4 className="text-gray-900 font-semibold mb-2 text-sm">Shop</h4>
+            <ul className="space-y-1.5 text-sm">
               <li><Link href="/products" className="text-gray-600 hover:text-gray-900 transition-colors">All Products</Link></li>
               <li><Link href="/products?category=smartphones" className="text-gray-600 hover:text-gray-900 transition-colors">Smartphones</Link></li>
               <li><Link href="/products?category=laptops" className="text-gray-600 hover:text-gray-900 transition-colors">Laptops</Link></li>
@@ -106,8 +109,8 @@ const Footer = () => {
 
           {/* Support Section */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-4">Support</h4>
-            <ul className="space-y-3">
+            <h4 className="text-gray-900 font-semibold mb-2 text-sm">Support</h4>
+            <ul className="space-y-1.5 text-sm">
               <li><Link href="/help" className="text-gray-600 hover:text-gray-900 transition-colors">Help Center</Link></li>
               <li><Link href="/contact" className="text-gray-600 hover:text-gray-900 transition-colors">Contact Us</Link></li>
               <li><Link href="/shipping" className="text-gray-600 hover:text-gray-900 transition-colors">Shipping Info</Link></li>
@@ -119,17 +122,16 @@ const Footer = () => {
 
           {/* Company Section */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-4">Company</h4>
-            <ul className="space-y-3 mb-6">
+            <h4 className="text-gray-900 font-semibold mb-2 text-sm">Company</h4>
+            <ul className="space-y-1.5 mb-4 text-sm">
               <li><a href="https://www.neuraltale.com/about" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">About Us</a></li>
               <li><a href="https://www.neuraltale.com/careers" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Careers</a></li>
               <li><a href="https://www.neuraltale.com/press" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Press</a></li>
               <li><a href="https://www.neuraltale.com/blog" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Blog</a></li>
-              <li><a href="https://www.neuraltale.com/case-studies" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Case Studies</a></li>
-            </ul>
+             </ul>
             
             {/* Contact Info */}
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <div className="flex items-center text-gray-600">
                 <Mail className="w-4 h-4 mr-2" />
                 <span className="text-sm">hello@neuraltale.com</span>
@@ -142,7 +144,7 @@ const Footer = () => {
                 <MapPin className="w-4 h-4 mr-2" />
                 <span className="text-sm">San Francisco, CA</span>
               </div>
-              <div className="mt-3">
+              <div className="mt-2">
                 <a 
                   href="https://www.neuraltale.com/support" 
                   target="_blank" 
@@ -159,7 +161,7 @@ const Footer = () => {
 
       {/* Bottom Bar */}
       <div className="border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <div className="flex items-center space-x-6">
               <p className="text-gray-600 text-sm">

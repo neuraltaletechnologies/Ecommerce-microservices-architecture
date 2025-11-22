@@ -1,6 +1,7 @@
 import ProductList from "@/components/ProductList";
 import HeroSection from "@/components/HeroSection";
 import TrustIndicators from "@/components/TrustIndicators";
+import ShopByCategory from "@/components/ShopByCategory";
 
 const Homepage = async ({
   searchParams,
@@ -13,7 +14,7 @@ const Homepage = async ({
       {/* Hero Section - Full width */}
       <HeroSection  />
       
-     
+    
       
       {/* Featured Products - With container */}
       <section className="py-16 bg-gray-50">
@@ -37,7 +38,10 @@ const Homepage = async ({
           <TrustIndicators />
         </div>
       </section>
-      
+      <section>
+        {/* Shop By Category Section */}
+      <ShopByCategory />
+      </section>
     </div>
   );
 };

@@ -119,9 +119,9 @@ const CartPage = () => {
         ))}
       </div>
       {/* STEPS & DETAILS */}
-      <div className="w-full flex flex-col lg:flex-row gap-16">
+      <div className="w-full flex flex-col lg:flex-row gap-8">
         {/* STEPS */}
-        <div className="w-full lg:w-7/12 shadow-lg border-1 border-gray-100 p-8 rounded-lg flex flex-col gap-8">
+        <div className="w-full lg:w-8/12 shadow-lg border-1 border-gray-100 p-6 rounded-lg flex flex-col gap-6">
           {activeStep === 1 ? (
             cart.map((item) => (
               // SINGLE CART ITEM
@@ -130,9 +130,9 @@ const CartPage = () => {
                 key={item.id + item.selectedSize + item.selectedColor}
               >
                 {/* IMAGE AND DETAILS */}
-                <div className="flex gap-8">
+                <div className="flex gap-6">
                   {/* IMAGE */}
-                  <div className="relative w-32 h-32 bg-gray-50 rounded-lg overflow-hidden">
+                  <div className="relative w-40 h-40 bg-gray-50 rounded-lg overflow-hidden">
                     <Image
                       src={
                         (item.images as Record<string, string>)?.[
@@ -146,29 +146,29 @@ const CartPage = () => {
                   </div>
                   {/* ITEM DETAILS */}
                   <div className="flex flex-col justify-between">
-                    <div className="flex flex-col gap-1">
-                      <p className="text-sm font-medium">{item.name}</p>
-                      <p className="text-xs text-gray-500">
+                    <div className="flex flex-col gap-1.5">
+                      <p className="text-base font-medium">{item.name}</p>
+                      <p className="text-sm text-gray-500">
                         Quantity: {item.quantity}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-gray-500">
                         Size: {item.selectedSize}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-gray-500">
                         Color: {item.selectedColor}
                       </p>
                     </div>
-                    <p className="font-medium">TZs {(item.price * item.quantity * 2300).toLocaleString()}</p>
+                    <p className="font-semibold text-lg">TZs {(item.price * item.quantity * 2300).toLocaleString()}</p>
                   </div>
                 </div>
                 {/* DELETE BUTTON */}
                 <button
                   onClick={() => removeFromCart(item)}
-                  className="w-8 h-8 rounded-full bg-red-100 hover:bg-red-200 transition-all duration-300 text-red-400 flex items-center justify-center cursor-pointer"
+                  className="w-9 h-9 rounded-full bg-red-100 hover:bg-red-200 transition-all duration-300 text-red-400 flex items-center justify-center cursor-pointer"
                   aria-label={`Remove ${item.name} from cart`}
                   title={`Remove ${item.name} from cart`}
                 >
-                  <Trash2 className="w-3 h-3" />
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
             ))
@@ -278,7 +278,7 @@ const CartPage = () => {
           )}
         </div>
         {/* DETAILS */}
-        <div className="w-full lg:w-5/12 shadow-lg border-1 border-gray-100 p-8 rounded-lg flex flex-col gap-8 h-max">
+        <div className="w-full lg:w-4/12 shadow-lg border-1 border-gray-100 p-6 rounded-lg flex flex-col gap-6 h-max">
           <h2 className="font-semibold">Order Summary</h2>
           <div className="flex flex-col gap-4">
             <div className="flex justify-between text-sm">
