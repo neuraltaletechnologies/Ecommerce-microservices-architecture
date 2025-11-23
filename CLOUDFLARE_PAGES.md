@@ -34,9 +34,9 @@ Deploy your Next.js client and admin frontends to Cloudflare Pages for fast, glo
 3. **Configure Build Settings**
    - **Project Name**: `neuraltale-client`
    - **Production Branch**: `direct-Link-no-Kafka-`
-   - **Framework Preset**: Next.js
-   - **Build Command**: `pnpm install && cd packages/product-db && pnpm prisma generate && cd ../../apps/client && pnpm run build`
-   - **Build Output Directory**: `apps/client/.next`
+   - **Framework Preset**: None (Don't select Next.js - we'll use custom commands)
+   - **Build Command**: `pnpm install && cd packages/product-db && pnpm prisma generate && cd ../../apps/client && npx @cloudflare/next-on-pages`
+   - **Build Output Directory**: `apps/client/.vercel/output/static`
    - **Root Directory**: (leave empty)
 
 4. **Set Environment Variables**
