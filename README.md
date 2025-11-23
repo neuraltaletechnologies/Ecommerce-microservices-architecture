@@ -1,19 +1,28 @@
 # E-commerce Microservices Architecture
 
-Modern e-commerce platform built with TypeScript microservices in a Turborepo monorepo.
+Modern e-commerce platform built with TypeScript microservices in a Turborepo monorepo. Production-ready with hybrid deployment: Render (backends) + Vercel (frontends).
 
 ## 🏗️ Architecture
 
 ### Microservices (Backend)
-- **product-service** (port 8000) - Product catalog with Prisma/PostgreSQL
-- **order-service** (port 8001) - Order management with MongoDB/Fastify  
-- **payment-service** (port 8002) - Stripe payments with Hono
+- **product-service** (port 8000) - Product catalog with Prisma/Neon PostgreSQL
+- **order-service** (port 8001) - Order management with MongoDB Atlas/Fastify  
+- **payment-service** (port 8002) - Stripe payments with Hono framework
 - **auth-service** (port 8003) - Clerk authentication with Express
-- **email-service** (port 8004) - Email notifications via HTTP
+- **email-service** (port 8004) - Email notifications via HTTP endpoints
 
 ### Frontend Applications
-- **client** (port 3002) - Customer-facing Next.js app
-- **admin** (port 3003) - Admin dashboard
+- **client** (port 3002) - Customer-facing Next.js 15 app with Stripe checkout
+- **admin** (port 3003) - Admin dashboard for order/product management
+
+### Tech Stack
+- **Framework**: Next.js 15, TypeScript, Turborepo
+- **Styling**: Tailwind CSS 4
+- **Auth**: Clerk
+- **Payments**: Stripe
+- **Databases**: Neon PostgreSQL (serverless), MongoDB Atlas
+- **Communication**: Direct HTTP (no message queue)
+- **Deployment**: Render (backends) + Vercel (frontends)
 
 ## 🚀 Quick Start
 
@@ -40,55 +49,90 @@ turbo dev --filter=product-service
 
 ## ☁️ Deployment
 
-### Hybrid Deployment (Recommended)
+### Production Architecture (Hybrid Deployment)
 
-**Best approach**: Backend on Render + Frontends on Cloudflare Pages
+**Optimal Setup**: Vercel (Frontends) + Render (Backends)
 
-#### Backend Services → Render
+```
+Users → Vercel CDN (Global) → Render APIs → Databases
+         (Frontends)            (Backends)   (Neon/MongoDB)
+```
+
+#### Why This Architecture?
+
+| Component | Platform | Reason |
+|-----------|----------|--------|
+| **Frontends** | ✅ Vercel | Built for Next.js, global CDN, zero cold starts, 100GB free |
+| **Backends** | ✅ Render | Full Node.js, persistent connections, 750 hours/month |
+| **Databases** | Neon + MongoDB Atlas | Serverless PostgreSQL + MongoDB, free tiers |
+
+---
+
+### 📦 Backend Deployment → Render
 
 1. **Push to GitHub**:
    ```bash
-   git add .
-   git commit -m "Ready for deployment"
-   git push
+   git push origin direct-Link-no-Kafka-
    ```
 
-2. **Deploy to Render**:
+2. **Deploy via Blueprint** (Automatic):
    - Go to [Render Dashboard](https://dashboard.render.com)
    - Click "New" → "Blueprint"
-   - Connect your GitHub repository
-   - Select this repository
-   - Render will auto-detect `render.yaml`
-   - Click "Apply" (deploys 5 backend services)
+   - Connect GitHub → Select this repository
+   - Branch: `direct-Link-no-Kafka-`
+   - Render auto-detects `render.yaml`
+   - Click "Apply" → Deploys all 5 services
 
-3. **Set Environment Variables**:
-   - See [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md) for complete list
+3. **Set Environment Variables** (per service):
+   - DATABASE_URL (product-service)
+   - MONGO_URL (order-service)
+   - CLERK_SECRET_KEY (all services)
+   - STRIPE_SECRET_KEY (payment-service)
+   - Service URLs for inter-service communication
 
-📖 **Backend Guide**: [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)
-
-#### Frontends → Cloudflare Pages
-
-1. **Deploy Client**:
-   - Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
-   - Workers & Pages → Create → Pages
-   - Connect GitHub → Select repository
-   - Configure: `cd apps/client && npm install && npm run build`
-   - Set environment variables (see CLOUDFLARE_PAGES.md)
-
-2. **Deploy Admin**: Same process for admin frontend
-
-📖 **Frontend Guide**: [CLOUDFLARE_PAGES.md](./CLOUDFLARE_PAGES.md)
-
-**Why Hybrid?**
-- ✅ Render: Better Node.js/backend support
-- ✅ Cloudflare: Global CDN, faster frontends, no cold starts
-- ✅ Both: Free tier, auto-deploy on push
+📖 **Complete Guide**: [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)
 
 **Service URLs** (after deployment):
-- Backend: `https://neuraltale-*-service.onrender.com`
-- Frontends: `https://neuraltale-*.pages.dev`
+- `https://neuraltale-product-service.onrender.com`
+- `https://neuraltale-order-service.onrender.com`
+- `https://neuraltale-payment-service.onrender.com`
+- `https://neuraltale-auth-service.onrender.com`
+- `https://neuraltale-email-service.onrender.com`
 
-📖 See [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md) for details
+---
+
+### 🌐 Frontend Deployment → Vercel
+
+1. **Deploy Client**:
+   - Go to [Vercel Dashboard](https://vercel.com/new)
+   - Import GitHub repository
+   - **Root Directory**: `apps/client`
+   - **Build Command**: `cd ../../packages/product-db && pnpm prisma generate && cd ../../apps/client && pnpm run build`
+   - **Branch**: `direct-Link-no-Kafka-`
+   - Add environment variables (see VERCEL_DEPLOYMENT.md)
+   - Click "Deploy"
+
+2. **Deploy Admin**:
+   - Same process, use **Root Directory**: `apps/admin`
+
+📖 **Complete Guide**: [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)
+
+**Frontend URLs** (after deployment):
+- Client: `https://neuraltale-client.vercel.app`
+- Admin: `https://neuraltale-admin.vercel.app`
+
+---
+
+### Post-Deployment Checklist
+
+- [ ] Update backend CORS with Vercel URLs
+- [ ] Set FRONTEND_URL in Render services
+- [ ] Update Stripe webhook URLs
+- [ ] Update Clerk allowed origins
+- [ ] Run Prisma migrations on production DB
+- [ ] Test complete user flow
+
+---
 
 ## 🗂️ Project Structure
 

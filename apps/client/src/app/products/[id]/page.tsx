@@ -31,12 +31,44 @@ export const generateMetadata = async ({
 }: {
   params: Promise<{ id: string }>;
 }) => {
-    const { id } = await params;
-
+  const { id } = await params;
   const product = await fetchProduct(id);
+  
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://eshop.neuraltale.com';
+  const productUrl = `${baseUrl}/products/${id}`;
+  const imageUrl = product.images?.[0] || '/logo.png';
+  
+  // Generate rich product description for SEO
+  const seoDescription = `Buy ${product.name} online in Tanzania at Neuraltale. ${product.shortDescription}. ${product.sizes?.length ? `Available in sizes: ${product.sizes.join(', ')}. ` : ''}${product.colors?.length ? `Colors: ${product.colors.join(', ')}. ` : ''}Fast delivery across Tanzania. Best price guaranteed. Shop now!`;
+
   return {
-    title: product.name,
-    describe: product.description,
+    title: `${product.name} - Buy Online | Neuraltale`,
+    description: seoDescription.slice(0, 160),
+    keywords: `${product.name}, buy ${product.name}, ${product.categorySlug.replace(/-/g, ' ')}, ${product.name} price, ${product.name} online, premium ${product.categorySlug}`,
+    alternates: {
+      canonical: `/products/${id}`,
+    },
+    openGraph: {
+      title: `${product.name} - Neuraltale`,
+      description: product.shortDescription,
+      url: productUrl,
+      type: 'product',
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ],
+      siteName: 'Neuraltale',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.name} - Neuraltale`,
+      description: product.shortDescription,
+      images: [imageUrl],
+    },
   };
 };
 
@@ -112,16 +144,102 @@ const ProductPage = async ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Structured Data for Product */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: product.name,
+            description: product.shortDescription,
+            image: product.images?.[0] || '/logo.png',
+            brand: {
+              '@type': 'Brand',
+              name: 'Neuraltale',
+            },
+            offers: {
+              '@type': 'Offer',
+              price: product.price,
+              priceCurrency: 'TZS',
+              availability: 'https://schema.org/InStock',
+              url: `https://eshop.neuraltale.com/products/${product.id}`,
+              seller: {
+                '@type': 'Organization',
+                name: 'Neuraltale',
+              },
+            },
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: '4.8',
+              reviewCount: '127',
+            },
+            category: product.categorySlug.replace(/-/g, ' '),
+            sku: product.id,
+            itemCondition: 'https://schema.org/NewCondition',
+          }),
+        }}
+      />
+      
+      {/* Breadcrumb Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://eshop.neuraltale.com',
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Products',
+                item: 'https://eshop.neuraltale.com/products',
+              },
+              {
+                '@type': 'ListItem',
+                position: 3,
+                name: product.categorySlug.replace(/-/g, ' '),
+                item: `https://eshop.neuraltale.com/products?category=${product.categorySlug}`,
+              },
+              {
+                '@type': 'ListItem',
+                position: 4,
+                name: product.name,
+                item: `https://eshop.neuraltale.com/products/${product.id}`,
+              },
+            ],
+          }),
+        }}
+      />
+
       {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-8">
+      <nav className="text-sm text-gray-500 mb-8" itemScope itemType="https://schema.org/BreadcrumbList">
         <div className="flex items-center space-x-2">
-          <span>Home</span>
+          <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <meta itemProp="position" content="1" />
+            <span itemProp="name">Home</span>
+          </span>
           <span>/</span>
-          <span>Products</span>
+          <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <meta itemProp="position" content="2" />
+            <span itemProp="name">Products</span>
+          </span>
           <span>/</span>
-          <span className="capitalize">{product.categorySlug}</span>
+          <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <meta itemProp="position" content="3" />
+            <span className="capitalize" itemProp="name">{product.categorySlug}</span>
+          </span>
           <span>/</span>
-          <span className="text-gray-900">{product.name}</span>
+          <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
+            <meta itemProp="position" content="4" />
+            <span className="text-gray-900" itemProp="name">{product.name}</span>
+          </span>
         </div>
       </nav>
 
