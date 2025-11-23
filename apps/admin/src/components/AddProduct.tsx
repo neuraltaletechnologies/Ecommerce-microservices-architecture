@@ -109,7 +109,7 @@ const AddProduct = () => {
     <SheetContent>
       <ScrollArea className="h-screen">
         <SheetHeader>
-          <SheetTitle className="mb-4">Add Product</SheetTitle>
+          <SheetTitle className="mb-4">Add Tech Product</SheetTitle>
           <SheetDescription asChild>
             <Form {...form}>
               <form
@@ -126,7 +126,7 @@ const AddProduct = () => {
                         <Input {...field} />
                       </FormControl>
                       <FormDescription>
-                        Enter the name of the product.
+                        Enter the product name (e.g., Gaming Laptop, Wireless Earbuds, Smartphone).
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -142,7 +142,7 @@ const AddProduct = () => {
                         <Input {...field} />
                       </FormControl>
                       <FormDescription>
-                        Enter the short description of the product.
+                        Brief specs and features (e.g., "Intel Core i7, RTX 4060, 16GB RAM").
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -180,7 +180,7 @@ const AddProduct = () => {
                         />
                       </FormControl>
                       <FormDescription>
-                        Enter the price of the product.
+                        Enter the price in TZS (Tanzanian Shillings).
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -208,7 +208,7 @@ const AddProduct = () => {
                           </Select>
                         </FormControl>
                         <FormDescription>
-                          Enter the category of the product.
+                          Select category: Laptops, Smartphones, Audio, Gaming, Wearables, etc.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -247,7 +247,7 @@ const AddProduct = () => {
                         </div>
                       </FormControl>
                       <FormDescription>
-                        Select the available sizes for the product.
+                        Select available storage/RAM options (e.g., 256GB, 512GB, 1TB) or screen sizes.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -297,7 +297,7 @@ const AddProduct = () => {
                         </div>
                       </FormControl>
                       <FormDescription>
-                        Select the available colors for the product.
+                        Select available colors/finishes for this tech product.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

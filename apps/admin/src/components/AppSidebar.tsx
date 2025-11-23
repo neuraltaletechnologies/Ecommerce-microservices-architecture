@@ -7,9 +7,11 @@ import {
   User2,
   ChevronUp,
   Plus,
-  Shirt,
+  Laptop,
   User,
   ShoppingBasket,
+  Package,
+  Boxes,
 } from "lucide-react";
 import {
   Sidebar,
@@ -78,7 +80,7 @@ const AppSidebar = () => {
             <SidebarMenuButton asChild>
               <Link href="/">
                 <Image src="/logo.svg" alt="logo" width={20} height={20} />
-                <span>Lama Dev</span>
+                <span>Neuraltale</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -107,17 +109,17 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Products</SidebarGroupLabel>
+          <SidebarGroupLabel>Tech Products</SidebarGroupLabel>
           <SidebarGroupAction>
-            <Plus /> <span className="sr-only">Add Product</span>
+            <Plus /> <span className="sr-only">Add Tech Product</span>
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link href="/products">
-                    <Shirt />
-                    See All Products
+                    <Laptop />
+                    All Products
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -142,7 +144,7 @@ const AppSidebar = () => {
                     <SheetTrigger asChild>
                       <SidebarMenuButton asChild>
                         <Link href="#">
-                          <Plus />
+                          <Boxes />
                           Add Category
                         </Link>
                       </SidebarMenuButton>
@@ -155,9 +157,9 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Users</SidebarGroupLabel>
+          <SidebarGroupLabel>Customers</SidebarGroupLabel>
           <SidebarGroupAction>
-            <Plus /> <span className="sr-only">Add User</span>
+            <Plus /> <span className="sr-only">Add Customer</span>
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -165,7 +167,7 @@ const AppSidebar = () => {
                 <SidebarMenuButton asChild>
                   <Link href="/users">
                     <User />
-                    See All Users
+                    All Customers
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -176,7 +178,7 @@ const AppSidebar = () => {
                       <SidebarMenuButton asChild>
                         <Link href="#">
                           <Plus />
-                          Add User
+                          Add Customer
                         </Link>
                       </SidebarMenuButton>
                     </SheetTrigger>
@@ -188,7 +190,7 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Orders / Payments</SidebarGroupLabel>
+          <SidebarGroupLabel>Orders & Payments</SidebarGroupLabel>
           <SidebarGroupAction>
             <Plus /> <span className="sr-only">Add Order</span>
           </SidebarGroupAction>
@@ -197,8 +199,8 @@ const AppSidebar = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link href="/orders">
-                    <ShoppingBasket />
-                    See All Transactions
+                    <Package />
+                    All Orders
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

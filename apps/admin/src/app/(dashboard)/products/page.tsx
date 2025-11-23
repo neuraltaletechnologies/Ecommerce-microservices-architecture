@@ -1,6 +1,13 @@
 import { ProductsType } from "@repo/types";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Products Management - All Tech Products",
+  description: "Manage your tech product catalog: smartphones, laptops, gaming gear, audio equipment, wearables, and accessories. Add, edit, and delete products.",
+  keywords: "product management, inventory management, tech products, laptops, smartphones, gaming laptops, wireless earbuds, admin panel",
+};
 
 const getData = async (): Promise<ProductsType> => {
   try {

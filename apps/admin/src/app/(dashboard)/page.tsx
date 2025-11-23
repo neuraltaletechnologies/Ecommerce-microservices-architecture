@@ -4,6 +4,12 @@ import AppPieChart from "@/components/AppPieChart";
 import CardList from "@/components/CardList";
 import TodoList from "@/components/TodoList";
 import { auth } from "@clerk/nextjs/server";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard - Overview & Analytics",
+  description: "Admin dashboard overview with sales analytics, order statistics, and performance metrics for Neuraltale Tanzania tech store.",
+};
 
 const Homepage = async () => {
   const { getToken } = await auth();

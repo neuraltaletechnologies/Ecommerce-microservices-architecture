@@ -1,6 +1,13 @@
 import { auth, type User } from "@clerk/nextjs/server";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Users Management - Customer Database",
+  description: "Manage registered users and customers. View user details, activity, orders, and account information for Neuraltale Tanzania.",
+  keywords: "user management, customer database, user accounts, customer management, admin users",
+};
 
 const getData = async (): Promise<{ data: User[]; totalCount: number }> => {
   const { getToken } = await auth();
@@ -37,8 +44,9 @@ const UsersPage = async () => {
   const res = await getData();
   return (
     <div className="">
-      <div className="mb-8 px-4 py-2 bg-secondary rounded-md">
-        <h1 className="font-semibold">All Users</h1>
+      <div className="mb-8 px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg">
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Users & Customers Management</h1>
+        <p className="text-gray-600">Manage registered users and customer accounts. View user details, activity, and order history.</p>
       </div>
       <DataTable columns={columns} data={res.data} />
     </div>
