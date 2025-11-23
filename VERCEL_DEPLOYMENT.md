@@ -40,6 +40,11 @@ Deploy your Next.js client and admin frontends to Vercel - the platform built by
    - **Build Command**: Leave default or use: `pnpm run build`
    - **Output Directory**: `.next` (default)
    - **Install Command**: `pnpm install`
+   
+   **IMPORTANT - Set Production Branch:**
+   - Expand "Git" section (or it will be in Settings after deployment)
+   - **Production Branch**: Change from `main` to `direct-Link-no-Kafka-`
+   - This ensures Vercel deploys from your working branch
 
 4. **Set Environment Variables**
    Click "Environment Variables" and add:
