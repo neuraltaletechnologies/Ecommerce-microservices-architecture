@@ -170,7 +170,7 @@ const ProductPage = async ({
           
           {/* Thumbnail Images */}
           <div className="flex space-x-2 overflow-x-auto">
-            {product.colors?.map((color) => (
+            {product.colors?.map((color: string) => (
               <div
                 key={color}
                 className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition-colors ${
