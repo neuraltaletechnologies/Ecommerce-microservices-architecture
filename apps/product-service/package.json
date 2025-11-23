@@ -16,7 +16,7 @@
     "cors": "^2.8.5",
     "express": "^5.0.3",
     "@repo/product-db": "workspace:*",
-    "@repo/kafka": "workspace:*"
+    "tsx": "^4.20.5"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

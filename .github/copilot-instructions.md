@@ -9,7 +9,7 @@ This is an E-commerce microservices architecture built with TypeScript in a Turb
 - **product-service** (port 8000) - Product CRUD, Prisma/PostgreSQL 
 - **order-service** (port 8001) - Order management, MongoDB, Fastify
 - **payment-service** (port 8002) - Stripe payments, Hono framework
-- **email-service** - Kafka consumer for notifications
+- **email-service** (port 8004) - Email notifications via HTTP endpoints
 
 ### Frontend Applications
 - **client** (port 3002) - Customer Next.js app with Stripe integration
@@ -27,16 +27,14 @@ req.userId = auth.userId;
 ```
 
 ### Service Communication
-Services communicate via Kafka events using `@repo/kafka` package:
+Services communicate via direct HTTP calls for simplicity:
 ```typescript
-// Pattern: Event production
-producer.send("user.created", { value: { email, username } });
-
-// Pattern: Event consumption  
-consumer.subscribe([{
-  topicName: "order.created",
-  topicHandler: async (message) => { /* handle */ }
-}]);
+// Pattern: Direct HTTP calls for notifications
+await fetch(`${EMAIL_SERVICE_URL}/send-order-email`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email, amount, status }),
+});
 ```
 
 ### Database Patterns
@@ -67,9 +65,6 @@ turbo dev --filter=product-service
 # Database operations (from workspace root)
 pnpm --filter=@repo/product-db db:generate
 pnpm --filter=@repo/product-db db:migrate
-
-# Start Kafka cluster
-cd packages/kafka && docker-compose up
 ```
 
 ### Service Ports & URLs
@@ -77,6 +72,7 @@ cd packages/kafka && docker-compose up
 - order-service: 8001  
 - payment-service: 8002
 - auth-service: 8003
+- email-service: 8004
 - client: 3002
 - admin: 3003
 
@@ -86,12 +82,14 @@ cd packages/kafka && docker-compose up
 - `MONGO_URL` - MongoDB Atlas Serverless
 - `CLERK_SECRET_KEY` - Authentication
 - `STRIPE_SECRET_KEY` - Payments
+- `EMAIL_SERVICE_URL` - Email service endpoint (default: http://localhost:8004)
 - `NEXT_PUBLIC_*_SERVICE_URL` - Service endpoints for frontends
 
 ### Framework-Specific Notes
 - **auth/product-service**: Express.js with middleware patterns
 - **order-service**: Fastify with plugin registration
 - **payment-service**: Hono framework with different syntax
+- **email-service**: Express.js with HTTP endpoints for notifications
 - **Frontend apps**: Next.js 15 with App Router, server components for data fetching
 
-When working on services, always check the corresponding package.json for service-specific scripts and the utils/kafka.js file for event communication setup.
+When working on services, always check the corresponding package.json for service-specific scripts.

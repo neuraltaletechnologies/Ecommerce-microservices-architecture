@@ -1,6 +1,6 @@
 import { Router } from "express";
 import clerkClient from "../utils/clerk";
-import { producer } from "../utils/kafka";
+import { sendUserWelcomeEmail } from "../utils/email";
 
 const router: Router = Router();
 
@@ -32,12 +32,11 @@ router.post("/", async (req, res) => {
   type CreateParams = Parameters<typeof clerkClient.users.createUser>[0];
   const newUser: CreateParams = req.body;
   const user = await clerkClient.users.createUser(newUser);
-  producer.send("user.created", {
-    value: {
-      username: user.username,
-      email: user.emailAddresses[0]?.emailAddress,
-    },
-  });
+  // Send welcome email directly
+  await sendUserWelcomeEmail(
+    user.emailAddresses[0]?.emailAddress || '',
+    user.username || ''
+  );
   res.status(200).json(user);
 });
 

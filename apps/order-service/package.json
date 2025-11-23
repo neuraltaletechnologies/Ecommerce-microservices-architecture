@@ -11,18 +11,17 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "@clerk/fastify": "^2.4.30",
+    "@repo/order-db": "workspace:*",
+    "date-fns": "^4.1.0",
+    "fastify": "^5.5.0",
+    "tsx": "^4.20.5"
+  },
   "devDependencies": {
     "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "^20",
-    "tsx": "^4.20.5",
     "typescript": "^5.9.2"
-  },
-  "dependencies": {
-    "@clerk/fastify": "^2.4.30",
-    "@repo/kafka": "workspace:*",
-    "@repo/order-db": "workspace:*",
-    "date-fns": "^4.1.0",
-    "fastify": "^5.5.0"
   }
 }

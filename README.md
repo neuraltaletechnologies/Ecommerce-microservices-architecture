@@ -1,28 +1,96 @@
-# Turborepo starter
+# E-commerce Microservices Architecture
 
-This Turborepo starter is maintained by the Turborepo core team.
+Modern e-commerce platform built with TypeScript microservices in a Turborepo monorepo.
 
-## Using this example
+## 🏗️ Architecture
 
-Run the following command:
+### Microservices (Backend)
+- **product-service** (port 8000) - Product catalog with Prisma/PostgreSQL
+- **order-service** (port 8001) - Order management with MongoDB/Fastify  
+- **payment-service** (port 8002) - Stripe payments with Hono
+- **auth-service** (port 8003) - Clerk authentication with Express
+- **email-service** (port 8004) - Email notifications via HTTP
 
-```sh
-npx create-turbo@latest
+### Frontend Applications
+- **client** (port 3002) - Customer-facing Next.js app
+- **admin** (port 3003) - Admin dashboard
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js 18+
+- pnpm 9.0.0
+- Neon PostgreSQL account
+- MongoDB Atlas account
+- Clerk account (authentication)
+- Stripe account (payments)
+
+### Local Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Start all services
+pnpm dev
+
+# Start specific service
+turbo dev --filter=product-service
 ```
 
-## What's inside?
+## ☁️ Deployment
 
-This Turborepo includes the following packages/apps:
+### Hybrid Deployment (Recommended)
 
-### Apps and Packages
+**Best approach**: Backend on Render + Frontends on Cloudflare Pages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+#### Backend Services → Render
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+1. **Push to GitHub**:
+   ```bash
+   git add .
+   git commit -m "Ready for deployment"
+   git push
+   ```
+
+2. **Deploy to Render**:
+   - Go to [Render Dashboard](https://dashboard.render.com)
+   - Click "New" → "Blueprint"
+   - Connect your GitHub repository
+   - Select this repository
+   - Render will auto-detect `render.yaml`
+   - Click "Apply" (deploys 5 backend services)
+
+3. **Set Environment Variables**:
+   - See [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md) for complete list
+
+📖 **Backend Guide**: [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)
+
+#### Frontends → Cloudflare Pages
+
+1. **Deploy Client**:
+   - Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
+   - Workers & Pages → Create → Pages
+   - Connect GitHub → Select repository
+   - Configure: `cd apps/client && npm install && npm run build`
+   - Set environment variables (see CLOUDFLARE_PAGES.md)
+
+2. **Deploy Admin**: Same process for admin frontend
+
+📖 **Frontend Guide**: [CLOUDFLARE_PAGES.md](./CLOUDFLARE_PAGES.md)
+
+**Why Hybrid?**
+- ✅ Render: Better Node.js/backend support
+- ✅ Cloudflare: Global CDN, faster frontends, no cold starts
+- ✅ Both: Free tier, auto-deploy on push
+
+**Service URLs** (after deployment):
+- Backend: `https://neuraltale-*-service.onrender.com`
+- Frontends: `https://neuraltale-*.pages.dev`
+
+📖 See [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md) for details
+
+## 🗂️ Project Structure
 
 ### Utilities
 
