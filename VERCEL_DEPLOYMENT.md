@@ -37,7 +37,7 @@ Deploy your Next.js client and admin frontends to Vercel - the platform built by
    - **Project Name**: `neuraltale-client` (or your preferred name)
    - **Framework Preset**: Next.js (auto-detected)
    - **Root Directory**: `apps/client`
-   - **Build Command**: Leave default or use: `pnpm run build`
+   - **Build Command**: `cd ../../packages/product-db && pnpm prisma generate && cd ../../apps/client && pnpm run build`
    - **Output Directory**: `.next` (default)
    - **Install Command**: `pnpm install`
    
@@ -75,7 +75,7 @@ Repeat the same process for admin:
    - **Project Name**: `neuraltale-admin`
    - **Framework Preset**: Next.js
    - **Root Directory**: `apps/admin`
-   - **Build Command**: `pnpm run build`
+   - **Build Command**: `cd ../../packages/product-db && pnpm prisma generate && cd ../../apps/admin && pnpm run build`
    - **Output Directory**: `.next`
    - **Install Command**: `pnpm install`
 
