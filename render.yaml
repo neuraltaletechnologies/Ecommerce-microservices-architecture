@@ -9,7 +9,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install && cd apps/product-service && pnpm install && npx prisma generate
+    buildCommand: npm install -g pnpm && pnpm install && cd packages/product-db && npx prisma generate
     startCommand: cd apps/product-service && npx tsx src/index.ts
     healthCheckPath: /health
     envVars:
