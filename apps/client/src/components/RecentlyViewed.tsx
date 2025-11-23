@@ -104,7 +104,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
       
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {recentProducts.map((product) => {
-          const firstImage = Object.values(product.images as Record<string, string>)[0];
+          const firstImage = Object.values(product.images as Record<string, string>)[0] || '/placeholder.png';
           
           return (
             <Link

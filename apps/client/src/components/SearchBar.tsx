@@ -2,9 +2,9 @@
 
 import { Search, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 
-const SearchBar = () => {
+const SearchBarContent = () => {
   const [value, setValue] = useState("");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -93,6 +93,14 @@ const SearchBar = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const SearchBar = () => {
+  return (
+    <Suspense fallback={<div className="flex-1" />}>
+      <SearchBarContent />
+    </Suspense>
   );
 };
 

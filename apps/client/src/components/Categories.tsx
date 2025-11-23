@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import {
   Smartphone,
   Laptop,
@@ -84,7 +84,7 @@ interface CategoryWithCount extends Category {
 
 // We'll fetch categories dynamically from the database
 
-const Categories = () => {
+const CategoriesContent = () => {
   const [categories, setCategories] = useState<CategoryWithCount[]>([]);
   const [loading, setLoading] = useState(true);
   const [debugInfo, setDebugInfo] = useState<string>('');
@@ -288,6 +288,14 @@ const Categories = () => {
        
       </div>
     </div>
+  );
+};
+
+const Categories = () => {
+  return (
+    <Suspense fallback={<div className="w-full h-12" />}>
+      <CategoriesContent />
+    </Suspense>
   );
 };
 

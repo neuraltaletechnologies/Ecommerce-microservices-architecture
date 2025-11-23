@@ -130,7 +130,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
               {product.categorySlug === "smartphones" || product.categorySlug === "tablets" ? "Storage" : "Size"}
             </span>
             <div className="flex flex-wrap gap-1">
-              {product.sizes.slice(0, 2).map((size) => (
+              {product.sizes.slice(0, 2).map((size: string) => (
                 <button
                   key={size}
                   onClick={() => handleProductType({ type: "size", value: size })}

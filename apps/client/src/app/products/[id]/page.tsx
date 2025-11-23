@@ -255,7 +255,7 @@ const ProductPage = async ({
                 <div>
                   <h4 className="text-sm font-medium text-gray-700 mb-2">Available Sizes</h4>
                   <div className="flex flex-wrap gap-2">
-                    {product.sizes.map((sizeOption) => (
+                    {product.sizes.map((sizeOption: string) => (
                       <span
                         key={sizeOption}
                         className={`px-3 py-1 rounded-full text-sm border ${
@@ -276,7 +276,7 @@ const ProductPage = async ({
                 <div>
                   <h4 className="text-sm font-medium text-gray-700 mb-2">Available Colors</h4>
                   <div className="flex flex-wrap gap-2">
-                    {product.colors.map((colorOption) => (
+                    {product.colors.map((colorOption: string) => (
                       <span
                         key={colorOption}
                         className={`px-3 py-1 rounded-full text-sm border ${

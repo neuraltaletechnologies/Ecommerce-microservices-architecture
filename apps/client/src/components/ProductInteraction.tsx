@@ -4,10 +4,10 @@ import useCartStore from "@/stores/cartStore";
 import { ProductType } from "@repo/types";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { toast } from "react-toastify";
 
-const ProductInteraction = ({
+const ProductInteractionContent = ({
   product,
   selectedSize,
   selectedColor,
@@ -55,7 +55,7 @@ const ProductInteraction = ({
         <span className="text-gray-500">Size</span>
         <div className="flex items-center gap-2">
           {product.sizes?.length > 0 ? (
-            product.sizes.map((size) => (
+            product.sizes.map((size: string) => (
               <div
                 className={`cursor-pointer border-1 p-[2px] ${
                   selectedSize === size ? "border-gray-600" : "border-gray-300"
@@ -84,7 +84,7 @@ const ProductInteraction = ({
         <span className="text-gray-500">Color</span>
         <div className="flex items-center gap-2">
           {product.colors?.length > 0 ? (
-            product.colors.map((color) => (
+            product.colors.map((color: string) => (
               <div
                 className={`cursor-pointer border-1 p-[2px] ${
                   selectedColor === color ? "border-gray-300" : "border-white"
@@ -132,6 +132,22 @@ const ProductInteraction = ({
         Buy this Item
       </button>
     </div>
+  );
+};
+
+const ProductInteraction = ({
+  product,
+  selectedSize,
+  selectedColor,
+}: {
+  product: ProductType;
+  selectedSize: string;
+  selectedColor: string;
+}) => {
+  return (
+    <Suspense fallback={<div className="w-full h-48" />}>
+      <ProductInteractionContent product={product} selectedSize={selectedSize} selectedColor={selectedColor} />
+    </Suspense>
   );
 };
 
