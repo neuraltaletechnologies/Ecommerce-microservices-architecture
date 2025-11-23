@@ -35,7 +35,7 @@ Deploy your Next.js client and admin frontends to Cloudflare Pages for fast, glo
    - **Project Name**: `neuraltale-client`
    - **Production Branch**: `direct-Link-no-Kafka-`
    - **Framework Preset**: Next.js
-   - **Build Command**: `cd apps/client && npm install && npm run build`
+   - **Build Command**: `cd packages/product-db && npx prisma generate && cd ../../apps/client && npm install && npm run build`
    - **Build Output Directory**: `apps/client/.next`
    - **Root Directory**: (leave empty)
 
@@ -43,6 +43,8 @@ Deploy your Next.js client and admin frontends to Cloudflare Pages for fast, glo
    Click "Add Variable" for each:
    ```
    NODE_VERSION=18
+   DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
+   DIRECT_URL=postgresql://dummy:dummy@localhost:5432/dummy
    NEXT_PUBLIC_PRODUCT_SERVICE_URL=https://neuraltale-product-service.onrender.com
    NEXT_PUBLIC_ORDER_SERVICE_URL=https://neuraltale-order-service.onrender.com
    NEXT_PUBLIC_PAYMENT_SERVICE_URL=https://neuraltale-payment-service.onrender.com
@@ -51,6 +53,8 @@ Deploy your Next.js client and admin frontends to Cloudflare Pages for fast, glo
    CLERK_SECRET_KEY=sk_test_xxx
    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_xxx
    ```
+   
+   **Note**: DATABASE_URL and DIRECT_URL are dummy values needed for Prisma generation only. The frontend doesn't connect directly to the database.
 
 5. **Deploy**
    - Click "Save and Deploy"
@@ -78,11 +82,13 @@ Repeat the same process for admin:
 
 1. **Dashboard**: Workers & Pages → Create → Pages → Connect to Git
 2. **Project Name**: `neuraltale-admin`
-3. **Build Command**: `cd apps/admin && npm install && npm run build`
+3. **Build Command**: `cd packages/product-db && npx prisma generate && cd ../../apps/admin && npm install && npm run build`
 4. **Build Output Directory**: `apps/admin/.next`
 5. **Environment Variables**:
    ```
    NODE_VERSION=18
+   DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
+   DIRECT_URL=postgresql://dummy:dummy@localhost:5432/dummy
    NEXT_PUBLIC_PRODUCT_SERVICE_URL=https://neuraltale-product-service.onrender.com
    NEXT_PUBLIC_ORDER_SERVICE_URL=https://neuraltale-order-service.onrender.com
    NEXT_PUBLIC_PAYMENT_SERVICE_URL=https://neuraltale-payment-service.onrender.com
@@ -90,6 +96,8 @@ Repeat the same process for admin:
    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_xxx
    CLERK_SECRET_KEY=sk_test_xxx
    ```
+   
+   **Note**: DATABASE_URL and DIRECT_URL are dummy values needed for Prisma generation only.
 
 ### 3. Custom Domain (Optional)
 
