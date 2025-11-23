@@ -59,7 +59,7 @@ const ProductPage = async ({
   const specifications = [
     { label: "Product Name", value: product.name },
     { label: "Short Description", value: product.shortDescription },
-    { label: "Category", value: product.categorySlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) },
+    { label: "Category", value: product.categorySlug.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) },
     { label: "Available Sizes", value: product.sizes?.join(", ") || "Standard" },
     { label: "Available Colors", value: product.colors?.join(", ") || "Default" },
     { label: "Product ID", value: `#${product.id}` },
