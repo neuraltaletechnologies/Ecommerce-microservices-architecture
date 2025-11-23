@@ -9,7 +9,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd apps/product-service && npm install && npx prisma generate
+    buildCommand: npm install -g pnpm && pnpm install && cd apps/product-service && pnpm install && npx prisma generate
     startCommand: cd apps/product-service && npx tsx src/index.ts
     healthCheckPath: /health
     envVars:
@@ -38,7 +38,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd apps/order-service && npm install
+    buildCommand: npm install -g pnpm && pnpm install && cd apps/order-service && pnpm install
     startCommand: cd apps/order-service && npx tsx src/index.ts
     healthCheckPath: /health
     envVars:
@@ -63,7 +63,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd apps/payment-service && npm install
+    buildCommand: npm install -g pnpm && pnpm install && cd apps/payment-service && pnpm install
     startCommand: cd apps/payment-service && npx tsx src/index.ts
     healthCheckPath: /health
     envVars:
@@ -90,7 +90,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd apps/auth-service && npm install
+    buildCommand: npm install -g pnpm && pnpm install && cd apps/auth-service && pnpm install
     startCommand: cd apps/auth-service && npx tsx src/index.ts
     healthCheckPath: /health
     envVars:
@@ -111,7 +111,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: cd apps/email-service && npm install
+    buildCommand: npm install -g pnpm && pnpm install && cd apps/email-service && pnpm install
     startCommand: cd apps/email-service && npx tsx src/index.ts
     healthCheckPath: /health
     envVars:
