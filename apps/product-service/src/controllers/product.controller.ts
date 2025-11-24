@@ -55,38 +55,98 @@ export const deleteProduct = async (req: Request, res: Response) => {
 };
 
 export const getProducts = async (req: Request, res: Response) => {
-  const { sort, category, search, limit } = req.query;
+  const { sort, category, search, limit, brands, rating, priceMin, priceMax, batteryCapacity } = req.query;
 
+  // Build order by clause
   const orderBy = (() => {
     switch (sort) {
       case "asc":
         return { price: Prisma.SortOrder.asc };
-        break;
       case "desc":
         return { price: Prisma.SortOrder.desc };
-        break;
       case "oldest":
         return { createdAt: Prisma.SortOrder.asc };
-        break;
       default:
         return { createdAt: Prisma.SortOrder.desc };
-        break;
     }
   })();
 
-  const products = await prisma.product.findMany({
-    where: {
+  // Build where clause with all filters
+  const where: Prisma.ProductWhereInput = {
+    // Category filter
+    ...(category && {
       category: {
         slug: category as string,
       },
+    }),
+    // Search filter
+    ...(search && {
       name: {
         contains: search as string,
         mode: "insensitive",
       },
-    },
+    }),
+    // Price range filters
+    ...(priceMin || priceMax
+      ? {
+          price: {
+            ...(priceMin && { gte: Number(priceMin) }),
+            ...(priceMax && { lte: Number(priceMax) }),
+          },
+        }
+      : {}),
+  };
+
+  // Fetch products with basic filters
+  let products = await prisma.product.findMany({
+    where,
     orderBy,
     take: limit ? Number(limit) : undefined,
   });
+
+  // Apply brand filter (client-side for now, as brand info is in name/description)
+  if (brands) {
+    const brandList = (brands as string).split(',').map(b => b.trim().toLowerCase());
+    products = products.filter(product => 
+      brandList.some(brand => 
+        product.name.toLowerCase().includes(brand) ||
+        product.description?.toLowerCase().includes(brand)
+      )
+    );
+  }
+
+  // Apply rating filter (client-side, assuming we'll add reviews later)
+  if (rating && Number(rating) > 0) {
+    // For now, keep all products. Add review filtering when reviews are implemented
+    // const minRating = Number(rating);
+    // products = products.filter(product => product.averageRating >= minRating);
+  }
+
+  // Apply battery capacity filter (client-side, checking description)
+  if (batteryCapacity) {
+    const capacities = (batteryCapacity as string).split(',');
+    products = products.filter(product => {
+      const desc = product.description?.toLowerCase() || '';
+      return capacities.some(cap => {
+        if (cap.includes('Up to 3000mAh')) {
+          return /([0-9]{3,4})\s*mah/i.test(desc) && parseInt(desc.match(/([0-9]{3,4})\s*mah/i)?.[1] || '0') < 3000;
+        } else if (cap.includes('3000-4000mAh')) {
+          const match = desc.match(/([0-9]{3,4})\s*mah/i);
+          const value = parseInt(match?.[1] || '0');
+          return value >= 3000 && value < 4000;
+        } else if (cap.includes('4000-5000mAh')) {
+          const match = desc.match(/([0-9]{3,4})\s*mah/i);
+          const value = parseInt(match?.[1] || '0');
+          return value >= 4000 && value < 5000;
+        } else if (cap.includes('5000mAh+')) {
+          const match = desc.match(/([0-9]{3,4})\s*mah/i);
+          const value = parseInt(match?.[1] || '0');
+          return value >= 5000;
+        }
+        return false;
+      });
+    });
+  }
 
   res.status(200).json(products);
 };

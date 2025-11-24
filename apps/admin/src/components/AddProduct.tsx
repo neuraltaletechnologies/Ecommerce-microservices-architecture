@@ -46,15 +46,23 @@ import { useAuth } from "@clerk/nextjs";
 // ] as const;
 
 const fetchCategories = async () => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`
-  );
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`
+    );
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch categories!");
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error('Failed to fetch categories:', res.status, errorText);
+      throw new Error(`Failed to fetch categories: ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    throw error;
   }
-
-  return await res.json();
 };
 
 const AddProduct = () => {
@@ -75,7 +83,14 @@ const AddProduct = () => {
   const { isPending, error, data } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
+    retry: 2,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  // Show error message if categories failed to load
+  if (error) {
+    console.error('Categories query error:', error);
+  }
 
   const { getToken } = useAuth();
 

@@ -79,7 +79,7 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/">
-                <Image src="/logo.svg" alt="logo" width={20} height={20} />
+                <Image src="/favicon.icon" alt="logo" width={20} height={20} />
                 <span>Neuraltale</span>
               </Link>
             </SidebarMenuButton>

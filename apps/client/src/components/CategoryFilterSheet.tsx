@@ -3,14 +3,7 @@
 import { useState, useEffect } from "react";
 import { SlidersHorizontal } from "lucide-react";
 import CategoryFilter from "./CategoryFilter";
-
-interface FilterState {
-  brands: string[];
-  rating: number;
-  priceMin: string;
-  priceMax: string;
-  batteryCapacity: string[];
-}
+import { FilterState } from "@/types/filters";
 
 interface CategoryFilterSheetProps {
   onFilterChange?: (filters: FilterState) => void;

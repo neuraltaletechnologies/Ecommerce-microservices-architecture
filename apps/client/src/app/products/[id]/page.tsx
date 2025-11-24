@@ -1,21 +1,30 @@
 import ProductInteraction from "@/components/ProductInteraction";
 import { formatTzs } from "@/utils/currency";
 import { ProductType } from "@repo/types";
-import Image from "next/image";
+import type { Metadata } from "next";
+import Link from "next/link";
 import { 
   Star, 
   Shield, 
   Truck, 
   RotateCcw, 
-  Clock, 
   CheckCircle, 
   Heart,
-  Share2,
-  Tag,
   Package,
   Zap,
-  Globe
+  Info,
+  Wifi,
+  Battery,
+  Cpu,
+  Award,
+  Globe,
+  MessageSquare,
+  GitCompare
 } from "lucide-react";
+import ImageGallery from "@/components/ImageGallery";
+import ExpandableSection from "@/components/ExpandableSection";
+import SimilarProducts from "@/components/SimilarProducts";
+import CustomerReviews from "@/components/CustomerReviews";
 
 
 const fetchProduct = async (id: string) => {
@@ -30,46 +39,62 @@ export const generateMetadata = async ({
   params,
 }: {
   params: Promise<{ id: string }>;
-}) => {
-  const { id } = await params;
-  const product = await fetchProduct(id);
-  
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://eshop.neuraltale.com';
-  const productUrl = `${baseUrl}/products/${id}`;
-  const imageUrl = product.images?.[0] || '/logo.png';
-  
-  // Generate rich product description for SEO
-  const seoDescription = `Buy ${product.name} online in Tanzania at Neuraltale. ${product.shortDescription}. ${product.sizes?.length ? `Available in sizes: ${product.sizes.join(', ')}. ` : ''}${product.colors?.length ? `Colors: ${product.colors.join(', ')}. ` : ''}Fast delivery across Tanzania. Best price guaranteed. Shop now!`;
+}): Promise<Metadata> => {
+  try {
+    const { id } = await params;
+    const product = await fetchProduct(id);
+    
+    if (!product || !product.name) {
+      return {
+        title: 'Product Not Found | Neuraltale',
+        description: 'The requested product could not be found.',
+      };
+    }
+    
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://eshop.neuraltale.com';
+    const productUrl = `${baseUrl}/products/${id}`;
+    const imageUrl: string = (Array.isArray(product.images) && product.images.length > 0) 
+      ? String(product.images[0]) 
+      : '/logo.png';
+    
+    // Generate rich product description for SEO
+    const seoDescription = `Buy ${product.name} online in Tanzania at Neuraltale. ${product.shortDescription || ''}. ${product.sizes?.length ? `Available in sizes: ${product.sizes.join(', ')}. ` : ''}${product.colors?.length ? `Colors: ${product.colors.join(', ')}. ` : ''}Fast delivery across Tanzania. Best price guaranteed. Shop now!`;
 
-  return {
-    title: `${product.name} - Buy Online | Neuraltale`,
-    description: seoDescription.slice(0, 160),
-    keywords: `${product.name}, buy ${product.name}, ${product.categorySlug.replace(/-/g, ' ')}, ${product.name} price, ${product.name} online, premium ${product.categorySlug}`,
-    alternates: {
-      canonical: `/products/${id}`,
-    },
-    openGraph: {
-      title: `${product.name} - Neuraltale`,
-      description: product.shortDescription,
-      url: productUrl,
-      type: 'product',
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: product.name,
-        },
-      ],
-      siteName: 'Neuraltale',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${product.name} - Neuraltale`,
-      description: product.shortDescription,
-      images: [imageUrl],
-    },
-  };
+    return {
+      title: `${product.name} - Buy Online | Neuraltale`,
+      description: seoDescription.slice(0, 160),
+      keywords: `${product.name}, buy ${product.name}, ${product.categorySlug ? product.categorySlug.replace(/-/g, ' ') : 'electronics'}, ${product.name} price, ${product.name} online, premium ${product.categorySlug || 'tech'}`,
+      alternates: {
+        canonical: `/products/${id}`,
+      },
+      openGraph: {
+        title: `${product.name} - Neuraltale`,
+        description: product.shortDescription || product.name,
+        url: productUrl,
+        siteName: 'Neuraltale',
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: product.name,
+          },
+        ],
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${product.name} - Neuraltale`,
+        description: product.shortDescription || product.name,
+        images: [imageUrl],
+      },
+    };
+  } catch (error) {
+    console.error('Error generating metadata:', error);
+    return {
+      title: 'Product | Neuraltale',
+      description: 'Shop premium tech products at Neuraltale Tanzania.',
+    };
+  }
 };
 
 const ProductPage = async ({
@@ -87,63 +112,101 @@ const ProductPage = async ({
   const selectedSize = size || (product.sizes?.[0] as string) || "";
   const selectedColor = color || (product.colors?.[0] as string) || "";
   
-  // Extract specifications from product data
-  const specifications = [
-    { label: "Product Name", value: product.name },
-    { label: "Short Description", value: product.shortDescription },
-    { label: "Category", value: product.categorySlug.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase()) },
-    { label: "Available Sizes", value: product.sizes?.join(", ") || "Standard" },
-    { label: "Available Colors", value: product.colors?.join(", ") || "Default" },
-    { label: "Product ID", value: `#${product.id}` },
-    { label: "Last Updated", value: new Date(product.updatedAt).toLocaleDateString() },
+  // Tech highlights badges - use from DB or fallback to defaults
+  const techHighlights = (product.techHighlights as Array<{label: string, icon: string}>) || [
+    { label: "Wireless", icon: "Wifi" },
+    { label: "40hr Battery", icon: "Battery" },
+    { label: "Active ANC", icon: "Zap" },
+    { label: "Bluetooth 5.3", icon: "Wifi" },
   ];
 
-  // Extract key features from shortDescription for gaming laptops
-  const getKeyFeatures = (shortDesc: string, category: string) => {
-    const features = [];
-    
-    // Parse processor info
-    if (shortDesc.includes('AMD Ryzen')) {
-      const ryzenMatch = shortDesc.match(/AMD Ryzen \w+ \w+/);
-      if (ryzenMatch) features.push({ label: "Processor", value: ryzenMatch[0] });
-    } else if (shortDesc.includes('Intel Core')) {
-      const intelMatch = shortDesc.match(/Intel Core [^,]+/);
-      if (intelMatch) features.push({ label: "Processor", value: intelMatch[0] });
+  // What's in the box - use from DB or fallback to defaults
+  const boxContents = (product.boxContents as string[]) || [
+    `${product.name}`,
+    "USB-C Charging Cable",
+    "Quick Start Guide",
+    "Warranty Card",
+    "Carrying Case",
+    "Extra Ear Tips (S, M, L)"
+  ];
+
+  // Product features - use from DB or fallback to defaults
+  const productFeatures = (product.productFeatures as Array<{title: string, description: string}>) || [
+    {
+      title: "Active Noise Cancellation",
+      description: "Advanced ANC technology blocks up to 35dB of ambient noise for immersive listening experience"
+    },
+    {
+      title: "Smart Touch Controls",
+      description: "Intuitive touch sensors for play/pause, volume, and voice assistant activation"
+    },
+    {
+      title: "Fast Charging",
+      description: "Quick charge technology provides 5 hours of playback with just 10 minutes of charging"
+    },
+    {
+      title: "Multi-Device Pairing",
+      description: "Seamlessly connect to two devices simultaneously and switch between them"
     }
-    
-    // Parse graphics info
-    if (shortDesc.includes('RTX')) {
-      const rtxMatch = shortDesc.match(/RTX \w+/);
-      if (rtxMatch) features.push({ label: "Graphics", value: `NVIDIA GeForce ${rtxMatch[0]}` });
-    }
-    
-    // Parse display info
-    if (shortDesc.includes('Hz')) {
-      const displayMatch = shortDesc.match(/\d+Hz[^,]*/);
-      if (displayMatch) features.push({ label: "Display", value: displayMatch[0] });
-    }
-    
-    // Add category-specific features
-    if (category === 'gaming-laptops') {
-      features.push({ label: "Type", value: "Gaming Laptop" });
-      features.push({ label: "Target Use", value: "Gaming & Content Creation" });
-    }
-    
-    return features;
+  ];
+
+  // Technical specifications detailed - use from DB or fallback to defaults
+  const technicalSpecs = (product.technicalSpecs as Record<string, Array<{label: string, value: string}>>) || {
+    "Connectivity": [
+      { label: "Bluetooth Version", value: "5.3" },
+      { label: "Wireless Range", value: "Up to 10m (33ft)" },
+      { label: "Codecs Supported", value: "SBC, AAC, aptX, aptX HD" },
+      { label: "Multi-point Connection", value: "Yes (2 devices)" },
+    ],
+    "Battery & Charging": [
+      { label: "Battery Capacity", value: "500mAh (each earbud)" },
+      { label: "Playback Time", value: "Up to 40 hours (with case)" },
+      { label: "Talk Time", value: "Up to 30 hours" },
+      { label: "Standby Time", value: "200 hours" },
+      { label: "Charging Time", value: "2 hours (full charge)" },
+      { label: "Quick Charge", value: "10 min = 5 hours" },
+      { label: "Charging Port", value: "USB Type-C" },
+      { label: "Wireless Charging", value: "Qi-compatible" },
+    ],
+    "Audio Specifications": [
+      { label: "Driver Size", value: "11mm dynamic drivers" },
+      { label: "Frequency Response", value: "20Hz - 20kHz" },
+      { label: "Impedance", value: "32Ω" },
+      { label: "Sensitivity", value: "98dB ±3dB" },
+      { label: "ANC Depth", value: "Up to -35dB" },
+      { label: "Microphone", value: "Dual beamforming mics" },
+    ],
+    "Physical Specifications": [
+      { label: "Earbud Dimensions", value: "25.4 x 21.6 x 24.8mm" },
+      { label: "Case Dimensions", value: "61.3 x 50.1 x 25.5mm" },
+      { label: "Earbud Weight", value: "5.4g (each)" },
+      { label: "Case Weight", value: "45.2g" },
+      { label: "Water Resistance", value: "IPX4" },
+      { label: "Materials", value: "ABS, Silicone ear tips" },
+    ],
+    "Compatibility": [
+      { label: "Operating Systems", value: "iOS 14+, Android 8.0+" },
+      { label: "Companion App", value: "Available for iOS & Android" },
+      { label: "Voice Assistants", value: "Siri, Google Assistant, Alexa" },
+      { label: "System Requirements", value: "Bluetooth-enabled device" },
+    ],
   };
 
-  const keyFeatures = getKeyFeatures(product.shortDescription, product.categorySlug);
-
-  // Service features
-  const serviceFeatures = [
-    { icon: Shield, text: "2 Year Warranty" },
-    { icon: Truck, text: "Free Shipping" },
-    { icon: RotateCcw, text: "30-Day Returns" },
-    { icon: Zap, text: "Fast Processing" }
+  // Certifications - use from DB or fallback to defaults
+  const certifications = (product.certifications as Array<{label: string, icon: string}>) || [
+    { label: "CE Certified", icon: "Award" },
+    { label: "FCC Approved", icon: "Award" },
+    { label: "RoHS Compliant", icon: "Award" },
+    { label: "Qi Certified", icon: "Award" },
   ];
 
+  // Icon mapping for string-based icon names from database
+  const iconMap: Record<string, any> = {
+    Wifi, Battery, Zap, Award, Cpu, Package, Shield, Truck, Globe, Info, CheckCircle
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="bg-white">
       {/* Structured Data for Product */}
       <script
         type="application/ld+json"
@@ -153,7 +216,7 @@ const ProductPage = async ({
             '@type': 'Product',
             name: product.name,
             description: product.shortDescription,
-            image: product.images?.[0] || '/logo.png',
+            image: (Array.isArray(product.images) && product.images.length > 0) ? String(product.images[0]) : '/logo.png',
             brand: {
               '@type': 'Brand',
               name: 'Neuraltale',
@@ -174,7 +237,7 @@ const ProductPage = async ({
               ratingValue: '4.8',
               reviewCount: '127',
             },
-            category: product.categorySlug.replace(/-/g, ' '),
+            category: product.categorySlug ? product.categorySlug.replace(/-/g, ' ') : 'Electronics',
             sku: product.id,
             itemCondition: 'https://schema.org/NewCondition',
           }),
@@ -204,8 +267,8 @@ const ProductPage = async ({
               {
                 '@type': 'ListItem',
                 position: 3,
-                name: product.categorySlug.replace(/-/g, ' '),
-                item: `https://eshop.neuraltale.com/products?category=${product.categorySlug}`,
+                name: product.categorySlug ? product.categorySlug.replace(/-/g, ' ') : 'Products',
+                item: product.categorySlug ? `https://eshop.neuraltale.com/products?category=${product.categorySlug}` : 'https://eshop.neuraltale.com/products',
               },
               {
                 '@type': 'ListItem',
@@ -218,426 +281,519 @@ const ProductPage = async ({
         }}
       />
 
-      {/* Breadcrumb */}
-      <nav className="text-sm text-gray-500 mb-8" itemScope itemType="https://schema.org/BreadcrumbList">
-        <div className="flex items-center space-x-2">
-          <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-            <meta itemProp="position" content="1" />
-            <span itemProp="name">Home</span>
-          </span>
-          <span>/</span>
-          <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-            <meta itemProp="position" content="2" />
-            <span itemProp="name">Products</span>
-          </span>
-          <span>/</span>
-          <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-            <meta itemProp="position" content="3" />
-            <span className="capitalize" itemProp="name">{product.categorySlug}</span>
-          </span>
-          <span>/</span>
-          <span itemProp="itemListElement" itemScope itemType="https://schema.org/ListItem">
-            <meta itemProp="position" content="4" />
-            <span className="text-gray-900" itemProp="name">{product.name}</span>
-          </span>
-        </div>
-      </nav>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* Breadcrumb Navigation */}
+        <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
+          <Link href="/" className="hover:text-blue-600 transition-colors">
+            Home
+          </Link>
+          <span className="text-gray-400">/</span>
+          <Link href="/products" className="hover:text-blue-600 transition-colors">
+            Products
+          </Link>
+          <span className="text-gray-400">/</span>
+          {product.categorySlug ? (
+            <>
+              <Link 
+                href={`/products?category=${product.categorySlug}`}
+                className="hover:text-blue-600 transition-colors capitalize"
+              >
+                {product.categorySlug.replace(/-/g, ' ')}
+              </Link>
+              <span className="text-gray-400">/</span>
+            </>
+          ) : null}
+          <span className="text-gray-900 font-medium">{product.name}</span>
+        </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* IMAGE SECTION */}
-        <div className="space-y-4">
-          {/* Main Image */}
-          <div className="relative aspect-square bg-gray-50 rounded-2xl overflow-hidden">
-            <Image
-              src={
-                (product.images as Record<string, string>)?.[selectedColor] || "/products/1g.png"
-              }
-              alt={product.name}
-              fill
-              className="object-contain p-8"
+        {/* Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-8 lg:gap-12">
+          {/* LEFT COLUMN - Image Gallery (60%) */}
+          <div className="space-y-8">
+            <ImageGallery 
+              product={product}
+              selectedColor={selectedColor}
             />
-            {/* Badges */}
-            <div className="absolute top-4 left-4 space-y-2">
-              <span className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-                In Stock
-              </span>
-              {product.price < 50000 && (
-                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">
-                  Sale
-                </span>
-              )}
-            </div>
-            {/* Action buttons */}
-            <div className="absolute top-4 right-4 space-y-2">
-              <button 
-                className="bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors"
-                aria-label="Add to wishlist"
-                title="Add to wishlist"
+
+            {/* Expandable Sections */}
+            <div className="border-t border-gray-200 pt-6 space-y-4">
+              <ExpandableSection 
+                title="Product Details" 
+                defaultOpen={true}
+                icon={<Info className="w-5 h-5" />}
               >
-                <Heart className="w-5 h-5 text-gray-600" />
-              </button>
-              <button 
-                className="bg-white/80 backdrop-blur-sm p-2 rounded-full hover:bg-white transition-colors"
-                aria-label="Share product"
-                title="Share product"
+                <div className="space-y-4">
+                  <p className="text-gray-700 leading-relaxed">{product.description}</p>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-gray-900 mb-3">Key Highlights</h4>
+                    <ul className="space-y-2">
+                      <li className="flex items-start gap-2 text-gray-700">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Premium build quality with attention to detail</span>
+                      </li>
+                      <li className="flex items-start gap-2 text-gray-700">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Latest technology for superior performance</span>
+                      </li>
+                      <li className="flex items-start gap-2 text-gray-700">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Ergonomic design for extended use</span>
+                      </li>
+                      <li className="flex items-start gap-2 text-gray-700">
+                        <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
+                        <span>Compatible with all major platforms</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </ExpandableSection>
+
+              <ExpandableSection 
+                title="Technical Specifications"
+                icon={<Cpu className="w-5 h-5" />}
               >
-                <Share2 className="w-5 h-5 text-gray-600" />
-              </button>
+                <div className="space-y-6">
+                  {Object.entries(technicalSpecs).map(([category, specs]) => (
+                    <div key={category} className="border-b border-gray-200 last:border-0 pb-4 last:pb-0">
+                      <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                        <span className="w-1 h-4 bg-blue-600 rounded"></span>
+                        {category}
+                      </h4>
+                      <dl className="grid grid-cols-1 gap-2">
+                        {specs.map((spec, index) => (
+                          <div key={index} className="flex justify-between py-2 hover:bg-gray-50 px-2 rounded">
+                            <dt className="text-sm text-gray-600 font-mono">{spec.label}:</dt>
+                            <dd className="text-sm text-gray-900 font-medium">{spec.value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  ))}
+                </div>
+              </ExpandableSection>
+
+              <ExpandableSection 
+                title="What's in the Box"
+                icon={<Package className="w-5 h-5" />}
+              >
+                <ul className="space-y-2">
+                  {boxContents.map((item, index) => (
+                    <li key={index} className="flex items-center gap-3 text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <p className="text-sm text-gray-600 italic">
+                    All items are new and sealed in original packaging
+                  </p>
+                </div>
+              </ExpandableSection>
+
+              <ExpandableSection 
+                title="Features & Technology"
+                icon={<Zap className="w-5 h-5" />}
+              >
+                <div className="space-y-4">
+                  {productFeatures.map((feature, index) => (
+                    <div key={index} className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                      <h4 className="font-semibold text-gray-900 mb-2">{feature.title}</h4>
+                      <p className="text-sm text-gray-700">{feature.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </ExpandableSection>
+
+              <ExpandableSection 
+                title="Warranty & Support"
+                icon={<Shield className="w-5 h-5" />}
+              >
+                <div className="space-y-4">
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Shield className="w-5 h-5 text-green-600" />
+                      <h4 className="font-semibold text-green-900">2-Year Manufacturer Warranty</h4>
+                    </div>
+                    <p className="text-sm text-green-800">
+                      Full coverage for manufacturing defects and hardware failures
+                    </p>
+                  </div>
+                  <ul className="space-y-2">
+                    <li className="flex items-start gap-2 text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                      <span>Free repair or replacement for defective units</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                      <span>24/7 customer support via email and chat</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                      <span>Extended warranty options available at checkout</span>
+                    </li>
+                    <li className="flex items-start gap-2 text-gray-700">
+                      <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+                      <span>Dedicated support team for technical assistance</span>
+                    </li>
+                  </ul>
+                </div>
+              </ExpandableSection>
+
+              <ExpandableSection 
+                title="Shipping & Returns"
+                icon={<Truck className="w-5 h-5" />}
+              >
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Free Delivery</h4>
+                    <p className="text-sm text-gray-700">
+                      Free standard delivery on orders over TZS 50,000. Orders typically arrive within 3-5 business days.
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Express Shipping</h4>
+                    <p className="text-sm text-gray-700">
+                      Need it faster? Choose express shipping for 1-2 day delivery (additional charges apply).
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">30-Day Returns</h4>
+                    <p className="text-sm text-gray-700">
+                      Not satisfied? Return your purchase within 30 days for a full refund. Items must be unused and in original packaging.
+                    </p>
+                  </div>
+                </div>
+              </ExpandableSection>
+
+              <ExpandableSection 
+                title="Compatibility & Requirements"
+                icon={<Globe className="w-5 h-5" />}
+              >
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Operating Systems</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {["iOS 14+", "Android 8.0+", "Windows 10+", "macOS 11+"].map((os) => (
+                        <span key={os} className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700">
+                          {os}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Voice Assistants</h4>
+                    <p className="text-sm text-gray-700">
+                      Compatible with Siri, Google Assistant, and Amazon Alexa
+                    </p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-2">Companion App</h4>
+                    <p className="text-sm text-gray-700">
+                      Download the free app for iOS and Android to customize settings, update firmware, and access advanced features.
+                    </p>
+                  </div>
+                </div>
+              </ExpandableSection>
             </div>
           </div>
           
-          {/* Thumbnail Images */}
-          <div className="flex space-x-2 overflow-x-auto">
-            {product.colors?.map((color: string) => (
-              <div
-                key={color}
-                className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 cursor-pointer transition-colors ${
-                  selectedColor === color ? "border-blue-500" : "border-gray-200"
-                }`}
-              >
-                <Image
-                  src={(product.images as Record<string, string>)?.[color] || "/products/1g.png"}
-                  alt={`${product.name} in ${color}`}
-                  width={80}
-                  height={80}
-                  className="object-contain w-full h-full p-2 bg-gray-50"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* PRODUCT DETAILS */}
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-sm text-blue-600 font-medium capitalize">
-                {product.categorySlug.replace(/-/g, ' ')}
-              </span>
-              <Tag className="w-4 h-4 text-blue-600" />
+          {/* RIGHT COLUMN - Product Information (40%) */}
+          <div className="space-y-6">
+            {/* Product Title with Model Number */}
+            <div>
+              <h1 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-1">
+                {product.name}
+              </h1>
+              <p className="text-sm text-gray-500 font-mono">Model: SKU-{product.id}</p>
             </div>
-            <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-            
-            {/* Short Description as subtitle */}
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <p className="text-gray-800 text-lg font-medium">{product.shortDescription}</p>
-            </div>
-            
-            {/* Product Meta Info */}
-            <div className="flex flex-wrap gap-4 text-sm text-gray-500">
-              <span>Product ID: #{product.id}</span>
-              <span>•</span>
-              <span>Added: {new Date(product.createdAt).toLocaleDateString()}</span>
-              <span>•</span>
-              <span>Updated: {new Date(product.updatedAt).toLocaleDateString()}</span>
-            </div>
-          </div>
 
-          {/* Rating */}
-          <div className="flex items-center gap-2">
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-5 h-5 ${
-                    i < 4 ? "text-yellow-400 fill-current" : "text-gray-300"
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-sm text-gray-600">(4.2 out of 5 • 127 reviews)</span>
-          </div>
-
-          {/* Price */}
-          <div className="space-y-2">
-            <div className="flex items-baseline gap-3">
-              <span className="text-3xl font-bold text-gray-900">
-                {formatTzs(product.price / 100, true)}
-              </span>
-              {product.price < 50000 && (
-                <span className="text-lg text-gray-500 line-through">
-                  {formatTzs((product.price * 1.2) / 100, true)}
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-green-600 font-medium">✓ Price includes VAT</p>
-          </div>
-
-          {/* Specifications */}
-          <div className="border-t border-b border-gray-200 py-6">
-            <h3 className="font-medium text-gray-900 mb-4">Product Specifications</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Available Sizes */}
-              {product.sizes && product.sizes.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Available Sizes</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {product.sizes.map((sizeOption: string) => (
-                      <span
-                        key={sizeOption}
-                        className={`px-3 py-1 rounded-full text-sm border ${
-                          selectedSize === sizeOption
-                            ? "border-blue-500 bg-blue-50 text-blue-700"
-                            : "border-gray-300 text-gray-600"
-                        }`}
-                      >
-                        {sizeOption}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Available Colors */}
-              {product.colors && product.colors.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-medium text-gray-700 mb-2">Available Colors</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {product.colors.map((colorOption: string) => (
-                      <span
-                        key={colorOption}
-                        className={`px-3 py-1 rounded-full text-sm border ${
-                          selectedColor === colorOption
-                            ? "border-blue-500 bg-blue-50 text-blue-700"
-                            : "border-gray-300 text-gray-600"
-                        }`}
-                      >
-                        {colorOption}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <ProductInteraction
-            product={product}
-            selectedSize={selectedSize}
-            selectedColor={selectedColor}
-          />
-
-          {/* Key Product Features */}
-          {keyFeatures.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-medium text-gray-900">Key Features</h3>
-              <div className="grid grid-cols-1 gap-3">
-                {keyFeatures.map((feature, index) => (
-                  <div key={index} className="flex justify-between p-3 bg-blue-50 rounded-lg">
-                    <span className="text-sm font-medium text-blue-900">{feature.label}</span>
-                    <span className="text-sm text-blue-700">{feature.value}</span>
-                  </div>
+            {/* Rating and Reviews */}
+            <div className="flex items-center gap-4 pb-4 border-b border-gray-200">
+              <div className="flex items-center gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-5 h-5 ${
+                      i < 4 ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                    }`}
+                  />
                 ))}
               </div>
+              <span className="text-sm font-medium text-gray-900">4.8</span>
+              <Link href="#reviews" className="text-sm text-blue-600 hover:text-blue-700 underline">
+                (2,847 reviews)
+              </Link>
             </div>
-          )}
 
-          {/* Service Features */}
-          <div className="grid grid-cols-2 gap-4">
-            {serviceFeatures.map((feature, index) => (
-              <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                <feature.icon className="w-5 h-5 text-blue-600" />
-                <span className="text-sm font-medium text-gray-700">{feature.text}</span>
+            {/* Price and Availability */}
+            <div className="space-y-3 pb-6 border-b border-gray-200">
+              <div className="flex items-baseline gap-3">
+                <span className="text-4xl font-bold text-gray-900">
+                  {formatTzs(product.price / 100, true)}
+                </span>
+                {product.price < 50000 && (
+                  <span className="text-xl text-gray-500 line-through">
+                    {formatTzs((product.price * 1.2) / 100, true)}
+                  </span>
+                )}
               </div>
-            ))}
-          </div>
-
-          {/* Payment Methods */}
-          <div className="space-y-3">
-            <h3 className="font-medium text-gray-900">Payment Methods</h3>
-            <div className="flex items-center gap-3">
-              <Image
-                src="/klarna.png"
-                alt="Klarna"
-                width={60}
-                height={30}
-                className="rounded border border-gray-200"
-              />
-              <Image
-                src="/cards.png"
-                alt="Credit Cards"
-                width={60}
-                height={30}
-                className="rounded border border-gray-200"
-              />
-              <Image
-                src="/stripe.png"
-                alt="Stripe"
-                width={60}
-                height={30}
-                className="rounded border border-gray-200"
-              />
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <span className="text-sm font-medium text-green-700">In Stock</span>
+                <span className="text-gray-400">•</span>
+                <span className="text-sm text-gray-600 font-mono">SKU: #{product.id}</span>
+              </div>
+              <p className="text-xs text-gray-600">Price includes VAT • Free shipping on orders over TZS 50,000</p>
             </div>
-          </div>
 
-          {/* Trust Signals */}
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <div className="flex items-center gap-2 mb-2">
-              <CheckCircle className="w-5 h-5 text-blue-600" />
-              <span className="font-medium text-blue-900">Secure Purchase</span>
+            {/* Tech Highlights Badges */}
+            <div className="space-y-3 pb-6 border-b border-gray-200">
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Key Features</h3>
+              <div className="flex flex-wrap gap-2">
+                {techHighlights.map((highlight, index) => {
+                  const IconComponent = typeof highlight.icon === 'string' 
+                    ? iconMap[highlight.icon] || Info 
+                    : highlight.icon;
+                  return (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg"
+                    >
+                      <IconComponent className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-900">{highlight.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-            <p className="text-sm text-blue-700">
-              Your payment information is processed securely. We do not store credit card details.
-            </p>
-          </div>
-        </div>
-      </div>
 
-      {/* DETAILED DESCRIPTION & SPECS */}
-      <div className="mt-16 space-y-12">
-        {/* Description */}
-        <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Product Description</h2>
-          <div className="bg-white border border-gray-200 rounded-xl p-8">
-            {/* Short Description Highlight */}
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg mb-6">
-              <h3 className="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-blue-600" />
-                Key Highlights
-              </h3>
-              <p className="text-lg text-gray-800 font-medium">
+            {/* Color Selector */}
+            {product.colors && product.colors.length > 0 && (
+              <div id="variants" className="space-y-3 pb-6 border-b border-gray-200">
+                <label htmlFor="color-select" className="block text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                  Color: <span className="font-normal text-gray-700 capitalize">{selectedColor}</span>
+                </label>
+                <div className="flex flex-wrap gap-3">
+                  {product.colors.map((colorOption: string) => (
+                    <Link
+                      key={colorOption}
+                      href={`/products/${product.id}?color=${colorOption}${selectedSize ? `&size=${selectedSize}` : ''}`}
+                      className={`px-4 py-2 border-2 rounded-lg font-medium text-sm transition-all ${
+                        selectedColor === colorOption
+                          ? "border-blue-600 bg-blue-50 text-blue-700"
+                          : "border-gray-300 text-gray-700 hover:border-gray-400"
+                      }`}
+                    >
+                      {colorOption}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Size/Storage Selector */}
+            {product.sizes && product.sizes.length > 0 && (
+              <div className="space-y-3 pb-6 border-b border-gray-200">
+                <label className="block text-sm font-semibold text-gray-900 uppercase tracking-wide">
+                  Storage: <span className="font-normal text-gray-700">{selectedSize}</span>
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {product.sizes.map((sizeOption: string) => (
+                    <Link
+                      key={sizeOption}
+                      href={`/products/${product.id}?size=${sizeOption}${selectedColor ? `&color=${selectedColor}` : ''}`}
+                      className={`px-4 py-3 border-2 rounded-lg font-medium text-sm text-center transition-all ${
+                        selectedSize === sizeOption
+                          ? "border-blue-600 bg-blue-50 text-blue-700"
+                          : "border-gray-300 text-gray-700 hover:border-gray-400"
+                      }`}
+                    >
+                      {sizeOption}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Product Description */}
+            <div className="space-y-4 pb-6 border-b border-gray-200">
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide">About This Product</h3>
+              <p className="text-gray-700 leading-relaxed">
                 {product.shortDescription}
               </p>
-            </div>
-
-            {/* Full Description */}
-            <div className="prose max-w-none">
-              <p className="text-gray-700 leading-relaxed text-lg mb-6">
-                {product.description}
+              <p className="text-gray-700 leading-relaxed">
+                Experience cutting-edge technology with the <strong className="text-gray-900">{product.name}</strong>. 
+                Engineered for tech enthusiasts who demand <strong className="text-blue-600">premium performance</strong> and 
+                innovative features. Whether you&apos;re working, gaming, or creating content, this product delivers exceptional results.
+              </p>
+              <p className="text-gray-700 leading-relaxed">
+                Backed by our 2-year manufacturer warranty and featuring industry-leading specifications, 
+                this is the perfect choice for those who refuse to compromise on quality.
               </p>
             </div>
-            
-            {/* Enhanced Product Details Grid */}
-            <div className="mt-8 grid md:grid-cols-2 gap-8">
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Package className="w-5 h-5 text-blue-600" />
-                  What&apos;s Included
-                </h3>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    {product.name}
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    Power Adapter & Cable
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    User Manual & Documentation
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    Warranty Card
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    Original Packaging
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-blue-600" />
-                  Product Information
-                </h3>
-                <ul className="space-y-2 text-gray-600">
-                  <li className="flex justify-between">
-                    <span>Product ID:</span>
-                    <span className="font-medium">#{product.id}</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Category:</span>
-                    <span className="font-medium capitalize">{product.categorySlug.replace(/-/g, ' ')}</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Available Sizes:</span>
-                    <span className="font-medium">{product.sizes?.length || 0}</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Color Options:</span>
-                    <span className="font-medium">{product.colors?.length || 0}</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Added:</span>
-                    <span className="font-medium">{new Date(product.createdAt).toLocaleDateString()}</span>
-                  </li>
-                </ul>
+
+            {/* Action Buttons */}
+            <div className="space-y-3">
+              <ProductInteraction
+                product={product}
+                selectedSize={selectedSize}
+                selectedColor={selectedColor}
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <button 
+                  className="flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-900 rounded-lg font-semibold text-gray-900 hover:bg-gray-50 transition-all"
+                  aria-label="Add to wishlist"
+                >
+                  <Heart className="w-5 h-5" />
+                  Wishlist
+                </button>
+                <button 
+                  className="flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-all"
+                  aria-label="Compare products"
+                >
+                  <GitCompare className="w-5 h-5" />
+                  Compare
+                </button>
               </div>
             </div>
+
+            {/* Trust Signals */}
+            <div className="grid grid-cols-2 gap-3 pt-6 border-t border-gray-200">
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <Shield className="w-5 h-5 text-green-600" />
+                <span>2-Year Warranty</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <Truck className="w-5 h-5 text-blue-600" />
+                <span>Free Shipping</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <RotateCcw className="w-5 h-5 text-purple-600" />
+                <span>30-Day Returns</span>
+              </div>
+              <div className="flex items-center gap-2 text-sm text-gray-700">
+                <CheckCircle className="w-5 h-5 text-green-600" />
+                <span>Authentic Product</span>
+              </div>
+            </div>
+
+           
           </div>
-        </section>
-
-        {/* Specifications */}
-        <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Specifications</h2>
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-            <dl className="divide-y divide-gray-200">
-              {specifications.map((spec, index) => (
-                <div key={index} className="flex py-4 px-8">
-                  <dt className="w-1/3 font-medium text-gray-900">{spec.label}</dt>
-                  <dd className="w-2/3 text-gray-700">{spec.value}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </section>
-
-        {/* Shipping & Returns */}
-        <section>
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Shipping & Returns</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Truck className="w-6 h-6 text-blue-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Free Shipping</h3>
-              </div>
-              <p className="text-gray-600 text-sm">
-                Free standard shipping on orders over TZS 50,000. Express shipping available.
-              </p>
-            </div>
-            
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <RotateCcw className="w-6 h-6 text-green-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Easy Returns</h3>
-              </div>
-              <p className="text-gray-600 text-sm">
-                30-day return policy. Items must be in original condition and packaging.
-              </p>
-            </div>
-            
-            <div className="bg-white border border-gray-200 rounded-xl p-6">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Clock className="w-6 h-6 text-purple-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900">Fast Processing</h3>
-              </div>
-              <p className="text-gray-600 text-sm">
-                Orders are processed within 24 hours. Track your order every step of the way.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Legal Notice */}
-        <div className="bg-gray-50 p-6 rounded-xl">
-          <p className="text-gray-600 text-sm leading-relaxed">
-            By clicking &quot;Add to Cart&quot; or &quot;Buy Now&quot;, you agree to our{" "}
-            <span className="text-blue-600 underline hover:text-blue-800 cursor-pointer">Terms & Conditions</span>{" "}
-            and <span className="text-blue-600 underline hover:text-blue-800 cursor-pointer">Privacy Policy</span>
-            . You authorize us to charge your selected payment method for the
-            total amount shown. All sales are subject to our return and{" "}
-            <span className="text-blue-600 underline hover:text-blue-800 cursor-pointer">Refund Policies</span>.
-          </p>
         </div>
+
+        {/* Certifications & Ratings */}
+        <div className="mt-16 border-t border-gray-200 pt-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Product Certifications</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {certifications.map((cert, index) => {
+              const IconComponent = typeof cert.icon === 'string' 
+                ? iconMap[cert.icon] || Award 
+                : cert.icon;
+              return (
+                <div
+                  key={index}
+                  className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all"
+                >
+                  <IconComponent className="w-8 h-8 text-blue-600 mb-2" />
+                  <span className="text-sm font-medium text-gray-900 text-center">{cert.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Customer Reviews Section */}
+        <div id="reviews" className="mt-16 border-t border-gray-200 pt-12">
+          <CustomerReviews productId={product.id} />
+        </div>
+
+        {/* Q&A Section */}
+        <div className="mt-16 border-t border-gray-200 pt-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">Questions & Answers</h2>
+            <button className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all">
+              Ask a Question
+            </button>
+          </div>
+          
+          <div className="space-y-6">
+            {/* Q&A Item */}
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="mb-3">
+                    <span className="font-semibold text-gray-900">Q:</span>
+                    <span className="ml-2 text-gray-700">Is this compatible with iPhone 15 Pro?</span>
+                  </div>
+                  <div className="pl-4 border-l-2 border-blue-200">
+                    <span className="font-semibold text-gray-900">A:</span>
+                    <span className="ml-2 text-gray-700">
+                      Yes, this product is fully compatible with iPhone 15 Pro and all iOS 14+ devices.
+                    </span>
+                    <p className="text-xs text-gray-500 mt-2">Answered by Neuraltale Support • 2 days ago</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white border border-gray-200 rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5 text-blue-600" />
+                </div>
+                <div className="flex-1">
+                  <div className="mb-3">
+                    <span className="font-semibold text-gray-900">Q:</span>
+                    <span className="ml-2 text-gray-700">What&apos;s the Bluetooth range?</span>
+                  </div>
+                  <div className="pl-4 border-l-2 border-blue-200">
+                    <span className="font-semibold text-gray-900">A:</span>
+                    <span className="ml-2 text-gray-700">
+                      Up to 10 meters (33 feet) with Bluetooth 5.3 connectivity in optimal conditions.
+                    </span>
+                    <p className="text-xs text-gray-500 mt-2">Answered by Community • 5 days ago</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 text-center">
+            <button className="text-blue-600 hover:text-blue-700 font-medium">
+              View all questions ({12})
+            </button>
+          </div>
+        </div>
+
+        {/* Review Section */}
+        <div className="mt-16 border-t border-gray-200 pt-12">
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Share Your Experience
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Have you used this product? Help other tech enthusiasts make informed decisions by sharing your detailed review.
+            </p>
+            <button className="px-8 py-3 border-2 border-gray-900 rounded-lg font-semibold text-gray-900 hover:bg-gray-50 transition-all">
+              Write a Technical Review
+            </button>
+          </div>
+        </div>
+
+        {/* Similar Products */}
+        {product.categorySlug && (
+          <div className="mt-16">
+            <SimilarProducts 
+              categorySlug={product.categorySlug}
+              currentProductId={String(product.id)}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

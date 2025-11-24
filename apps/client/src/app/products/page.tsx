@@ -66,11 +66,26 @@ export async function generateMetadata({
 const ProductsPage = async ({
   searchParams,
 }: {
-  searchParams: Promise<{ category: string; sort: string; search: string }>;
+  searchParams: Promise<{ 
+    category?: string; 
+    sort?: string; 
+    search?: string;
+    brands?: string;
+    rating?: string;
+    priceMin?: string;
+    priceMax?: string;
+    batteryCapacity?: string;
+  }>;
 }) => {
-  const category = (await searchParams).category;
-  const sort = (await searchParams).sort;
-  const search = (await searchParams).search;
+  const params = await searchParams;
+  const category = params.category;
+  const sort = params.sort;
+  const search = params.search;
+  const brands = params.brands;
+  const rating = params.rating;
+  const priceMin = params.priceMin;
+  const priceMax = params.priceMax;
+  const batteryCapacity = params.batteryCapacity;
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -95,6 +110,11 @@ const ProductsPage = async ({
               sort={sort}
               search={search}
               params="products"
+              brands={brands}
+              rating={rating}
+              priceMin={priceMin}
+              priceMax={priceMax}
+              batteryCapacity={batteryCapacity}
             />
           </div>
         </div>

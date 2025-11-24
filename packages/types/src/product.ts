@@ -1,7 +1,14 @@
 import type { Product, Category } from "@repo/product-db";
 import z from "zod";
 
-export type ProductType = Product;
+// Extended Product type with additional JSON fields
+export type ProductType = Product & {
+  techHighlights?: Array<{label: string, icon: string}> | null;
+  boxContents?: string[] | null;
+  productFeatures?: Array<{title: string, description: string}> | null;
+  technicalSpecs?: Record<string, Array<{label: string, value: string}>> | null;
+  certifications?: Array<{label: string, icon: string}> | null;
+};
 
 export type ProductsType = ProductType[];
 

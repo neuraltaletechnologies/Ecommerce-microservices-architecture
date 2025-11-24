@@ -1,15 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown, ChevronUp, Star, X, SlidersHorizontal } from "lucide-react";
-
-interface FilterState {
-  brands: string[];
-  rating: number;
-  priceMin: string;
-  priceMax: string;
-  batteryCapacity: string[];
-}
+import { FilterState } from "@/types/filters";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 interface CategoryFilterProps {
   onFilterChange?: (filters: FilterState) => void;
@@ -18,6 +12,10 @@ interface CategoryFilterProps {
 }
 
 const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFilterProps) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   const [expandedSections, setExpandedSections] = useState({
     brands: true,
     price: true,
@@ -25,13 +23,54 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
     battery: true,
   });
 
-  const [filters, setFilters] = useState<FilterState>({
-    brands: [],
-    rating: 0,
-    priceMin: "",
-    priceMax: "",
-    batteryCapacity: [],
-  });
+  // Initialize filters from URL params
+  const [filters, setFilters] = useState<FilterState>(() => ({
+    brands: searchParams.get('brands')?.split(',').filter(Boolean) || [],
+    rating: Number(searchParams.get('rating')) || 0,
+    priceMin: searchParams.get('priceMin') || "",
+    priceMax: searchParams.get('priceMax') || "",
+    batteryCapacity: searchParams.get('batteryCapacity')?.split(',').filter(Boolean) || [],
+  }));
+
+  // Update URL when filters change
+  const updateURL = (newFilters: FilterState) => {
+    const params = new URLSearchParams(searchParams);
+    
+    // Update or remove brands
+    if (newFilters.brands.length > 0) {
+      params.set('brands', newFilters.brands.join(','));
+    } else {
+      params.delete('brands');
+    }
+    
+    // Update or remove rating
+    if (newFilters.rating > 0) {
+      params.set('rating', newFilters.rating.toString());
+    } else {
+      params.delete('rating');
+    }
+    
+    // Update or remove price range
+    if (newFilters.priceMin) {
+      params.set('priceMin', newFilters.priceMin);
+    } else {
+      params.delete('priceMin');
+    }
+    if (newFilters.priceMax) {
+      params.set('priceMax', newFilters.priceMax);
+    } else {
+      params.delete('priceMax');
+    }
+    
+    // Update or remove battery capacity
+    if (newFilters.batteryCapacity.length > 0) {
+      params.set('batteryCapacity', newFilters.batteryCapacity.join(','));
+    } else {
+      params.delete('batteryCapacity');
+    }
+    
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
 
   const brands = [
     "Apple",
@@ -69,12 +108,14 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
     
     const newFilters = { ...filters, brands: newBrands };
     setFilters(newFilters);
+    updateURL(newFilters);
     onFilterChange?.(newFilters);
   };
 
   const handleRatingChange = (rating: number) => {
     const newFilters = { ...filters, rating };
     setFilters(newFilters);
+    updateURL(newFilters);
     onFilterChange?.(newFilters);
   };
 
@@ -84,6 +125,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
       [type === "min" ? "priceMin" : "priceMax"]: value,
     };
     setFilters(newFilters);
+    updateURL(newFilters);
     onFilterChange?.(newFilters);
   };
 
@@ -94,6 +136,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
     
     const newFilters = { ...filters, batteryCapacity: newBattery };
     setFilters(newFilters);
+    updateURL(newFilters);
     onFilterChange?.(newFilters);
   };
 
@@ -106,6 +149,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
       batteryCapacity: [],
     };
     setFilters(resetFilters);
+    updateURL(resetFilters);
     onFilterChange?.(resetFilters);
   };
 
@@ -141,6 +185,8 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
             <button
               onClick={onClose}
               className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Close filters"
+              title="Close filters"
             >
               <X className="w-5 h-5 text-gray-500" />
             </button>

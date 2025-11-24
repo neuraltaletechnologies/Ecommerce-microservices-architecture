@@ -4,17 +4,29 @@ import ProductCard from "./ProductCard";
 import Link from "next/link";
 import Filter from "./Filter";
 
+interface FetchDataParams {
+  category?: string;
+  sort?: string;
+  search?: string;
+  params: "homepage" | "products";
+  brands?: string;
+  rating?: string;
+  priceMin?: string;
+  priceMax?: string;
+  batteryCapacity?: string;
+}
+
 const fetchData = async ({
   category,
   sort,
   search,
   params,
-}: {
-  category?: string;
-  sort?: string;
-  search?: string;
-  params: "homepage" | "products";
-}) => {
+  brands,
+  rating,
+  priceMin,
+  priceMax,
+  batteryCapacity,
+}: FetchDataParams) => {
   try {
     // Build query parameters
     const queryParams = new URLSearchParams();
@@ -29,13 +41,38 @@ const fetchData = async ({
       queryParams.append("search", search);
     }
     
+    // Brand filter (comma-separated)
+    if (brands) {
+      queryParams.append("brands", brands);
+    }
+    
+    // Rating filter
+    if (rating && rating !== "0") {
+      queryParams.append("rating", rating);
+    }
+    
+    // Price range filters
+    if (priceMin) {
+      queryParams.append("priceMin", priceMin);
+    }
+    if (priceMax) {
+      queryParams.append("priceMax", priceMax);
+    }
+    
+    // Battery capacity filter (comma-separated)
+    if (batteryCapacity) {
+      queryParams.append("batteryCapacity", batteryCapacity);
+    }
+    
     // Sort mapping to match backend
     let sortParam = "newest"; // default
     switch (sort) {
       case "price-asc":
+      case "asc":
         sortParam = "asc";
         break;
       case "price-desc":
+      case "desc":
         sortParam = "desc";
         break;
       case "oldest":
@@ -72,18 +109,40 @@ const fetchData = async ({
   }
 };
 
+interface ProductListProps {
+  category?: string;
+  sort?: string;
+  search?: string;
+  params: "homepage" | "products";
+  brands?: string;
+  rating?: string;
+  priceMin?: string;
+  priceMax?: string;
+  batteryCapacity?: string;
+}
+
 const ProductList = async ({
   category,
   sort,
   search,
   params,
-}: {
-  category: string;
-  sort?: string;
-  search?: string;
-  params: "homepage" | "products";
-}) => {
-  const products = await fetchData({ category, sort, search, params });
+  brands,
+  rating,
+  priceMin,
+  priceMax,
+  batteryCapacity,
+}: ProductListProps) => {
+  const products = await fetchData({ 
+    category, 
+    sort, 
+    search, 
+    params,
+    brands,
+    rating,
+    priceMin,
+    priceMax,
+    batteryCapacity,
+  });
   return (
     <div className="w-full">
       {/* Section Header */}
