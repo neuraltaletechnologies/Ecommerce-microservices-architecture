@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ToastContainer } from "react-toastify";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -176,6 +177,7 @@ export default function RootLayout({
             toastClassName="!bg-white !text-gray-900 !shadow-lg !border !border-gray-200"
             progressClassName="!bg-blue-600"
           />
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
