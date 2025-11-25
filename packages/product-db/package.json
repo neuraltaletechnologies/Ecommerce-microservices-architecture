@@ -8,12 +8,18 @@
     "db:deploy": "prisma migrate deploy"
   },
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
     "@types/node": "^24.3.1",
+    "@types/ws": "^8.18.1",
+    "dotenv": "^17.2.3",
     "prisma": "^6.16.0",
-    "@repo/typescript-config": "workspace:*"
+    "tsx": "^4.20.6"
   },
   "dependencies": {
-    "@prisma/client": "^6.16.0"
+    "@neondatabase/serverless": "^1.0.2",
+    "@prisma/adapter-neon": "^7.0.0",
+    "@prisma/client": "^6.16.0",
+    "ws": "^8.18.3"
   },
   "exports": {
     ".": "./src/index.ts"
