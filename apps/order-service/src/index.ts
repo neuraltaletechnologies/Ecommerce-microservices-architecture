@@ -1,8 +1,11 @@
 import Fastify from "fastify";
 import Clerk from "@clerk/fastify";
+import dotenv from "dotenv";
 import { shouldBeUser } from "./middleware/authMiddleware.js";
 import { connectOrderDB } from "@repo/order-db";
 import { orderRoute } from "./routes/order.js";
+
+dotenv.config();
 
 const fastify = Fastify();
 

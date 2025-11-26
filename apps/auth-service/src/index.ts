@@ -1,8 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 import { clerkMiddleware } from "@clerk/express";
 import { shouldBeAdmin } from "./middleware/authMiddleware.js";
 import userRoute from "./routes/user.route";
+
+dotenv.config();
 
 const app = express();
 

@@ -1,9 +1,12 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
+import dotenv from "dotenv";
 import { clerkMiddleware } from "@hono/clerk-auth";
 import sessionRoute from "./routes/session.route.js";
 import { cors } from "hono/cors";
 import webhookRoute from "./routes/webhooks.route.js";
+
+dotenv.config();
 
 const app = new Hono();
 

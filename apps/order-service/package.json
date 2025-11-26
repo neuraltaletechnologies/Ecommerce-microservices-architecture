@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "tsx --env-file=.env --watch src/index.ts",
     "build": "echo 'No build needed for order-service'",
-    "start": "tsx --env-file=.env src/index.ts",
+    "start": "tsx src/index.ts",
     "check-types": "tsc --noEmit"
   },
   "keywords": [],
@@ -17,6 +17,7 @@
     "@clerk/fastify": "^2.4.30",
     "@repo/order-db": "workspace:*",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
     "fastify": "^5.5.0",
     "tsx": "^4.20.5"
   },
