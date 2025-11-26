@@ -9,7 +9,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile && pnpm --filter @repo/product-db db:generate
+    buildCommand: npm install -g pnpm && pnpm install && pnpm --filter @repo/product-db db:generate
     startCommand: cd apps/product-service && pnpm start
     healthCheckPath: /health
     envVars:
@@ -38,7 +38,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile
+    buildCommand: npm install -g pnpm && pnpm install
     startCommand: cd apps/order-service && pnpm start
     healthCheckPath: /health
     envVars:
@@ -63,7 +63,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile
+    buildCommand: npm install -g pnpm && pnpm install
     startCommand: cd apps/payment-service && pnpm start
     healthCheckPath: /health
     envVars:
@@ -90,7 +90,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile
+    buildCommand: npm install -g pnpm && pnpm install
     startCommand: cd apps/auth-service && pnpm start
     healthCheckPath: /health
     envVars:
@@ -111,7 +111,7 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile
+    buildCommand: npm install -g pnpm && pnpm install
     startCommand: cd apps/email-service && pnpm start
     healthCheckPath: /health
     envVars:

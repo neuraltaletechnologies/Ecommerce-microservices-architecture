@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm dlx tsx --env-file=.env --watch src/index.ts",
-    "build": "prisma generate",
+    "build": "echo 'Build handled by product-db package'",
     "start": "tsx --env-file=.env src/index.ts",
     "check-types": "tsc --noEmit"
   },
