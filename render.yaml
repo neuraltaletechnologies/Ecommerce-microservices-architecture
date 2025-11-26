@@ -9,8 +9,8 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install && cd packages/product-db && npx prisma generate
-    startCommand: cd apps/product-service && npx tsx src/index.ts
+    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile && pnpm --filter @repo/product-db db:generate
+    startCommand: cd apps/product-service && pnpm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -38,8 +38,8 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install && cd apps/order-service && pnpm install
-    startCommand: cd apps/order-service && npx tsx src/index.ts
+    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile
+    startCommand: cd apps/order-service && pnpm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -63,8 +63,8 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install && cd apps/payment-service && pnpm install
-    startCommand: cd apps/payment-service && npx tsx src/index.ts
+    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile
+    startCommand: cd apps/payment-service && pnpm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -90,8 +90,8 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install && cd apps/auth-service && pnpm install
-    startCommand: cd apps/auth-service && npx tsx src/index.ts
+    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile
+    startCommand: cd apps/auth-service && pnpm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -111,8 +111,8 @@ services:
     env: node
     region: oregon
     plan: free
-    buildCommand: npm install -g pnpm && pnpm install && cd apps/email-service && pnpm install
-    startCommand: cd apps/email-service && npx tsx src/index.ts
+    buildCommand: npm install -g pnpm && pnpm install --frozen-lockfile
+    startCommand: cd apps/email-service && pnpm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV

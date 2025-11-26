@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm dlx tsx --env-file=.env --watch src/index.ts",
+    "build": "prisma generate",
+    "start": "tsx --env-file=.env src/index.ts",
     "check-types": "tsc --noEmit"
   },
   "keywords": [],
@@ -17,6 +19,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.0.3",
+    "prisma": "^6.16.0",
     "tsx": "^4.20.5"
   },
   "devDependencies": {

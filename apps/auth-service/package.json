@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm dlx tsx --env-file=.env --watch src/index.ts",
+    "build": "echo 'No build needed for auth-service'",
+    "start": "tsx --env-file=.env src/index.ts",
     "check-types": "tsc --noEmit"
   },
   "keywords": [],

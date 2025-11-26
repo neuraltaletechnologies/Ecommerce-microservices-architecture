@@ -5,7 +5,9 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "pnpm dlx tsx --env-file=.env --watch src/index.ts"
+    "dev": "pnpm dlx tsx --env-file=.env --watch src/index.ts",
+    "build": "echo 'No build needed for email-service'",
+    "start": "tsx --env-file=.env src/index.ts"
   },
   "keywords": [],
   "author": "",
