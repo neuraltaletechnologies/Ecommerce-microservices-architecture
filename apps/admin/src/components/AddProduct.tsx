@@ -420,8 +420,10 @@ const AddProduct = () => {
                                   value={highlight.label}
                                   onChange={(e) => {
                                     const newHighlights = [...(field.value || [])];
-                                    newHighlights[index].label = e.target.value;
-                                    field.onChange(newHighlights);
+                                    if (newHighlights[index]) {
+                                      newHighlights[index].label = e.target.value;
+                                      field.onChange(newHighlights);
+                                    }
                                   }}
                                 />
                                 <Input
@@ -429,8 +431,10 @@ const AddProduct = () => {
                                   value={highlight.icon}
                                   onChange={(e) => {
                                     const newHighlights = [...(field.value || [])];
-                                    newHighlights[index].icon = e.target.value;
-                                    field.onChange(newHighlights);
+                                    if (newHighlights[index]) {
+                                      newHighlights[index].icon = e.target.value;
+                                      field.onChange(newHighlights);
+                                    }
                                   }}
                                 />
                                 <Button
@@ -535,8 +539,10 @@ const AddProduct = () => {
                                   value={feature.title}
                                   onChange={(e) => {
                                     const newFeatures = [...(field.value || [])];
-                                    newFeatures[index].title = e.target.value;
-                                    field.onChange(newFeatures);
+                                    if (newFeatures[index]) {
+                                      newFeatures[index].title = e.target.value;
+                                      field.onChange(newFeatures);
+                                    }
                                   }}
                                 />
                                 <Textarea
@@ -544,8 +550,10 @@ const AddProduct = () => {
                                   value={feature.description}
                                   onChange={(e) => {
                                     const newFeatures = [...(field.value || [])];
-                                    newFeatures[index].description = e.target.value;
-                                    field.onChange(newFeatures);
+                                    if (newFeatures[index]) {
+                                      newFeatures[index].description = e.target.value;
+                                      field.onChange(newFeatures);
+                                    }
                                   }}
                                 />
                                 <Button
@@ -614,8 +622,10 @@ const AddProduct = () => {
                                       value={spec.label}
                                       onChange={(e) => {
                                         const newSpecs = { ...(field.value || {}) };
-                                        newSpecs[category][index].label = e.target.value;
-                                        field.onChange(newSpecs);
+                                        if (newSpecs[category] && newSpecs[category][index]) {
+                                          newSpecs[category][index].label = e.target.value;
+                                          field.onChange(newSpecs);
+                                        }
                                       }}
                                     />
                                     <Input
@@ -623,8 +633,10 @@ const AddProduct = () => {
                                       value={spec.value}
                                       onChange={(e) => {
                                         const newSpecs = { ...(field.value || {}) };
-                                        newSpecs[category][index].value = e.target.value;
-                                        field.onChange(newSpecs);
+                                        if (newSpecs[category] && newSpecs[category][index]) {
+                                          newSpecs[category][index].value = e.target.value;
+                                          field.onChange(newSpecs);
+                                        }
                                       }}
                                     />
                                     <Button
@@ -633,8 +645,10 @@ const AddProduct = () => {
                                       size="sm"
                                       onClick={() => {
                                         const newSpecs = { ...(field.value || {}) };
-                                        newSpecs[category] = newSpecs[category].filter((_, i) => i !== index);
-                                        field.onChange(newSpecs);
+                                        if (newSpecs[category]) {
+                                          newSpecs[category] = newSpecs[category].filter((_, i) => i !== index);
+                                          field.onChange(newSpecs);
+                                        }
                                       }}
                                     >
                                       Remove
@@ -647,7 +661,11 @@ const AddProduct = () => {
                                   size="sm"
                                   onClick={() => {
                                     const newSpecs = { ...(field.value || {}) };
-                                    newSpecs[category] = [...newSpecs[category], { label: "", value: "" }];
+                                    if (newSpecs[category]) {
+                                      newSpecs[category] = [...newSpecs[category], { label: "", value: "" }];
+                                    } else {
+                                      newSpecs[category] = [{ label: "", value: "" }];
+                                    }
                                     field.onChange(newSpecs);
                                   }}
                                 >
@@ -702,8 +720,10 @@ const AddProduct = () => {
                                   value={cert.label}
                                   onChange={(e) => {
                                     const newCerts = [...(field.value || [])];
-                                    newCerts[index].label = e.target.value;
-                                    field.onChange(newCerts);
+                                    if (newCerts[index]) {
+                                      newCerts[index].label = e.target.value;
+                                      field.onChange(newCerts);
+                                    }
                                   }}
                                 />
                                 <Input
@@ -711,8 +731,10 @@ const AddProduct = () => {
                                   value={cert.icon}
                                   onChange={(e) => {
                                     const newCerts = [...(field.value || [])];
-                                    newCerts[index].icon = e.target.value;
-                                    field.onChange(newCerts);
+                                    if (newCerts[index]) {
+                                      newCerts[index].icon = e.target.value;
+                                      field.onChange(newCerts);
+                                    }
                                   }}
                                 />
                                 <Button
