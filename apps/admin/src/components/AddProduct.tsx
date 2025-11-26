@@ -77,6 +77,11 @@ const AddProduct = () => {
       sizes: [],
       colors: [],
       images: {},
+      techHighlights: [],
+      boxContents: [],
+      productFeatures: [],
+      technicalSpecs: {},
+      certifications: [],
     },
   });
 
@@ -394,6 +399,356 @@ const AddProduct = () => {
                     </FormItem>
                   )}
                 />
+                
+                {/* Extended Data Section */}
+                <div className="border-t pt-6 mt-6">
+                  <h3 className="text-lg font-semibold mb-4">Extended Product Data (Optional)</h3>
+                  
+                  {/* Tech Highlights */}
+                  <FormField
+                    control={form.control}
+                    name="techHighlights"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tech Highlights</FormLabel>
+                        <FormControl>
+                          <div className="space-y-2">
+                            {(field.value || []).map((highlight, index) => (
+                              <div key={index} className="flex gap-2">
+                                <Input
+                                  placeholder="Label (e.g., Processor)"
+                                  value={highlight.label}
+                                  onChange={(e) => {
+                                    const newHighlights = [...(field.value || [])];
+                                    newHighlights[index].label = e.target.value;
+                                    field.onChange(newHighlights);
+                                  }}
+                                />
+                                <Input
+                                  placeholder="Icon (e.g., Cpu)"
+                                  value={highlight.icon}
+                                  onChange={(e) => {
+                                    const newHighlights = [...(field.value || [])];
+                                    newHighlights[index].icon = e.target.value;
+                                    field.onChange(newHighlights);
+                                  }}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newHighlights = (field.value || []).filter((_, i) => i !== index);
+                                    field.onChange(newHighlights);
+                                  }}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
+                            ))}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                field.onChange([...(field.value || []), { label: "", icon: "" }]);
+                              }}
+                            >
+                              Add Tech Highlight
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          Add key tech specs badges (e.g., "Intel Core i7", "16GB RAM").
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Box Contents */}
+                  <FormField
+                    control={form.control}
+                    name="boxContents"
+                    render={({ field }) => (
+                      <FormItem className="mt-4">
+                        <FormLabel>What's in the Box</FormLabel>
+                        <FormControl>
+                          <div className="space-y-2">
+                            {(field.value || []).map((item, index) => (
+                              <div key={index} className="flex gap-2">
+                                <Input
+                                  placeholder="Item (e.g., Laptop, Charger, USB Cable)"
+                                  value={item}
+                                  onChange={(e) => {
+                                    const newItems = [...(field.value || [])];
+                                    newItems[index] = e.target.value;
+                                    field.onChange(newItems);
+                                  }}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newItems = (field.value || []).filter((_, i) => i !== index);
+                                    field.onChange(newItems);
+                                  }}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
+                            ))}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                field.onChange([...(field.value || []), ""]);
+                              }}
+                            >
+                              Add Box Item
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          List all items included in the package.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Product Features */}
+                  <FormField
+                    control={form.control}
+                    name="productFeatures"
+                    render={({ field }) => (
+                      <FormItem className="mt-4">
+                        <FormLabel>Product Features</FormLabel>
+                        <FormControl>
+                          <div className="space-y-2">
+                            {(field.value || []).map((feature, index) => (
+                              <div key={index} className="space-y-2 p-3 border rounded">
+                                <Input
+                                  placeholder="Title (e.g., Ultra-Fast Performance)"
+                                  value={feature.title}
+                                  onChange={(e) => {
+                                    const newFeatures = [...(field.value || [])];
+                                    newFeatures[index].title = e.target.value;
+                                    field.onChange(newFeatures);
+                                  }}
+                                />
+                                <Textarea
+                                  placeholder="Description"
+                                  value={feature.description}
+                                  onChange={(e) => {
+                                    const newFeatures = [...(field.value || [])];
+                                    newFeatures[index].description = e.target.value;
+                                    field.onChange(newFeatures);
+                                  }}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newFeatures = (field.value || []).filter((_, i) => i !== index);
+                                    field.onChange(newFeatures);
+                                  }}
+                                >
+                                  Remove Feature
+                                </Button>
+                              </div>
+                            ))}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                field.onChange([...(field.value || []), { title: "", description: "" }]);
+                              }}
+                            >
+                              Add Product Feature
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          Describe key product features and benefits.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Technical Specifications */}
+                  <FormField
+                    control={form.control}
+                    name="technicalSpecs"
+                    render={({ field }) => (
+                      <FormItem className="mt-4">
+                        <FormLabel>Technical Specifications</FormLabel>
+                        <FormControl>
+                          <div className="space-y-4">
+                            {Object.entries(field.value || {}).map(([category, specs]) => (
+                              <div key={category} className="p-3 border rounded">
+                                <div className="flex justify-between items-center mb-2">
+                                  <h4 className="font-medium">{category}</h4>
+                                  <Button
+                                    type="button"
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => {
+                                      const newSpecs = { ...(field.value || {}) };
+                                      delete newSpecs[category];
+                                      field.onChange(newSpecs);
+                                    }}
+                                  >
+                                    Remove Category
+                                  </Button>
+                                </div>
+                                {specs.map((spec, index) => (
+                                  <div key={index} className="flex gap-2 mb-2">
+                                    <Input
+                                      placeholder="Label"
+                                      value={spec.label}
+                                      onChange={(e) => {
+                                        const newSpecs = { ...(field.value || {}) };
+                                        newSpecs[category][index].label = e.target.value;
+                                        field.onChange(newSpecs);
+                                      }}
+                                    />
+                                    <Input
+                                      placeholder="Value"
+                                      value={spec.value}
+                                      onChange={(e) => {
+                                        const newSpecs = { ...(field.value || {}) };
+                                        newSpecs[category][index].value = e.target.value;
+                                        field.onChange(newSpecs);
+                                      }}
+                                    />
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => {
+                                        const newSpecs = { ...(field.value || {}) };
+                                        newSpecs[category] = newSpecs[category].filter((_, i) => i !== index);
+                                        field.onChange(newSpecs);
+                                      }}
+                                    >
+                                      Remove
+                                    </Button>
+                                  </div>
+                                ))}
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newSpecs = { ...(field.value || {}) };
+                                    newSpecs[category] = [...newSpecs[category], { label: "", value: "" }];
+                                    field.onChange(newSpecs);
+                                  }}
+                                >
+                                  Add Spec to {category}
+                                </Button>
+                              </div>
+                            ))}
+                            <div className="flex gap-2">
+                              <Input
+                                id="newCategory"
+                                placeholder="New category (e.g., Display, Performance)"
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onClick={() => {
+                                  const input = document.getElementById("newCategory") as HTMLInputElement;
+                                  const category = input.value.trim();
+                                  if (category && !(field.value || {})[category]) {
+                                    field.onChange({ ...(field.value || {}), [category]: [] });
+                                    input.value = "";
+                                  }
+                                }}
+                              >
+                                Add Category
+                              </Button>
+                            </div>
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          Group technical specs by categories (Display, Performance, etc.).
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Certifications */}
+                  <FormField
+                    control={form.control}
+                    name="certifications"
+                    render={({ field }) => (
+                      <FormItem className="mt-4">
+                        <FormLabel>Certifications</FormLabel>
+                        <FormControl>
+                          <div className="space-y-2">
+                            {(field.value || []).map((cert, index) => (
+                              <div key={index} className="flex gap-2">
+                                <Input
+                                  placeholder="Label (e.g., CE Certified)"
+                                  value={cert.label}
+                                  onChange={(e) => {
+                                    const newCerts = [...(field.value || [])];
+                                    newCerts[index].label = e.target.value;
+                                    field.onChange(newCerts);
+                                  }}
+                                />
+                                <Input
+                                  placeholder="Icon (e.g., ShieldCheck)"
+                                  value={cert.icon}
+                                  onChange={(e) => {
+                                    const newCerts = [...(field.value || [])];
+                                    newCerts[index].icon = e.target.value;
+                                    field.onChange(newCerts);
+                                  }}
+                                />
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="sm"
+                                  onClick={() => {
+                                    const newCerts = (field.value || []).filter((_, i) => i !== index);
+                                    field.onChange(newCerts);
+                                  }}
+                                >
+                                  Remove
+                                </Button>
+                              </div>
+                            ))}
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                field.onChange([...(field.value || []), { label: "", icon: "" }]);
+                              }}
+                            >
+                              Add Certification
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          Add certifications and compliance badges.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
                 <Button
                   type="submit"
                   disabled={mutation.isPending}

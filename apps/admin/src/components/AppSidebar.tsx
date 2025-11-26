@@ -125,6 +125,14 @@ const AppSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
+                  <Link href="/categories">
+                    <Boxes />
+                    Categories
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
                   <Sheet>
                     <SheetTrigger asChild>
                       <SidebarMenuButton asChild>
@@ -144,7 +152,7 @@ const AppSidebar = () => {
                     <SheetTrigger asChild>
                       <SidebarMenuButton asChild>
                         <Link href="#">
-                          <Boxes />
+                          <Plus />
                           Add Category
                         </Link>
                       </SidebarMenuButton>

@@ -257,14 +257,52 @@ const Navbar = () => {
                         avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-blue-500 transition-all duration-200"
                       }
                     }}
-                  />
+                  >
+                    <UserButton.MenuItems>
+                      <UserButton.Link
+                        label="My Orders"
+                        labelIcon={<User className="w-4 h-4" />}
+                        href="/orders"
+                      />
+                    </UserButton.MenuItems>
+                  </UserButton>
                 </SignedIn>
               </div>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile Menu Button & Auth */}
             <div className="md:hidden flex items-center space-x-3">
               <ShoppingCartIcon />
+              {/* Mobile Auth - Direct in Navbar */}
+              <div className="flex items-center">
+                <SignedOut>
+                  <SignInButton>
+                    <button 
+                      className="flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                      aria-label="Sign in"
+                    >
+                      <User className="w-5 h-5" />
+                    </button>
+                  </SignInButton>
+                </SignedOut>
+                <SignedIn>
+                  <UserButton 
+                    appearance={{
+                      elements: {
+                        avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-blue-500 transition-all duration-200"
+                      }
+                    }}
+                  >
+                    <UserButton.MenuItems>
+                      <UserButton.Link
+                        label="My Orders"
+                        labelIcon={<User className="w-4 h-4" />}
+                        href="/orders"
+                      />
+                    </UserButton.MenuItems>
+                  </UserButton>
+                </SignedIn>
+              </div>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                 className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
@@ -352,24 +390,6 @@ const Navbar = () => {
                   >
                     Contact
                   </a>
-                </div>
-                
-                {/* Mobile Auth */}
-                <div className="px-3 py-2 border-t border-gray-100 mt-2 pt-2">
-                  <SignedOut>
-                    <SignInButton>
-                      <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 font-medium">
-                        <User className="w-4 h-4" />
-                        <span>Sign In</span>
-                      </button>
-                    </SignInButton>
-                  </SignedOut>
-                  <SignedIn>
-                    <div className="flex items-center space-x-2">
-                      <UserButton />
-                      <span className="text-gray-600">Account</span>
-                    </div>
-                  </SignedIn>
                 </div>
               </div>
             </div>

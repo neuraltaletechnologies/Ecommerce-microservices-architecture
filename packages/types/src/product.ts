@@ -106,6 +106,23 @@ export const ProductFormSchema = z
     images: z.record(z.string(), z.string(), {
       message: "Image for each color is required!",
     }),
+    techHighlights: z.array(z.object({
+      label: z.string(),
+      icon: z.string(),
+    })).optional(),
+    boxContents: z.array(z.string()).optional(),
+    productFeatures: z.array(z.object({
+      title: z.string(),
+      description: z.string(),
+    })).optional(),
+    technicalSpecs: z.record(z.string(), z.array(z.object({
+      label: z.string(),
+      value: z.string(),
+    }))).optional(),
+    certifications: z.array(z.object({
+      label: z.string(),
+      icon: z.string(),
+    })).optional(),
   })
   .refine(
     (data) => {

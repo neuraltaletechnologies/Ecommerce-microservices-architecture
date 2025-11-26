@@ -1,7 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { CustomJwtSessionClaims } from "@repo/types";
 
-const isPublicRoute = createRouteMatcher(["/sign-in(.*)","/unauthorized(.*)"]);
+const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/unauthorized(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   if (!isPublicRoute(req)) {

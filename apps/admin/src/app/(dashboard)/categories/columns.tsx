@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,25 +10,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { cn } from "@/lib/utils";
-import { ProductType } from "@repo/types";
+import { CategoryType } from "@repo/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 
-// export type Product = {
-//   id: string | number;
-//   price: number;
-//   name: string;
-//   shortDescription: string;
-//   description: string;
-//   sizes: string[];
-//   colors: string[];
-//   images: Record<string, string>;
-// };
-
-export const columns: ColumnDef<ProductType>[] = [
+export const columns: ColumnDef<CategoryType>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -49,68 +35,27 @@ export const columns: ColumnDef<ProductType>[] = [
     ),
   },
   {
-    accessorKey: "image",
-    header: "Image",
-    cell: ({ row }) => {
-      const product = row.original;
-      return (
-        <div className="w-9 h-9 relative">
-          <Image
-            src={
-              (product.images as Record<string, string>)?.[
-                product.colors[0] || ""
-              ] || ""
-            }
-            alt={product.name}
-            fill
-            className="rounded-full object-cover"
-          />
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => {
-      const product = row.original;
-      const hasExtendedData = product.techHighlights || product.boxContents || 
-                              product.productFeatures || product.technicalSpecs || 
-                              product.certifications;
-      return (
-        <div className="flex items-center gap-2">
-          <span>{product.name}</span>
-          {hasExtendedData && (
-            <Badge variant="secondary" className="text-xs">
-              Extended
-            </Badge>
-          )}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "price",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Price
+          Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
   },
   {
-    accessorKey: "shortDescription",
-    header: "Description",
+    accessorKey: "slug",
+    header: "Slug",
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const product = row.original;
+      const category = row.original;
 
       return (
         <DropdownMenu>
@@ -124,14 +69,14 @@ export const columns: ColumnDef<ProductType>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() =>
-                navigator.clipboard.writeText(product.id.toString())
+                navigator.clipboard.writeText(category.slug)
               }
             >
-              Copy product ID
+              Copy category slug
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/products/${product.id}`}>View product</Link>
+              <Link href={`/categories/${category.id}`}>View category</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
