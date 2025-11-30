@@ -35,7 +35,7 @@ const TrustIndicators = () => {
     },
     {
       name: "Samsung",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg",
+      logo: "https://www.svgrepo.com/show/303265/samsung-logo.svg",
     },
     {
       name: "Sony",
@@ -51,7 +51,7 @@ const TrustIndicators = () => {
     },
     {
       name: "Lenovo",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/0/03/Lenovo_Global_Corporate_Logo.svg",
+      logo: "https://images.seeklogo.com/logo-png/26/1/lenovo-logo-png_seeklogo-267847.png",
     },
     {
       name: "Asus",
@@ -63,11 +63,7 @@ const TrustIndicators = () => {
     },
     {
       name: "LG",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/b/bf/LG_logo_%282015%29.svg",
-    },
-    {
-      name: "Canon",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/4/45/Canon_wordmark.svg",
+      logo: "https://images.seeklogo.com/logo-png/29/1/lg-electronics-logo-png_seeklogo-298561.png",
     },
   ];
 
