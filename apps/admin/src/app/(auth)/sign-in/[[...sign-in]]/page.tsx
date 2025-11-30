@@ -19,6 +19,8 @@ export default function Page() {
           routing="path"
           path="/sign-in"
           signUpUrl={undefined}
+          forceRedirectUrl="/"
+          fallbackRedirectUrl="/"
         />
       </div>
     </div>
