@@ -4,6 +4,9 @@ export interface CustomJwtSessionClaims {
   metadata?: {
     role?: "user" | "admin";
   };
+  publicMetadata?: {
+    role?: "user" | "admin";
+  };
 }
 
 export const UserFormSchema = z.object({

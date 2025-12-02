@@ -23,7 +23,9 @@ export default clerkMiddleware(async (auth, req) => {
   const { userId, sessionClaims } = await auth();
 
   if (userId && sessionClaims) {
-    const userRole = (sessionClaims as CustomJwtSessionClaims).metadata?.role;
+    const claims = sessionClaims as CustomJwtSessionClaims;
+    // Check both publicMetadata and metadata for the role
+    const userRole = claims.publicMetadata?.role || claims.metadata?.role;
 
     // Check if user has admin role
     if (userRole !== "admin") {
