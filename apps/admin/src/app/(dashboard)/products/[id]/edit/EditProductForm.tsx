@@ -145,18 +145,6 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       setIsLoading(false);
     }
   };
-      }
-
-      toast.success("Product updated successfully");
-      router.push(`/products/${product.id}`);
-      router.refresh();
-    } catch (error) {
-      console.error("Error updating product:", error);
-      toast.error("Failed to update product");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="max-w-6xl mx-auto pb-10">
@@ -169,535 +157,392 @@ export default function EditProductForm({ product }: EditProductFormProps) {
         </Link>
       </div>
 
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
-              <CardDescription>
-                Essential product details and pricing
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Product Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Enter the product name (e.g., Gaming Laptop, Wireless Earbuds)
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Basic Information</CardTitle>
+            <CardDescription>Essential product details and pricing</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="name">Product Name</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+                required
               />
+            </div>
 
-              <FormField
-                control={form.control}
-                name="shortDescription"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Short Description</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Brief specs and features
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
+            <div>
+              <Label htmlFor="shortDescription">Short Description</Label>
+              <Input
+                id="shortDescription"
+                value={formData.shortDescription}
+                onChange={(e) => setFormData({...formData, shortDescription: e.target.value})}
+                maxLength={60}
+                required
               />
+            </div>
 
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} rows={4} />
-                    </FormControl>
-                    <FormDescription>
-                      Detailed product description
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
+            <div>
+              <Label htmlFor="description">Full Description</Label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                rows={4}
+                required
               />
+            </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Price (TZS)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) => field.onChange(Number(e.target.value))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            <div>
+              <Label htmlFor="price">Price</Label>
+              <Input
+                id="price"
+                type="number"
+                value={formData.price}
+                onChange={(e) => setFormData({...formData, price: parseFloat(e.target.value)})}
+                required
+              />
+            </div>
 
-                <FormField
-                  control={form.control}
-                  name="stock"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Stock</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) => field.onChange(Number(e.target.value))}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+            <div>
+              <Label htmlFor="category">Category</Label>
+              <Select
+                value={formData.categorySlug}
+                onValueChange={(value) => setFormData({...formData, categorySlug: value})}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories?.map((category: CategoryType) => (
+                    <SelectItem key={category.slug} value={category.slug}>
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Variants & Options */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Variants & Options</CardTitle>
+            <CardDescription>Available colors and sizes</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div>
+              <Label className="mb-3 block">Colors</Label>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {availableColors.map((color) => (
+                  <div key={color} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`color-${color}`}
+                      checked={formData.colors.includes(color)}
+                      onCheckedChange={() => handleColorToggle(color)}
+                    />
+                    <Label htmlFor={`color-${color}`} className="cursor-pointer">
+                      {color}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <Label className="mb-3 block">Sizes</Label>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {availableSizes.map((size) => (
+                  <div key={size} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={`size-${size}`}
+                      checked={formData.sizes.includes(size)}
+                      onCheckedChange={() => handleSizeToggle(size)}
+                    />
+                    <Label htmlFor={`size-${size}`} className="cursor-pointer">
+                      {size}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Product Images */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Product Images</CardTitle>
+            <CardDescription>Image URLs for each selected color</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {formData.colors.map((color) => (
+              <div key={color}>
+                <Label htmlFor={`image-${color}`}>{color}</Label>
+                <Input
+                  id={`image-${color}`}
+                  placeholder={`Image URL for ${color}`}
+                  value={formData.images[color] || ""}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    images: {...formData.images, [color]: e.target.value}
+                  })}
                 />
               </div>
+            ))}
+          </CardContent>
+        </Card>
 
-              <FormField
-                control={form.control}
-                name="categorySlug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {categories?.map((category: CategoryType) => (
-                          <SelectItem key={category.id} value={category.slug}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
+        {/* Extended Information */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Extended Product Information</CardTitle>
+            <CardDescription>Additional details and specifications</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Tech Highlights */}
+            <div>
+              <Label className="mb-2 block">Tech Highlights</Label>
+              {formData.techHighlights.map((item, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <Input
+                    placeholder="Label"
+                    value={item.label}
+                    onChange={(e) => {
+                      const updated = [...formData.techHighlights];
+                      if (updated[index]) {
+                        updated[index].label = e.target.value;
+                        setFormData({...formData, techHighlights: updated});
+                      }
+                    }}
+                  />
+                  <Input
+                    placeholder="Icon"
+                    value={item.icon}
+                    onChange={(e) => {
+                      const updated = [...formData.techHighlights];
+                      if (updated[index]) {
+                        updated[index].icon = e.target.value;
+                        setFormData({...formData, techHighlights: updated});
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        techHighlights: formData.techHighlights.filter((_, i) => i !== index)
+                      });
+                    }}
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setFormData({
+                    ...formData,
+                    techHighlights: [...formData.techHighlights, {label: "", icon: ""}]
+                  });
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add Highlight
+              </Button>
+            </div>
+
+            {/* Box Contents */}
+            <div>
+              <Label className="mb-2 block">What&apos;s in the Box</Label>
+              {formData.boxContents.map((item, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <Input
+                    placeholder="Item"
+                    value={item}
+                    onChange={(e) => {
+                      const updated = [...formData.boxContents];
+                      updated[index] = e.target.value;
+                      setFormData({...formData, boxContents: updated});
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        boxContents: formData.boxContents.filter((_, i) => i !== index)
+                      });
+                    }}
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setFormData({
+                    ...formData,
+                    boxContents: [...formData.boxContents, ""]
+                  });
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add Item
+              </Button>
+            </div>
+
+            {/* Product Features */}
+            <div>
+              <Label className="mb-2 block">Product Features</Label>
+              {formData.productFeatures.map((item, index) => (
+                <div key={index} className="space-y-2 mb-4 p-3 border rounded">
+                  <Input
+                    placeholder="Title"
+                    value={item.title}
+                    onChange={(e) => {
+                      const updated = [...formData.productFeatures];
+                      if (updated[index]) {
+                        updated[index].title = e.target.value;
+                        setFormData({...formData, productFeatures: updated});
+                      }
+                    }}
+                  />
+                  <Textarea
+                    placeholder="Description"
+                    value={item.description}
+                    onChange={(e) => {
+                      const updated = [...formData.productFeatures];
+                      if (updated[index]) {
+                        updated[index].description = e.target.value;
+                        setFormData({...formData, productFeatures: updated});
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        productFeatures: formData.productFeatures.filter((_, i) => i !== index)
+                      });
+                    }}
+                  >
+                    <Trash className="h-4 w-4 mr-2" /> Remove Feature
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setFormData({
+                    ...formData,
+                    productFeatures: [...formData.productFeatures, {title: "", description: ""}]
+                  });
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add Feature
+              </Button>
+            </div>
+
+            {/* Technical Specs */}
+            <div>
+              <Label className="mb-2 block">Technical Specifications (JSON)</Label>
+              <Textarea
+                placeholder='{"General": [{"label": "Model", "value": "XYZ-2024"}]}'
+                value={JSON.stringify(formData.technicalSpecs, null, 2)}
+                onChange={(e) => {
+                  try {
+                    const parsed = JSON.parse(e.target.value);
+                    setFormData({...formData, technicalSpecs: parsed});
+                  } catch {
+                    // Invalid JSON, don't update
+                  }
+                }}
+                rows={6}
               />
-            </CardContent>
-          </Card>
+            </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Variants & Options</CardTitle>
-              <CardDescription>
-                Available colors and sizes for this product
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="colors"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Colors</FormLabel>
-                    <div className="grid grid-cols-3 gap-3">
-                      {colors.map((color) => (
-                        <FormField
-                          key={color}
-                          control={form.control}
-                          name="colors"
-                          render={({ field }) => (
-                            <FormItem
-                              key={color}
-                              className="flex flex-row items-start space-x-3 space-y-0"
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(color)}
-                                  onCheckedChange={(checked) => {
-                                    const newColors = checked
-                                      ? [...(field.value || []), color]
-                                      : field.value?.filter((val) => val !== color) || [];
-                                    field.onChange(newColors);
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal">{color}</FormLabel>
-                            </FormItem>
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {/* Certifications */}
+            <div>
+              <Label className="mb-2 block">Certifications</Label>
+              {formData.certifications.map((item, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <Input
+                    placeholder="Label"
+                    value={item.label}
+                    onChange={(e) => {
+                      const updated = [...formData.certifications];
+                      if (updated[index]) {
+                        updated[index].label = e.target.value;
+                        setFormData({...formData, certifications: updated});
+                      }
+                    }}
+                  />
+                  <Input
+                    placeholder="Icon"
+                    value={item.icon}
+                    onChange={(e) => {
+                      const updated = [...formData.certifications];
+                      if (updated[index]) {
+                        updated[index].icon = e.target.value;
+                        setFormData({...formData, certifications: updated});
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        certifications: formData.certifications.filter((_, i) => i !== index)
+                      });
+                    }}
+                  >
+                    <Trash className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setFormData({
+                    ...formData,
+                    certifications: [...formData.certifications, {label: "", icon: ""}]
+                  });
+                }}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add Certification
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
-              <FormField
-                control={form.control}
-                name="sizes"
-                render={() => (
-                  <FormItem>
-                    <FormLabel>Sizes</FormLabel>
-                    <div className="grid grid-cols-3 gap-3">
-                      {sizes.map((size) => (
-                        <FormField
-                          key={size}
-                          control={form.control}
-                          name="sizes"
-                          render={({ field }) => (
-                            <FormItem
-                              key={size}
-                              className="flex flex-row items-start space-x-3 space-y-0"
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(size)}
-                                  onCheckedChange={(checked) => {
-                                    const newSizes = checked
-                                      ? [...(field.value || []), size]
-                                      : field.value?.filter((val) => val !== size) || [];
-                                    field.onChange(newSizes);
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal">{size}</FormLabel>
-                            </FormItem>
-                          )}
-                        />
-                      ))}
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Product Images</CardTitle>
-              <CardDescription>
-                Add image URLs for each color variant
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <FormField
-                control={form.control}
-                name="images"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Image URLs by Color</FormLabel>
-                    <FormControl>
-                      <div className="space-y-3">
-                        {form.watch("colors")?.map((color) => (
-                          <div key={color} className="flex gap-2 items-center">
-                            <Label className="w-24">{color}</Label>
-                            <Input
-                              placeholder={`Enter ${color} image URL`}
-                              value={field.value?.[color] || ""}
-                              onChange={(e) => {
-                                field.onChange({
-                                  ...field.value,
-                                  [color]: e.target.value,
-                                });
-                              }}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </FormControl>
-                    <FormDescription>
-                      Provide image URLs for selected colors
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Extended Product Information</CardTitle>
-              <CardDescription>
-                Additional details for enhanced product presentation
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <FormField
-                control={form.control}
-                name="techHighlights"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tech Highlights</FormLabel>
-                    <FormControl>
-                      <div className="space-y-2">
-                        {(field.value || []).map((_, index) => (
-                          <div key={index} className="flex gap-2">
-                            <Input
-                              placeholder="Enter highlight"
-                              value={field.value?.[index] || ""}
-                              onChange={(e) => {
-                                const newHighlights = [...(field.value || [])];
-                                newHighlights[index] = e.target.value;
-                                field.onChange(newHighlights);
-                              }}
-                            />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => {
-                                const newHighlights = field.value?.filter((_, i) => i !== index) || [];
-                                field.onChange(newHighlights);
-                              }}
-                            >
-                              <Trash className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => field.onChange([...(field.value || []), ""])}
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Highlight
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormDescription>
-                      Key technical features and highlights
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="boxContents"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Box Contents</FormLabel>
-                    <FormControl>
-                      <div className="space-y-2">
-                        {(field.value || []).map((_, index) => (
-                          <div key={index} className="flex gap-2">
-                            <Input
-                              placeholder="Item in the box"
-                              value={field.value?.[index] || ""}
-                              onChange={(e) => {
-                                const newContents = [...(field.value || [])];
-                                newContents[index] = e.target.value;
-                                field.onChange(newContents);
-                              }}
-                            />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => {
-                                const newContents = field.value?.filter((_, i) => i !== index) || [];
-                                field.onChange(newContents);
-                              }}
-                            >
-                              <Trash className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => field.onChange([...(field.value || []), ""])}
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Item
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormDescription>
-                      What&apos;s included in the box
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="productFeatures"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Product Features</FormLabel>
-                    <FormControl>
-                      <div className="space-y-2">
-                        {(field.value || []).map((_, index) => (
-                          <div key={index} className="flex gap-2">
-                            <Input
-                              placeholder="Feature description"
-                              value={field.value?.[index] || ""}
-                              onChange={(e) => {
-                                const newFeatures = [...(field.value || [])];
-                                newFeatures[index] = e.target.value;
-                                field.onChange(newFeatures);
-                              }}
-                            />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => {
-                                const newFeatures = field.value?.filter((_, i) => i !== index) || [];
-                                field.onChange(newFeatures);
-                              }}
-                            >
-                              <Trash className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => field.onChange([...(field.value || []), ""])}
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Feature
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormDescription>
-                      Detailed product features
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="technicalSpecs"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Technical Specifications</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder='Enter as JSON, e.g., {"Display": "15.6 FHD", "RAM": "16GB DDR4"}'
-                        value={JSON.stringify(field.value || {}, null, 2)}
-                        onChange={(e) => {
-                          try {
-                            const parsed = JSON.parse(e.target.value);
-                            field.onChange(parsed);
-                          } catch {
-                            // Invalid JSON, don't update
-                          }
-                        }}
-                        rows={6}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Technical specifications in JSON format
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="certifications"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Certifications</FormLabel>
-                    <FormControl>
-                      <div className="space-y-2">
-                        {(field.value || []).map((cert, index) => (
-                          <div key={index} className="flex gap-2">
-                            <Input
-                              placeholder="Label (e.g., CE Certified)"
-                              value={cert.label}
-                              onChange={(e) => {
-                                const newCerts = [...(field.value || [])];
-                                if (newCerts[index]) {
-                                  newCerts[index].label = e.target.value;
-                                  field.onChange(newCerts);
-                                }
-                              }}
-                            />
-                            <Input
-                              placeholder="Icon (e.g., ShieldCheck)"
-                              value={cert.icon}
-                              onChange={(e) => {
-                                const newCerts = [...(field.value || [])];
-                                if (newCerts[index]) {
-                                  newCerts[index].icon = e.target.value;
-                                  field.onChange(newCerts);
-                                }
-                              }}
-                            />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="sm"
-                              onClick={() => {
-                                const newCerts = (field.value || []).filter((_, i) => i !== index);
-                                field.onChange(newCerts);
-                              }}
-                            >
-                              <Trash className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        ))}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            field.onChange([...(field.value || []), { label: "", icon: "" }]);
-                          }}
-                        >
-                          <Plus className="h-4 w-4 mr-2" />
-                          Add Certification
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormDescription>
-                      Certifications and compliance badges
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-          </Card>
-
-          <div className="flex gap-4 sticky bottom-0 bg-background pt-4 border-t">
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
-                </>
-              ) : (
-                "Update Product"
-              )}
-            </Button>
+        {/* Footer */}
+        <div className="sticky bottom-0 bg-background border-t py-4">
+          <div className="flex justify-end gap-4">
             <Button
               type="button"
               variant="outline"
@@ -706,9 +551,13 @@ export default function EditProductForm({ product }: EditProductFormProps) {
             >
               Cancel
             </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Update Product
+            </Button>
           </div>
-        </form>
-      </Form>
+        </div>
+      </form>
     </div>
   );
 }
