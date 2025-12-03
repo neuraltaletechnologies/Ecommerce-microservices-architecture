@@ -12,12 +12,17 @@ router.get("/", async (req, res) => {
       data: users.data || [],
       totalCount: users.totalCount || 0
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching users:", error);
+    console.error("Error details:", {
+      message: error?.message,
+      status: error?.status,
+      clerkError: error?.clerkError
+    });
     res.status(500).json({
       data: [],
       totalCount: 0,
-      error: "Failed to fetch users"
+      error: error?.message || "Failed to fetch users"
     });
   }
 });
@@ -29,15 +34,22 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-  type CreateParams = Parameters<typeof clerkClient.users.createUser>[0];
-  const newUser: CreateParams = req.body;
-  const user = await clerkClient.users.createUser(newUser);
-  // Send welcome email directly
-  await sendUserWelcomeEmail(
-    user.emailAddresses[0]?.emailAddress || '',
-    user.username || ''
-  );
-  res.status(200).json(user);
+  try {
+    type CreateParams = Parameters<typeof clerkClient.users.createUser>[0];
+    const newUser: CreateParams = req.body;
+    const user = await clerkClient.users.createUser(newUser);
+    // Send welcome email directly
+    await sendUserWelcomeEmail(
+      user.emailAddresses[0]?.emailAddress || '',
+      user.username || ''
+    );
+    res.status(200).json(user);
+  } catch (error: any) {
+    console.error("Error creating user:", error);
+    res.status(500).json({
+      error: error?.message || "Failed to create user"
+    });
+  }
 });
 
 router.delete("/:id", async (req, res) => {

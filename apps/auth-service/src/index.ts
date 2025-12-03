@@ -24,6 +24,12 @@ app.use(
 app.use(express.json());
 app.use(clerkMiddleware());
 
+// Add request logging for debugging
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
 app.get("/health", (req: Request, res: Response) => {
   return res.status(200).json({
     status: "ok",

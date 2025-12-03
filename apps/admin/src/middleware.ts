@@ -14,7 +14,7 @@ export default clerkMiddleware(async (auth, req) => {
 
   // Protect all other routes - if not authenticated, Clerk will redirect to sign-in
   try {
-    await auth.protect();
+    await auth.protect(); 
   } catch (error) {
     // User not authenticated, let Clerk handle the redirect
     return NextResponse.redirect(new URL("/sign-in", req.url));

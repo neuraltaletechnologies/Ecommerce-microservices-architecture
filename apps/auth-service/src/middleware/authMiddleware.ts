@@ -40,9 +40,17 @@ export const shouldBeAdmin = (
   }
 
   const claims = auth.sessionClaims as CustomJwtSessionClaims;
+  const userRole = claims.publicMetadata?.role || claims.metadata?.role;
 
-  if (claims.metadata?.role !== "admin") {
-    return res.status(403).send({ message: "Unauthorized!" });
+  console.log('Auth Service - Admin Check:', {
+    userId,
+    userRole,
+    hasPublicMetadata: !!claims.publicMetadata,
+    hasMetadata: !!claims.metadata
+  });
+
+  if (userRole !== "admin") {
+    return res.status(403).send({ message: "Unauthorized! Admin access required." });
   }
 
   req.userId = auth.userId;
