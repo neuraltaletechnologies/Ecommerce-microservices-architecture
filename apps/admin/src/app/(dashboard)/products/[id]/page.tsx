@@ -287,19 +287,26 @@ export default function ViewProductPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {Object.entries(images).map(([color, imageUrl]) => (
-              <div key={color} className="space-y-2">
-                <div className="relative w-full h-32 rounded-lg overflow-hidden border">
-                  <Image
-                    src={imageUrl}
-                    alt={`${product.name} - ${color}`}
-                    fill
-                    className="object-cover"
-                  />
+            {Object.entries(images).map(([color, imageUrl]) => {
+              const hasImage = imageUrl && imageUrl.trim() !== "";
+              return (
+                <div key={color} className="space-y-2">
+                  <div className="relative w-full h-32 rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center">
+                    {hasImage ? (
+                      <Image
+                        src={imageUrl}
+                        alt={`${product.name} - ${color}`}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="text-sm text-gray-400">No image</span>
+                    )}
+                  </div>
+                  <p className="text-sm text-center text-muted-foreground">{color}</p>
                 </div>
-                <p className="text-sm text-center text-muted-foreground">{color}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </CardContent>
       </Card>

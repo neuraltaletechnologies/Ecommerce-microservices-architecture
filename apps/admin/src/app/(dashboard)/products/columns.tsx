@@ -53,18 +53,22 @@ export const columns: ColumnDef<ProductType>[] = [
     header: "Image",
     cell: ({ row }) => {
       const product = row.original;
+      const imageUrl = (product.images as Record<string, string>)?.[
+        product.colors[0] || ""
+      ];
+      
       return (
-        <div className="w-9 h-9 relative">
-          <Image
-            src={
-              (product.images as Record<string, string>)?.[
-                product.colors[0] || ""
-              ] || ""
-            }
-            alt={product.name}
-            fill
-            className="rounded-full object-cover"
-          />
+        <div className="w-9 h-9 relative bg-gray-100 rounded-full flex items-center justify-center">
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={product.name}
+              fill
+              className="rounded-full object-cover"
+            />
+          ) : (
+            <span className="text-xs text-gray-400">No img</span>
+          )}
         </div>
       );
     },
