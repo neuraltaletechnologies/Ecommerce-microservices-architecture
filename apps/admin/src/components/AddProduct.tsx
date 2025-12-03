@@ -129,7 +129,7 @@ const AddProduct = () => {
     <SheetContent>
       <ScrollArea className="h-screen">
         <SheetHeader>
-          <SheetTitle className="mb-4">Add Tech Product</SheetTitle>
+          <SheetTitle className="mb-4">Add New Tech Product</SheetTitle>
           <SheetDescription asChild>
             <Form {...form}>
               <form
@@ -240,34 +240,96 @@ const AddProduct = () => {
                   name="sizes"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Sizes</FormLabel>
+                      <FormLabel>Sizes / Capacities / Variants</FormLabel>
                       <FormControl>
-                        <div className="grid grid-cols-3 gap-4 my-2">
-                          {sizes.map((size) => (
-                            <div className="flex items-center gap-2" key={size}>
-                              <Checkbox
-                                id="size"
-                                checked={field.value?.includes(size)}
-                                onCheckedChange={(checked) => {
-                                  const currentValues = field.value || [];
-                                  if (checked) {
-                                    field.onChange([...currentValues, size]);
-                                  } else {
-                                    field.onChange(
-                                      currentValues.filter((v) => v !== size)
-                                    );
-                                  }
-                                }}
-                              />
-                              <label htmlFor="size" className="text-xs">
-                                {size}
-                              </label>
+                        <div className="space-y-4">
+                          {/* Storage Capacities */}
+                          <div>
+                            <p className="text-sm font-medium mb-2 text-muted-foreground">Storage Capacity</p>
+                            <div className="grid grid-cols-3 gap-3">
+                              {sizes.filter(s => s.includes('GB') || s.includes('TB')).map((size) => (
+                                <div className="flex items-center gap-2" key={size}>
+                                  <Checkbox
+                                    id={`size-${size}`}
+                                    checked={field.value?.includes(size)}
+                                    onCheckedChange={(checked) => {
+                                      const currentValues = field.value || [];
+                                      if (checked) {
+                                        field.onChange([...currentValues, size]);
+                                      } else {
+                                        field.onChange(
+                                          currentValues.filter((v) => v !== size)
+                                        );
+                                      }
+                                    }}
+                                  />
+                                  <label htmlFor={`size-${size}`} className="text-xs font-medium cursor-pointer">
+                                    {size}
+                                  </label>
+                                </div>
+                              ))}
                             </div>
-                          ))}
+                          </div>
+                          
+                          {/* Screen Sizes */}
+                          <div>
+                            <p className="text-sm font-medium mb-2 text-muted-foreground">Screen Size / Watch Size</p>
+                            <div className="grid grid-cols-3 gap-3">
+                              {sizes.filter(s => s.includes('inch') || s.includes('mm')).map((size) => (
+                                <div className="flex items-center gap-2" key={size}>
+                                  <Checkbox
+                                    id={`size-${size}`}
+                                    checked={field.value?.includes(size)}
+                                    onCheckedChange={(checked) => {
+                                      const currentValues = field.value || [];
+                                      if (checked) {
+                                        field.onChange([...currentValues, size]);
+                                      } else {
+                                        field.onChange(
+                                          currentValues.filter((v) => v !== size)
+                                        );
+                                      }
+                                    }}
+                                  />
+                                  <label htmlFor={`size-${size}`} className="text-xs font-medium cursor-pointer">
+                                    {size}
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          
+                          {/* Other Sizes */}
+                          <div>
+                            <p className="text-sm font-medium mb-2 text-muted-foreground">Other Variants</p>
+                            <div className="grid grid-cols-3 gap-3">
+                              {sizes.filter(s => !s.includes('GB') && !s.includes('TB') && !s.includes('inch') && !s.includes('mm')).map((size) => (
+                                <div className="flex items-center gap-2" key={size}>
+                                  <Checkbox
+                                    id={`size-${size}`}
+                                    checked={field.value?.includes(size)}
+                                    onCheckedChange={(checked) => {
+                                      const currentValues = field.value || [];
+                                      if (checked) {
+                                        field.onChange([...currentValues, size]);
+                                      } else {
+                                        field.onChange(
+                                          currentValues.filter((v) => v !== size)
+                                        );
+                                      }
+                                    }}
+                                  />
+                                  <label htmlFor={`size-${size}`} className="text-xs font-medium cursor-pointer">
+                                    {size}
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </FormControl>
                       <FormDescription>
-                        Select available storage/RAM options (e.g., 256GB, 512GB, 1TB) or screen sizes.
+                        Select available storage capacities, screen sizes, or other product variants.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -276,128 +338,291 @@ const AddProduct = () => {
                 <FormField
                   control={form.control}
                   name="colors"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Colors</FormLabel>
-                      <FormControl>
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-3 gap-4 my-2">
-                            {colors.map((color) => (
-                              <div
-                                className="flex items-center gap-2"
-                                key={color}
-                              >
-                                <Checkbox
-                                  id="color"
-                                  checked={field.value?.includes(color)}
-                                  onCheckedChange={(checked) => {
-                                    const currentValues = field.value || [];
-                                    if (checked) {
-                                      field.onChange([...currentValues, color]);
-                                    } else {
-                                      field.onChange(
-                                        currentValues.filter((v) => v !== color)
-                                      );
-                                    }
-                                  }}
-                                />
-                                <label
-                                  htmlFor="color"
-                                  className="text-xs flex items-center gap-2"
-                                >
-                                  <div
-                                    className="w-2 h-2 rounded-full"
-                                    style={{ backgroundColor: color }}
-                                  />
-                                  {color}
-                                </label>
+                  render={({ field }) => {
+                    // Color mapping for better visual representation
+                    const getColorStyle = (color: string) => {
+                      const colorMap: Record<string, string> = {
+                        'Natural Titanium': '#8B8680',
+                        'Blue Titanium': '#5B7C99',
+                        'White Titanium': '#E8E4E0',
+                        'Black Titanium': '#3A3A3C',
+                        'Titanium Gray': '#71706E',
+                        'Titanium Black': '#2D2D2F',
+                        'Titanium Violet': '#8B6C9C',
+                        'Titanium Yellow': '#F5D547',
+                        'Space Black': '#1C1C1E',
+                        'Silver': '#C0C0C0',
+                        'Platinum Silver': '#E5E4E2',
+                        'Graphite': '#41424C',
+                        'Off Black': '#2C2C2E',
+                        'Storm Grey': '#6C7278',
+                        'White Smoke': '#F5F5F5',
+                        'Moonstone Blue': '#73A9C2',
+                        'Pale Gray': '#D3D3D3',
+                        'Off-White': '#FAF9F6',
+                        'Dark Grey': '#4A4A4A',
+                        'Natural': '#E8DCC8',
+                        'Platinum': '#E5E4E2',
+                        'Sapphire': '#0F52BA',
+                        'Dune': '#C5B59A',
+                        'Black/Cyan': 'linear-gradient(90deg, #000000 50%, #00FFFF 50%)',
+                        'White/Black': 'linear-gradient(90deg, #FFFFFF 50%, #000000 50%)',
+                        'blue': '#3B82F6',
+                        'green': '#22C55E',
+                        'red': '#EF4444',
+                        'yellow': '#EAB308',
+                        'purple': '#A855F7',
+                        'orange': '#F97316',
+                        'pink': '#EC4899',
+                        'brown': '#92400E',
+                        'gray': '#6B7280',
+                        'black': '#000000',
+                        'white': '#FFFFFF',
+                      };
+                      return colorMap[color] || color.toLowerCase();
+                    };
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Colors / Finishes</FormLabel>
+                        <FormControl>
+                          <div className="space-y-4">
+                            {/* Premium/Titanium Colors */}
+                            <div>
+                              <p className="text-sm font-medium mb-2 text-muted-foreground">Premium Finishes</p>
+                              <div className="grid grid-cols-2 gap-3">
+                                {colors.filter(c => c.includes('Titanium') || c === 'Platinum' || c === 'Sapphire').map((color) => {
+                                  const colorStyle = getColorStyle(color);
+                                  const isGradient = colorStyle.includes('gradient');
+                                  return (
+                                    <div className="flex items-center gap-2" key={color}>
+                                      <Checkbox
+                                        id={`color-${color}`}
+                                        checked={field.value?.includes(color)}
+                                        onCheckedChange={(checked) => {
+                                          const currentValues = field.value || [];
+                                          if (checked) {
+                                            field.onChange([...currentValues, color]);
+                                          } else {
+                                            field.onChange(
+                                              currentValues.filter((v) => v !== color)
+                                            );
+                                          }
+                                        }}
+                                      />
+                                      <label htmlFor={`color-${color}`} className="text-xs flex items-center gap-2 cursor-pointer">
+                                        <div
+                                          className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
+                                          style={isGradient ? { background: colorStyle } : { backgroundColor: colorStyle }}
+                                        />
+                                        <span className="font-medium">{color}</span>
+                                      </label>
+                                    </div>
+                                  );
+                                })}
                               </div>
-                            ))}
+                            </div>
+
+                            {/* Standard Colors */}
+                            <div>
+                              <p className="text-sm font-medium mb-2 text-muted-foreground">Standard Colors</p>
+                              <div className="grid grid-cols-2 gap-3">
+                                {colors.filter(c => !c.includes('Titanium') && c !== 'Platinum' && c !== 'Sapphire' && !c.includes('/')).map((color) => {
+                                  const colorStyle = getColorStyle(color);
+                                  return (
+                                    <div className="flex items-center gap-2" key={color}>
+                                      <Checkbox
+                                        id={`color-${color}`}
+                                        checked={field.value?.includes(color)}
+                                        onCheckedChange={(checked) => {
+                                          const currentValues = field.value || [];
+                                          if (checked) {
+                                            field.onChange([...currentValues, color]);
+                                          } else {
+                                            field.onChange(
+                                              currentValues.filter((v) => v !== color)
+                                            );
+                                          }
+                                        }}
+                                      />
+                                      <label htmlFor={`color-${color}`} className="text-xs flex items-center gap-2 cursor-pointer">
+                                        <div
+                                          className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
+                                          style={{ backgroundColor: colorStyle }}
+                                        />
+                                        <span className="capitalize">{color}</span>
+                                      </label>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+
+                            {/* Two-tone Colors */}
+                            {colors.some(c => c.includes('/')) && (
+                              <div>
+                                <p className="text-sm font-medium mb-2 text-muted-foreground">Two-Tone Finishes</p>
+                                <div className="grid grid-cols-2 gap-3">
+                                  {colors.filter(c => c.includes('/')).map((color) => {
+                                    const colorStyle = getColorStyle(color);
+                                    return (
+                                      <div className="flex items-center gap-2" key={color}>
+                                        <Checkbox
+                                          id={`color-${color}`}
+                                          checked={field.value?.includes(color)}
+                                          onCheckedChange={(checked) => {
+                                            const currentValues = field.value || [];
+                                            if (checked) {
+                                              field.onChange([...currentValues, color]);
+                                            } else {
+                                              field.onChange(
+                                                currentValues.filter((v) => v !== color)
+                                              );
+                                            }
+                                          }}
+                                        />
+                                        <label htmlFor={`color-${color}`} className="text-xs flex items-center gap-2 cursor-pointer">
+                                          <div
+                                            className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
+                                            style={{ background: colorStyle }}
+                                          />
+                                          <span className="font-medium">{color}</span>
+                                        </label>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            )}
                           </div>
-                        </div>
-                      </FormControl>
-                      <FormDescription>
-                        Select available colors/finishes for this tech product.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                        </FormControl>
+                        <FormDescription>
+                          Select available colors and finishes for this tech product.
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
                 <FormField
                   control={form.control}
                   name="images"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Images</FormLabel>
-                      <FormControl>
-                        <div className="">
-                          {form.watch("colors")?.map((color) => (
-                            <div
-                              className="mb-4 flex items-center gap-4"
-                              key={color}
-                            >
-                              <div className="flex items-center gap-2">
+                  render={({ field }) => {
+                    const getColorStyle = (color: string) => {
+                      const colorMap: Record<string, string> = {
+                        'Natural Titanium': '#8B8680',
+                        'Blue Titanium': '#5B7C99',
+                        'White Titanium': '#E8E4E0',
+                        'Black Titanium': '#3A3A3C',
+                        'Titanium Gray': '#71706E',
+                        'Space Black': '#1C1C1E',
+                        'Silver': '#C0C0C0',
+                        'Graphite': '#41424C',
+                        'blue': '#3B82F6',
+                        'green': '#22C55E',
+                        'red': '#EF4444',
+                        'black': '#000000',
+                        'white': '#FFFFFF',
+                      };
+                      return colorMap[color] || color.toLowerCase();
+                    };
+
+                    return (
+                      <FormItem>
+                        <FormLabel>Product Images</FormLabel>
+                        <FormControl>
+                          <div className="space-y-3">
+                            {form.watch("colors")?.length === 0 && (
+                              <p className="text-sm text-muted-foreground italic p-4 bg-muted/50 rounded-md">
+                                Select colors first to upload images for each variant.
+                              </p>
+                            )}
+                            {form.watch("colors")?.map((color) => {
+                              const colorStyle = getColorStyle(color);
+                              return (
                                 <div
-                                  className="w-4 h-4 rounded-full"
-                                  style={{ backgroundColor: color }}
-                                />
-                                <span className="text-sm font-medium min-w-[80px]">
-                                  {color}:
-                                </span>
-                              </div>
-                              <Input
-                                type="file"
-                                accept="image/*"
-                                onChange={async (e) => {
-                                  const file = e.target.files?.[0];
-                                  if (file) {
-                                    try {
-                                      const formData = new FormData();
-                                      formData.append("file", file);
-                                      formData.append(
-                                        "upload_preset",
-                                        "ecommerce"
-                                      );
+                                  className="p-3 border rounded-lg hover:border-primary/50 transition-colors"
+                                  key={color}
+                                >
+                                  <div className="flex items-center gap-3 mb-2">
+                                    <div
+                                      className="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0"
+                                      style={{ backgroundColor: colorStyle }}
+                                    />
+                                    <span className="text-sm font-semibold min-w-[120px]">
+                                      {color}
+                                    </span>
+                                    {field.value?.[color] && (
+                                      <span className="text-xs text-green-600 font-medium flex items-center gap-1">
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        Uploaded
+                                      </span>
+                                    )}
+                                  </div>
+                                  <Input
+                                    type="file"
+                                    accept="image/*"
+                                    className="text-xs"
+                                    onChange={async (e) => {
+                                      const file = e.target.files?.[0];
+                                      if (file) {
+                                        try {
+                                          toast.info(`Uploading ${color} image...`);
+                                          const formData = new FormData();
+                                          formData.append("file", file);
+                                          formData.append(
+                                            "upload_preset",
+                                            "ecommerce"
+                                          );
 
-                                      const res = await fetch(
-                                        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-                                        {
-                                          method: "POST",
-                                          body: formData,
+                                          const res = await fetch(
+                                            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+                                            {
+                                              method: "POST",
+                                              body: formData,
+                                            }
+                                          );
+                                          const data = await res.json();
+
+                                          if (data.secure_url) {
+                                            const currentImages =
+                                              form.getValues("images") || {};
+                                            form.setValue("images", {
+                                              ...currentImages,
+                                              [color]: data.secure_url,
+                                            });
+                                            toast.success(`${color} image uploaded!`);
+                                          }
+                                        } catch (error) {
+                                          console.log(error);
+                                          toast.error(`Failed to upload ${color} image!`);
                                         }
-                                      );
-                                      const data = await res.json();
-
-                                      if (data.secure_url) {
-                                        const currentImages =
-                                          form.getValues("images") || {};
-                                        form.setValue("images", {
-                                          ...currentImages,
-                                          [color]: data.secure_url,
-                                        });
                                       }
-                                    } catch (error) {
-                                      console.log(error);
-                                      toast.error("Upload failed!");
-                                    }
-                                  }
-                                }}
-                              />
-                              {field.value?.[color] ? (
-                                <span className="text-green-600 text-sm">
-                                  Image selected
-                                </span>
-                              ) : (
-                                <span className="text-red-600 text-sm">
-                                  Image required
-                                </span>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </FormControl>
-                    </FormItem>
-                  )}
+                                    }}
+                                  />
+                                  {field.value?.[color] && (
+                                    <div className="mt-2">
+                                      <img 
+                                        src={field.value[color]} 
+                                        alt={`${color} variant`}
+                                        className="w-20 h-20 object-cover rounded border"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          Upload high-quality product images for each color variant (recommended: 1000x1000px).
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    );
+                  }}
                 />
                 
                 {/* Extended Data Section */}
