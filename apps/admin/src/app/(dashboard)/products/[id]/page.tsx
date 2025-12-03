@@ -288,7 +288,7 @@ export default function ViewProductPage() {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {Object.entries(images).map(([color, imageUrl]) => {
-              const hasImage = imageUrl && imageUrl.trim() !== "";
+              const hasImage = imageUrl && typeof imageUrl === 'string' && imageUrl.trim() !== "";
               return (
                 <div key={color} className="space-y-2">
                   <div className="relative w-full h-32 rounded-lg overflow-hidden border bg-gray-100 flex items-center justify-center">

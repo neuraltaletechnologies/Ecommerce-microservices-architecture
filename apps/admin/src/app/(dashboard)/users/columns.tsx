@@ -49,7 +49,7 @@ export const columns: ColumnDef<User>[] = [
     header: "Avatar",
     cell: ({ row }) => {
       const user = row.original;
-      const hasImage = user.imageUrl && user.imageUrl.trim() !== "";
+      const hasImage = user.imageUrl && typeof user.imageUrl === 'string' && user.imageUrl.trim() !== "";
       return (
         <div className="w-9 h-9 relative bg-gray-100 rounded-full flex items-center justify-center">
           {hasImage ? (
