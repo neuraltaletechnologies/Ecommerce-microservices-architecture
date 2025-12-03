@@ -280,10 +280,10 @@ const ProductPage = async ({
   };
 
   return (
-    <div className=\"bg-white\">
+    <div className="bg-white">
       {/* Structured Data for Product */}
       <script
-        type=\"application/ld+json\"
+        type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
