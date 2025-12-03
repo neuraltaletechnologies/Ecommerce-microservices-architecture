@@ -34,8 +34,18 @@ export const updateProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
   const data: Prisma.ProductUpdateInput = req.body;
 
+  if (!id) {
+    return res.status(400).json({ error: "Product ID is required" });
+  }
+
+  const productId = Number(id);
+  
+  if (isNaN(productId)) {
+    return res.status(400).json({ error: "Invalid product ID format" });
+  }
+
   const updatedProduct = await prisma.product.update({
-    where: { id: Number(id) },
+    where: { id: productId },
     data,
   });
 
@@ -45,11 +55,21 @@ export const updateProduct = async (req: Request, res: Response) => {
 export const deleteProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
 
+  if (!id) {
+    return res.status(400).json({ error: "Product ID is required" });
+  }
+
+  const productId = Number(id);
+  
+  if (isNaN(productId)) {
+    return res.status(400).json({ error: "Invalid product ID format" });
+  }
+
   const deletedProduct = await prisma.product.delete({
-    where: { id: Number(id) },
+    where: { id: productId },
   });
 
-  console.log(`Product deleted: ${id}`);
+  console.log(`Product deleted: ${productId}`);
 
   return res.status(200).json(deletedProduct);
 };
@@ -154,9 +174,23 @@ export const getProducts = async (req: Request, res: Response) => {
 export const getProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
 
+  if (!id) {
+    return res.status(400).json({ error: "Product ID is required" });
+  }
+
+  const productId = Number(id);
+  
+  if (isNaN(productId)) {
+    return res.status(400).json({ error: "Invalid product ID format" });
+  }
+
   const product = await prisma.product.findUnique({
-    where: { id: Number(id) },
+    where: { id: productId },
   });
+
+  if (!product) {
+    return res.status(404).json({ error: "Product not found" });
+  }
 
   return res.status(200).json(product);
 };
