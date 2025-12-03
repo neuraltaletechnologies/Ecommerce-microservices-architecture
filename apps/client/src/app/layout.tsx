@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import { ToastContainer } from "react-toastify";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -178,6 +179,7 @@ export default function RootLayout({
             progressClassName="!bg-blue-600"
           />
           <Analytics />
+          <SpeedInsights />
         </body>
       </html>
     </ClerkProvider>
