@@ -14,19 +14,48 @@ export default function ImageGallery({ product, selectedColor }: ImageGalleryPro
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedThumbnail, setSelectedThumbnail] = useState(0);
 
-  // Create array of images (main image + color variants)
-  const allImages = [
-    { 
-      url: (product.images as Record<string, string>)?.[selectedColor] || "/products/1g.png",
-      label: "Main View",
-      isMain: true
-    },
-    ...(product.colors?.slice(0, 4).map((color: string) => ({
-      url: (product.images as Record<string, string>)?.[color] || "/products/1g.png",
-      label: color,
-      isMain: false
-    })) || [])
-  ];
+  // Handle both old structure {main, gallery} and new structure {color: url}
+  const getProductImages = () => {
+    const images = product.images as any;
+    
+    // Check if it's the old structure with 'main' and 'gallery'
+    if (images && typeof images === 'object' && 'main' in images) {
+      const mainImage = images.main || "/products/1g.png";
+      const galleryImages = Array.isArray(images.gallery) ? images.gallery : [];
+      
+      return [
+        { url: mainImage, label: "Main View", isMain: true },
+        ...galleryImages.map((url: string, index: number) => ({
+          url: url || "/products/1g.png",
+          label: `View ${index + 2}`,
+          isMain: false
+        }))
+      ];
+    }
+    
+    // New structure: color-keyed images
+    if (images && typeof images === 'object') {
+      const colorImage = images[selectedColor] || Object.values(images)[0] as string || "/products/1g.png";
+      
+      return [
+        { 
+          url: colorImage,
+          label: "Main View",
+          isMain: true
+        },
+        ...(product.colors?.slice(0, 4).map((color: string) => ({
+          url: images[color] || "/products/1g.png",
+          label: color,
+          isMain: false
+        })) || [])
+      ];
+    }
+    
+    // Fallback: no images available
+    return [{ url: "/products/1g.png", label: "Product", isMain: true }];
+  };
+
+  const allImages = getProductImages();
 
   const handlePrevious = () => {
     setCurrentImageIndex((prev) => (prev === 0 ? allImages.length - 1 : prev - 1));

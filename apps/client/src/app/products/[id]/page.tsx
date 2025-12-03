@@ -28,11 +28,25 @@ import CustomerReviews from "@/components/CustomerReviews";
 
 
 const fetchProduct = async (id: string) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products/${id}`
-  );
-  const data: ProductType = await res.json();
-  return data;
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products/${id}`,
+      {
+        cache: "no-store",
+      }
+    );
+    
+    if (!res.ok) {
+      console.error(`Failed to fetch product ${id}: ${res.status} ${res.statusText}`);
+      return null;
+    }
+    
+    const data: ProductType = await res.json();
+    return data;
+  } catch (error) {
+    console.error(`Error fetching product ${id}:`, error);
+    return null;
+  }
 };
 
 export const generateMetadata = async ({
@@ -53,9 +67,31 @@ export const generateMetadata = async ({
     
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://eshop.neuraltale.com';
     const productUrl = `${baseUrl}/products/${id}`;
-    const imageUrl: string = (Array.isArray(product.images) && product.images.length > 0) 
-      ? String(product.images[0]) 
-      : '/logo.png';
+    
+    // Extract image URL - handle both old {main, gallery} and new {color: url} structures
+    const getImageUrl = (): string => {
+      const images = product.images as any;
+      
+      if (!images) return '/logo.png';
+      
+      // Old structure: {main, gallery}
+      if (images.main) return String(images.main);
+      
+      // New structure: {color: url}
+      if (typeof images === 'object') {
+        const firstImage = Object.values(images)[0];
+        if (firstImage) return String(firstImage);
+      }
+      
+      // Array structure (legacy)
+      if (Array.isArray(images) && images.length > 0) {
+        return String(images[0]);
+      }
+      
+      return '/logo.png';
+    };
+    
+    const imageUrl = getImageUrl();
     
     // Generate rich product description for SEO
     const seoDescription = `Buy ${product.name} online in Tanzania at Neuraltale. ${product.shortDescription || ''}. ${product.sizes?.length ? `Available in sizes: ${product.sizes.join(', ')}. ` : ''}${product.colors?.length ? `Colors: ${product.colors.join(', ')}. ` : ''}Fast delivery across Tanzania. Best price guaranteed. Shop now!`;
@@ -108,6 +144,21 @@ const ProductPage = async ({
   const { id } = await params;
 
   const product = await fetchProduct(id);
+  
+  // Handle product not found
+  if (!product) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900 mb-4">Product Not Found</h1>
+          <p className="text-gray-600 mb-8">The product you're looking for doesn't exist or has been removed.</p>
+          <Link href="/products" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+            Browse All Products
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const selectedSize = size || (product.sizes?.[0] as string) || "";
   const selectedColor = color || (product.colors?.[0] as string) || "";
@@ -205,18 +256,41 @@ const ProductPage = async ({
     Wifi, Battery, Zap, Award, Cpu, Package, Shield, Truck, Globe, Info, CheckCircle
   };
 
+  // Extract image URL for structured data
+  const getStructuredDataImage = (): string => {
+    const images = product.images as any;
+    
+    if (!images) return '/logo.png';
+    
+    // Old structure: {main, gallery}
+    if (images.main) return String(images.main);
+    
+    // New structure: {color: url}
+    if (typeof images === 'object') {
+      const firstImage = Object.values(images)[0];
+      if (firstImage) return String(firstImage);
+    }
+    
+    // Array structure (legacy)
+    if (Array.isArray(images) && images.length > 0) {
+      return String(images[0]);
+    }
+    
+    return '/logo.png';
+  };
+
   return (
-    <div className="bg-white">
+    <div className=\"bg-white\">
       {/* Structured Data for Product */}
       <script
-        type="application/ld+json"
+        type=\"application/ld+json\"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'Product',
             name: product.name,
             description: product.shortDescription,
-            image: (Array.isArray(product.images) && product.images.length > 0) ? String(product.images[0]) : '/logo.png',
+            image: getStructuredDataImage(),
             brand: {
               '@type': 'Brand',
               name: 'Neuraltale',
