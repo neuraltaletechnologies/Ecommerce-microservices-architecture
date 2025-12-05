@@ -102,7 +102,7 @@ const AppSidebar = () => {
             <SidebarMenuButton asChild>
               <Link href="/">
                 <Image src="/favicon.icon" alt="logo" width={20} height={20} />
-                <span>Neuraltale</span>
+                <span>Neurashop</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

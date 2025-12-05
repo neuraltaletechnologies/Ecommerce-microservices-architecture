@@ -5,7 +5,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Users Management - Customer Database",
-  description: "Manage registered users and customers. View user details, activity, orders, and account information for Neuraltale Tanzania.",
+  description: "Manage registered users and customers. View user details, activity, orders, and account information for Neurashop Tanzania.",
   keywords: "user management, customer database, user accounts, customer management, admin users",
 };
 

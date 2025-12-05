@@ -61,7 +61,7 @@ export const generateMetadata = async ({
     if (!product || !product.name) {
       return {
         title: 'Product Not Found | Neurashop',
-        description: 'The requested product could not be found.',,
+        description: 'The requested product could not be found.',
       };
     }
     

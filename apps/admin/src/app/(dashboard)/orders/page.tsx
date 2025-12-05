@@ -6,7 +6,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Orders Management - Payments & Transactions",
-  description: "Manage customer orders and payments for Neuraltale Tanzania. Track order status, payment details, and transaction history.",
+  description: "Manage customer orders and payments for Neurashop Tanzania. Track order status, payment details, and transaction history.",
   keywords: "order management, payment tracking, transactions, order status, payment history, e-commerce orders",
 };
 
@@ -36,7 +36,7 @@ const OrdersPage = async () => {
     <div className="">
       <div className="mb-8 px-6 py-4 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Orders & Payments Management</h1>
-        <p className="text-gray-600">Track and manage customer orders, payments, and transaction history for Neuraltale Tanzania.</p>
+        <p className="text-gray-600">Track and manage customer orders, payments, and transaction history for Neurashop Tanzania.</p>
       </div>
       <DataTable columns={columns} data={data} />
     </div>

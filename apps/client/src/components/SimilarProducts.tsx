@@ -112,7 +112,7 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
               
               {/* Additional Product Info */}
               <div className="mt-2 px-2">
-                <p className="text-sm text-gray-600">Neuraltale</p>
+                <p className="text-sm text-gray-600">Neurashop</p>
                 {product.colors && product.colors.length > 1 && (
                   <p className="text-sm text-gray-500">
                     {product.colors.length} variants
