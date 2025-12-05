@@ -6,12 +6,12 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Home - Shop Premium Tech & Electronics Online in Tanzania",
-  description: "Discover cutting-edge technology at Neuraltale Tanzania. Shop gaming laptops, smartphones, wireless earbuds, smartwatches & more. Fast delivery across Tanzania. Best prices guaranteed.",
+  description: "Discover cutting-edge technology at Neurashop by Neuraltale Tanzania. Shop gaming laptops, smartphones, wireless earbuds, smartwatches & more. Fast delivery across Tanzania. Best prices guaranteed.",
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "Neuraltale Tanzania - Premium Tech Store | Home",
+    title: "Neurashop by Neuraltale Tanzania - Premium Tech Store | Home",
     description: "Shop premium laptops, smartphones, gaming gear & electronics in Tanzania. Fast delivery across all regions.",
     url: "https://eshop.neuraltale.com",
   },

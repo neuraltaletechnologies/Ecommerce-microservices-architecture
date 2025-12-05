@@ -20,10 +20,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Neuraltale - Premium Tech Store | Laptops, Smartphones & Electronics Online",
-    template: "%s | Neuraltale - Premium Tech Store",
+    default: "Neurashop - Premium Tech Store by Neuraltale | Laptops, Smartphones & Electronics",
+    template: "%s | Neurashop by Neuraltale",
   },
-  description: "Shop premium technology products at Neuraltale Tanzania. Discover laptops, smartphones, audio devices, gaming gear & electronics. Fast shipping across Tanzania & East Africa. Best prices guaranteed.",
+  description: "Shop premium technology products at Neurashop, powered by Neuraltale Tanzania. Discover laptops, smartphones, audio devices, gaming gear & electronics. Fast shipping across Tanzania & East Africa. Best prices guaranteed.",
   keywords: [
     "tech store Tanzania",
     "electronics online Tanzania",
@@ -38,6 +38,8 @@ export const metadata: Metadata = {
     "best tech deals Tanzania",
     "premium electronics Tanzania",
     "neuraltale Tanzania",
+    "neurashop Tanzania",
+    "neurashop e-commerce",
     "online electronics shopping Tanzania",
     "tech products East Africa",
     "buy electronics Dar es Salaam",
@@ -46,7 +48,7 @@ export const metadata: Metadata = {
   ].join(", "),
   authors: [{ name: "Neuraltale", url: "https://neuraltale-client.vercel.app" }],
   creator: "Neuraltale",
-  publisher: "Neuraltale Tech Store",
+  publisher: "Neurashop by Neuraltale",
   category: "E-commerce",
   classification: "Electronics & Technology",
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://eshop.neuraltale.com'),
@@ -69,10 +71,10 @@ export const metadata: Metadata = {
     yandex: 'your-yandex-verification-code',
   },
   openGraph: {
-    title: "Neuraltale - Premium Tech Store | Buy Electronics Online",
-    description: "Shop premium laptops, smartphones, gaming gear & electronics in Tanzania. Fast shipping across Dar es Salaam & all regions. Best prices guaranteed.",
+    title: "Neurashop - Premium Tech Store by Neuraltale | Buy Electronics Online",
+    description: "Shop premium laptops, smartphones, gaming gear & electronics in Tanzania. Powered by Neuraltale. Fast shipping across Dar es Salaam & all regions. Best prices guaranteed.",
     url: "https://eshop.neuraltale.com",
-    siteName: "Neuraltale Tech Store",
+    siteName: "Neurashop by Neuraltale",
     type: "website",
     locale: "en_US",
     images: [
@@ -80,14 +82,14 @@ export const metadata: Metadata = {
         url: "/logo.png",
         width: 1200,
         height: 630,
-        alt: "Neuraltale Premium Tech Store",
+        alt: "Neurashop - Premium Tech Store by Neuraltale",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Neuraltale - Premium Tech Store | Electronics Online",
-    description: "Shop premium tech products in Tanzania. Laptops, smartphones, gaming gear & more. Fast delivery across Tanzania.",
+    title: "Neurashop - Premium Tech Store by Neuraltale | Electronics Online",
+    description: "Shop premium tech products in Tanzania. Powered by Neuraltale. Laptops, smartphones, gaming gear & more. Fast delivery across Tanzania.",
     site: "@neuraltale",
     creator: "@neuraltale",
     images: ["/logo.png"],
@@ -123,9 +125,10 @@ export default function RootLayout({
                 '@context': 'https://schema.org',
                 '@type': 'Organization',
                 name: 'Neuraltale',
+                alternateName: 'Neurashop',
                 url: 'https://neuraltale-client.vercel.app',
                 logo: 'https://eshop.neuraltale.com/logo.png',
-                description: 'Premium technology and electronics store in Tanzania offering laptops, smartphones, gaming gear and accessories across Dar es Salaam and East Africa.',
+                description: 'Neurashop is the premium e-commerce platform by Neuraltale, offering technology and electronics in Tanzania including laptops, smartphones, gaming gear and accessories across Dar es Salaam and East Africa.',
                 address: {
                   '@type': 'PostalAddress',
                   addressCountry: 'TZ',
@@ -151,7 +154,7 @@ export default function RootLayout({
               __html: JSON.stringify({
                 '@context': 'https://schema.org',
                 '@type': 'WebSite',
-                name: 'Neuraltale',
+                name: 'Neurashop by Neuraltale',
                 url: 'https://eshop.neuraltale.com',
                 potentialAction: {
                   '@type': 'SearchAction',

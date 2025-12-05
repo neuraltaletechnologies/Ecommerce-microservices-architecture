@@ -30,20 +30,20 @@ export async function generateMetadata({
 
   if (search) {
     return {
-      title: `Search Results: "${search}" - Neuraltale Tech Store`,
-      description: `Find ${search} and related products at Neuraltale. Browse our collection of premium tech products.`,
+      title: `Search Results: "${search}" - Neurashop Tech Store`,
+      description: `Find ${search} and related products at Neurashop by Neuraltale. Browse our collection of premium tech products.`,
       alternates: { canonical: `/products?search=${search}` },
     };
   }
 
   if (category && categoryTitles[category]) {
     return {
-      title: `${categoryTitles[category]} - Buy Online | Neuraltale`,
-      description: categoryDescriptions[category] || "Shop premium tech products at Neuraltale.",
+      title: `${categoryTitles[category]} - Buy Online | Neurashop`,
+      description: categoryDescriptions[category] || "Shop premium tech products at Neurashop by Neuraltale.",
       keywords: `${category}, buy ${category}, ${category} online, best ${category}, premium ${category}`,
       alternates: { canonical: `/products?category=${category}` },
       openGraph: {
-        title: `${categoryTitles[category]} - Neuraltale`,
+        title: `${categoryTitles[category]} - Neurashop`,
         description: categoryDescriptions[category],
         url: `https://eshop.neuraltale.com/products?category=${category}`,
       },
@@ -51,12 +51,12 @@ export async function generateMetadata({
   }
 
   return {
-    title: "All Products - Shop Premium Tech & Electronics in Tanzania | Neuraltale",
-    description: "Browse our complete collection of laptops, smartphones, audio devices, gaming gear, wearables & accessories in Tanzania. Premium tech products with fast delivery across Tanzania.",
+    title: "All Products - Shop Premium Tech & Electronics in Tanzania | Neurashop",
+    description: "Browse our complete collection of laptops, smartphones, audio devices, gaming gear, wearables & accessories in Tanzania at Neurashop by Neuraltale. Premium tech products with fast delivery across Tanzania.",
     keywords: "all products, tech products, electronics store, buy gadgets online, tech shop",
     alternates: { canonical: '/products' },
     openGraph: {
-      title: "All Products - Neuraltale Tech Store",
+      title: "All Products - Neurashop Tech Store",
       description: "Browse our complete collection of premium tech products. Fast worldwide shipping.",
       url: "https://eshop.neuraltale.com/products",
     },

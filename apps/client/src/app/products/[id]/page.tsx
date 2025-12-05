@@ -60,8 +60,8 @@ export const generateMetadata = async ({
     
     if (!product || !product.name) {
       return {
-        title: 'Product Not Found | Neuraltale',
-        description: 'The requested product could not be found.',
+        title: 'Product Not Found | Neurashop',
+        description: 'The requested product could not be found.',,
       };
     }
     
@@ -94,20 +94,20 @@ export const generateMetadata = async ({
     const imageUrl = getImageUrl();
     
     // Generate rich product description for SEO
-    const seoDescription = `Buy ${product.name} online in Tanzania at Neuraltale. ${product.shortDescription || ''}. ${product.sizes?.length ? `Available in sizes: ${product.sizes.join(', ')}. ` : ''}${product.colors?.length ? `Colors: ${product.colors.join(', ')}. ` : ''}Fast delivery across Tanzania. Best price guaranteed. Shop now!`;
+    const seoDescription = `Buy ${product.name} online in Tanzania at Neurashop by Neuraltale. ${product.shortDescription || ''}. ${product.sizes?.length ? `Available in sizes: ${product.sizes.join(', ')}. ` : ''}${product.colors?.length ? `Colors: ${product.colors.join(', ')}. ` : ''}Fast delivery across Tanzania. Best price guaranteed. Shop now!`;
 
     return {
-      title: `${product.name} - Buy Online | Neuraltale`,
+      title: `${product.name} - Buy Online | Neurashop`,
       description: seoDescription.slice(0, 160),
       keywords: `${product.name}, buy ${product.name}, ${product.categorySlug ? product.categorySlug.replace(/-/g, ' ') : 'electronics'}, ${product.name} price, ${product.name} online, premium ${product.categorySlug || 'tech'}`,
       alternates: {
         canonical: `/products/${id}`,
       },
       openGraph: {
-        title: `${product.name} - Neuraltale`,
+        title: `${product.name} - Neurashop`,
         description: product.shortDescription || product.name,
         url: productUrl,
-        siteName: 'Neuraltale',
+        siteName: 'Neurashop by Neuraltale',
         images: [
           {
             url: imageUrl,
@@ -119,7 +119,7 @@ export const generateMetadata = async ({
       },
       twitter: {
         card: 'summary_large_image',
-        title: `${product.name} - Neuraltale`,
+        title: `${product.name} - Neurashop`,
         description: product.shortDescription || product.name,
         images: [imageUrl],
       },
@@ -127,8 +127,8 @@ export const generateMetadata = async ({
   } catch (error) {
     console.error('Error generating metadata:', error);
     return {
-      title: 'Product | Neuraltale',
-      description: 'Shop premium tech products at Neuraltale Tanzania.',
+      title: 'Product | Neurashop',
+      description: 'Shop premium tech products at Neurashop by Neuraltale Tanzania.',
     };
   }
 };
