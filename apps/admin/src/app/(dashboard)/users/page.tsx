@@ -1,6 +1,6 @@
 import { auth, type User } from "@clerk/nextjs/server";
-import { columns } from "./columns";
-import { DataTable } from "./data-table";
+import { enhancedColumns } from "./enhanced-columns";
+import { EnhancedDataTable } from "./enhanced-data-table";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -19,6 +19,7 @@ const getData = async (): Promise<{ data: User[]; totalCount: number }> => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        cache: 'no-store', // Disable caching for fresh data
       }
     );
     
@@ -42,13 +43,27 @@ const getData = async (): Promise<{ data: User[]; totalCount: number }> => {
 
 const UsersPage = async () => {
   const res = await getData();
+  
   return (
-    <div className="">
-      <div className="mb-8 px-6 py-4 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-lg">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Users & Customers Management</h1>
-        <p className="text-gray-600">Manage registered users and customer accounts. View user details, activity, and order history.</p>
+    <div className="container mx-auto py-6">
+      <div className="mb-8 px-6 py-6 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Users & Role Management
+            </h1>
+            <p className="text-gray-600">
+              Manage users, assign roles, and control access permissions across your platform.
+            </p>
+          </div>
+          <div className="text-right">
+            <div className="text-sm text-gray-500 mb-1">Total Users</div>
+            <div className="text-3xl font-bold text-purple-600">{res.totalCount}</div>
+          </div>
+        </div>
       </div>
-      <DataTable columns={columns} data={res.data} />
+      
+      <EnhancedDataTable columns={enhancedColumns} data={res.data} />
     </div>
   );
 };
