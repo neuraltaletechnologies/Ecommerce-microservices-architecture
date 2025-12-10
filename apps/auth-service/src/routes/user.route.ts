@@ -27,10 +27,45 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Check username availability
+router.get("/check-username", async (req, res) => {
+  try {
+    const { username } = req.query;
+    
+    if (!username || typeof username !== "string") {
+      return res.status(400).json({ 
+        available: false, 
+        error: "Username is required" 
+      });
+    }
+
+    const users = await clerkClient.users.getUserList({
+      username: [username],
+    });
+    
+    res.status(200).json({
+      available: users.data.length === 0,
+    });
+  } catch (error: any) {
+    console.error("Error checking username:", error);
+    res.status(500).json({
+      available: false,
+      error: error?.message || "Failed to check username availability"
+    });
+  }
+});
+
 router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-  const user = await clerkClient.users.getUser(id);
-  res.status(200).json(user);
+  try {
+    const { id } = req.params;
+    const user = await clerkClient.users.getUser(id);
+    res.status(200).json(user);
+  } catch (error: any) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({
+      error: error?.message || "Failed to fetch user"
+    });
+  }
 });
 
 router.post("/", async (req, res) => {
@@ -52,10 +87,34 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Update user (PATCH)
+router.patch("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    type UpdateParams = Parameters<typeof clerkClient.users.updateUser>[1];
+    const updateData: UpdateParams = req.body;
+    
+    const user = await clerkClient.users.updateUser(id, updateData);
+    res.status(200).json(user);
+  } catch (error: any) {
+    console.error("Error updating user:", error);
+    res.status(500).json({
+      error: error?.message || "Failed to update user"
+    });
+  }
+});
+
 router.delete("/:id", async (req, res) => {
-  const { id } = req.params;
-  const user = await clerkClient.users.deleteUser(id);
-  res.status(200).json(user);
+  try {
+    const { id } = req.params;
+    const user = await clerkClient.users.deleteUser(id);
+    res.status(200).json(user);
+  } catch (error: any) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({
+      error: error?.message || "Failed to delete user"
+    });
+  }
 });
 
 export default router;

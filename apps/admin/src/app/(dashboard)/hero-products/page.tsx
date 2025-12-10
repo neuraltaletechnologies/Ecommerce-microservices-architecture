@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 export default function HeroProductsPage() {
   const { getToken } = useAuth();

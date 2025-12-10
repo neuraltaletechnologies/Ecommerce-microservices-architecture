@@ -38,6 +38,7 @@ app.get("/health", (req: Request, res: Response) => {
   });
 });
 
+// Apply admin middleware to all user routes
 app.use("/users", shouldBeAdmin, userRoute);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
