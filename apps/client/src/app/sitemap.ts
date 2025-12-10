@@ -22,9 +22,31 @@ async function fetchAllProducts(): Promise<ProductType[]> {
   }
 }
 
+async function fetchAllCategories(): Promise<{ slug: string }[]> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`,
+      { 
+        next: { revalidate: 3600 }, // Revalidate every hour
+        headers: {
+          'Cache-Control': 'no-cache',
+        },
+      }
+    );
+    
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching categories for sitemap:', error);
+    return [];
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://eshop.neuraltale.com';
   const products = await fetchAllProducts();
+  const categories = await fetchAllCategories();
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -54,18 +76,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  // Category pages
-  const categories = [
-    'laptops',
-    'smartphones',
-    'audio',
-    'wearables',
-    'gaming',
-    'accessories',
-  ];
-
+  // Category pages - fetch from database
   const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
-    url: `${baseUrl}/products?category=${category}`,
+    url: `${baseUrl}/products?category=${category.slug}`,
     lastModified: new Date(),
     changeFrequency: 'daily',
     priority: 0.8,

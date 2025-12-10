@@ -194,3 +194,22 @@ export const getProduct = async (req: Request, res: Response) => {
 
   return res.status(200).json(product);
 };
+
+export const getHeroProducts = async (req: Request, res: Response) => {
+  try {
+    const heroProducts = await prisma.product.findMany({
+      where: {
+        isHeroProduct: true,
+      },
+      orderBy: {
+        heroOrder: 'asc',
+      },
+      take: 10, // Limit to 10 hero products
+    });
+
+    return res.status(200).json(heroProducts);
+  } catch (error) {
+    console.error('Error fetching hero products:', error);
+    return res.status(500).json({ error: 'Failed to fetch hero products' });
+  }
+};

@@ -4,200 +4,123 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { ChevronLeft, ChevronRight, Star, Zap, Headphones, Gamepad2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Star, Zap, Headphones, Gamepad2, Smartphone, Laptop } from "lucide-react";
 
-interface FeaturedProduct {
-  id: string;
+interface HeroProduct {
+  id: number;
   name: string;
-  price: number;
-  originalPrice?: number;
-  image: string;
-  specifications: string[];
-  keyFeatures: string[];
-  availability: "In Stock" | "Limited Stock" | "Pre-Order";
-  rating: number;
-  category: string;
+  shortDescription: string;
   description: string;
+  price: number;
+  images: Record<string, string[]>;
+  categorySlug: string;
+  colors: string[];
+  sizes: string[];
 }
 
-const featuredProducts: FeaturedProduct[] = [
-  {
-    id: "logitech-mx-master-3",
-    name: "Logitech MX Master 3",
-    price: 99.99,
-    originalPrice: 129.99,
-    image: "/products/logitech-mx-master-3.jpg",
-    specifications: [
-      "4000 DPI Darkfield sensor",
-      "70-day battery life",
-      "USB-C quick charging",
-      "Bluetooth & USB connectivity"
-    ],
-    keyFeatures: [
-      "Ultra-precise scrolling",
-      "Cross-computer control",
-      "Customizable buttons",
-      "Ergonomic design"
-    ],
-    availability: "In Stock",
-    rating: 4.8,
-    category: "Accessories",
-    description: "The ultimate precision mouse for power users and creative professionals"
-  },
-  {
-    id: "macbook-pro-m4",
-    name: "MacBook Pro M4 Chip",
-    price: 1999.99,
-    originalPrice: 2199.99,
-    image: "/products/macbook-pro-m4.jpg",
-    specifications: [
-      "Apple M4 chip with 10-core CPU",
-      "16-core Neural Engine",
-      "16GB unified memory",
-      "512GB SSD storage"
-    ],
-    keyFeatures: [
-      "20-hour battery life",
-      "Liquid Retina XDR display",
-      "1080p FaceTime HD camera",
-      "Six-speaker sound system"
-    ],
-    availability: "In Stock",
-    rating: 4.9,
-    category: "Laptops",
-    description: "Supercharged for pros with the revolutionary M4 chip"
-  },
-  {
-    id: "airpods-pro",
-    name: "AirPods Pro (3rd Gen)",
-    price: 249.99,
-    originalPrice: 279.99,
-    image: "/products/airpods-pro.jpg",
-    specifications: [
-      "Active Noise Cancellation",
-      "Transparency mode",
-      "Spatial Audio support",
-      "H2 chip for enhanced audio"
-    ],
-    keyFeatures: [
-      "Up to 6 hours listening time",
-      "Personalized Spatial Audio",
-      "Touch control",
-      "Sweat and water resistant"
-    ],
-    availability: "In Stock",
-    rating: 4.7,
-    category: "Audio",
-    description: "Premium wireless earbuds with industry-leading noise cancellation"
-  },
-  {
-    id: "logitech-k380-mini",
-    name: "Logitech K380 Mini Keyboard",
-    price: 39.99,
-    originalPrice: 49.99,
-    image: "/products/logitech-k380.jpg",
-    specifications: [
-      "Bluetooth wireless connection",
-      "Multi-device pairing (3 devices)",
-      "Round concave keys",
-      "2-year battery life"
-    ],
-    keyFeatures: [
-      "Easy-Switch technology",
-      "Cross-platform compatibility",
-      "Compact & portable design",
-      "Silent typing experience"
-    ],
-    availability: "In Stock",
-    rating: 4.6,
-    category: "Accessories",
-    description: "Compact wireless keyboard for seamless multi-device typing"
-  },
-  {
-    id: "gaming-chair-pro",
-    name: "ErgoMax Gaming Chair Pro",
-    price: 299.99,
-    originalPrice: 399.99,
-    image: "/products/gaming-chair-pro.jpg",
-    specifications: [
-      "Premium PU leather upholstery",
-      "High-density foam padding",
-      "Steel frame construction",
-      "360° swivel with smooth casters"
-    ],
-    keyFeatures: [
-      "Adjustable lumbar support",
-      "4D armrests",
-      "Reclining up to 135°",
-      "Weight capacity: 300 lbs"
-    ],
-    availability: "Limited Stock",
-    rating: 4.5,
-    category: "Gaming",
-    description: "Professional gaming chair designed for extended comfort sessions"
-  },
-  {
-    id: "gaming-laptop-asus",
-    name: "ASUS ROG Strix G16",
-    price: 1299.99,
-    originalPrice: 1499.99,
-    image: "/products/asus-rog-strix.jpg",
-    specifications: [
-      "Intel Core i7-13650HX",
-      "NVIDIA GeForce RTX 4060",
-      "16GB DDR5 RAM",
-      "512GB PCIe 4.0 SSD"
-    ],
-    keyFeatures: [
-      "16\" FHD 165Hz display",
-      "RGB backlit keyboard",
-      "Advanced cooling system",
-      "Wi-Fi 6E connectivity"
-    ],
-    availability: "Pre-Order",
-    rating: 4.8,
-    category: "Gaming Laptops",
-    description: "High-performance gaming laptop for competitive gaming and content creation"
-  }
-];
-
 const HeroSection = () => {
+  const [heroProducts, setHeroProducts] = useState<HeroProduct[]>([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (isAutoPlaying) {
+    const fetchHeroProducts = async () => {
+      try {
+        const res = await fetch('/api/hero-products', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          cache: 'no-store',
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.length > 0) {
+            setHeroProducts(data);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching hero products:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHeroProducts();
+  }, []);
+
+  useEffect(() => {
+    if (isAutoPlaying && heroProducts.length > 0) {
       const interval = setInterval(() => {
-        setCurrentSlide((prev) => (prev + 1) % featuredProducts.length);
+        setCurrentSlide((prev) => (prev + 1) % heroProducts.length);
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [isAutoPlaying]);
-
+  }, [isAutoPlaying, heroProducts.length]);
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % featuredProducts.length);
+    if (heroProducts.length > 0) {
+      setCurrentSlide((prev) => (prev + 1) % heroProducts.length);
+    }
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + featuredProducts.length) % featuredProducts.length);
+    if (heroProducts.length > 0) {
+      setCurrentSlide((prev) => (prev - 1 + heroProducts.length) % heroProducts.length);
+    }
   };
 
-  const currentProduct = featuredProducts[currentSlide];
-
-  if (!currentProduct) {
-    return <div>Loading...</div>;
+  if (loading) {
+    return (
+      <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden h-screen min-h-[600px] -mt-2 sm:-mt-4 md:-mt-6 flex items-center justify-center">
+        <div className="text-xl">Loading featured products...</div>
+      </div>
+    );
   }
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "Audio":
+  if (!heroProducts || heroProducts.length === 0) {
+    return null;
+  }
+
+  const currentProduct = heroProducts[currentSlide];
+
+  if (!currentProduct) {
+    return null;
+  }
+  
+  // Get the first image from the first color variant
+  const getProductImage = (product: HeroProduct): string => {
+    const firstColor = product.colors?.[0];
+    if (firstColor && product.images && product.images[firstColor]) {
+      const imageArray = product.images[firstColor];
+      return imageArray?.[0] || '/products/placeholder.jpg';
+    }
+    return '/products/placeholder.jpg';
+  };
+
+  const getCategoryIcon = (categorySlug: string) => {
+    switch (categorySlug.toLowerCase()) {
+      case "audio":
+      case "headphones":
         return <Headphones className="w-5 h-5" />;
-      case "Gaming":
-      case "Gaming Laptops":
+      case "gaming":
+      case "gaming-laptops":
         return <Gamepad2 className="w-5 h-5" />;
+      case "smartphones":
+        return <Smartphone className="w-5 h-5" />;
+      case "laptops":
+        return <Laptop className="w-5 h-5" />;
       default:
         return <Zap className="w-5 h-5" />;
     }
+  };
+
+  const formatCategoryName = (slug: string): string => {
+    return slug
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
   };
 
   return (
@@ -217,47 +140,39 @@ const HeroSection = () => {
             {/* Brand Header */}
             <div className="space-y-2 sm:space-y-3">
               <div className="flex items-center space-x-2 text-blue-300">
-                {getCategoryIcon(currentProduct.category)}
+                {getCategoryIcon(currentProduct.categorySlug)}
                 <span className="text-sm font-medium uppercase tracking-wider">
-                  {currentProduct.category}
+                  {formatCategoryName(currentProduct.categorySlug)}
                 </span>
               </div>
               <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold leading-tight">
                 {currentProduct.name}
               </h1>
               <p className="text-base sm:text-lg text-blue-100 leading-relaxed">
-                {currentProduct.description}
+                {currentProduct.shortDescription}
               </p>
             </div>
 
-            {/* Rating */}
-            <div className="flex items-center space-x-2">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-4 h-4 ${
-                      i < Math.floor(currentProduct.rating)
-                        ? "text-yellow-400 fill-current"
-                        : "text-gray-400"
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-base font-semibold">{currentProduct.rating}</span>
-              <span className="text-blue-200 text-sm">(2,847 reviews)</span>
-            </div>
-
-            {/* Key Features */}
+            {/* Colors & Sizes */}
             <div className="space-y-3">
-              <h3 className="text-base font-semibold text-blue-200">Key Features</h3>
+              <h3 className="text-base font-semibold text-blue-200">Available Options</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {currentProduct.keyFeatures.slice(0, 4).map((feature, index) => (
-                  <div key={index} className="flex items-center space-x-2">
+                {currentProduct.colors.length > 0 && (
+                  <div className="flex items-center space-x-2">
                     <div className="w-1.5 h-1.5 bg-blue-400 rounded-full flex-shrink-0" />
-                    <span className="text-sm text-blue-100">{feature}</span>
+                    <span className="text-sm text-blue-100">
+                      {currentProduct.colors.length} Colors
+                    </span>
                   </div>
-                ))}
+                )}
+                {currentProduct.sizes.length > 0 && (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-1.5 h-1.5 bg-blue-400 rounded-full flex-shrink-0" />
+                    <span className="text-sm text-blue-100">
+                      {currentProduct.sizes.length} Sizes
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -267,28 +182,10 @@ const HeroSection = () => {
                 <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
                   TZs {(currentProduct.price * 2300).toLocaleString()}
                 </span>
-                {currentProduct.originalPrice && (
-                  <span className="text-sm sm:text-base lg:text-lg text-gray-400 line-through">
-                    TZs {(currentProduct.originalPrice * 2300).toLocaleString()}
-                  </span>
-                )}
-                {currentProduct.originalPrice && (
-                  <span className="bg-red-500 text-white px-2 py-1 rounded text-xs font-medium">
-                    SAVE TZs {((currentProduct.originalPrice - currentProduct.price) * 2300).toLocaleString()}
-                  </span>
-                )}
               </div>
               <div className="flex items-center space-x-2">
-                <div
-                  className={`w-2.5 h-2.5 rounded-full ${
-                    currentProduct.availability === "In Stock"
-                      ? "bg-green-400"
-                      : currentProduct.availability === "Limited Stock"
-                      ? "bg-yellow-400"
-                      : "bg-blue-400"
-                  }`}
-                />
-                <span className="text-sm font-medium">{currentProduct.availability}</span>
+                <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
+                <span className="text-sm font-medium">In Stock</span>
               </div>
             </div>
 
@@ -313,29 +210,18 @@ const HeroSection = () => {
           <div className="relative flex items-center justify-center order-first lg:order-last">
             <div className="relative w-full max-w-sm sm:max-w-md h-64 sm:h-80 lg:h-[450px] rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20">
               <Image
-                src={currentProduct.image}
+                src={getProductImage(currentProduct)}
                 alt={currentProduct.name}
                 fill
                 className="object-contain p-3 sm:p-4"
                 priority
               />
-              {/* Floating Spec Card - Hidden on very small screens */}
-              <div className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 bg-black/70 backdrop-blur-sm rounded-lg p-2 sm:p-3 max-w-[160px] sm:max-w-[200px] hidden sm:block">
-                <h4 className="font-semibold text-xs sm:text-sm mb-1 sm:mb-2">Specifications</h4>
-                <ul className="space-y-1">
-                  {currentProduct.specifications.slice(0, 2).map((spec, index) => (
-                    <li key={index} className="text-xs text-gray-300">
-                      • {spec}
-                    </li>
-                  ))}
-                </ul>
-              </div>
             </div>
           </div>
         </div>
 
         {/* Navigation Controls */}
-        <div className="flex justify-center items-center mb-10  space-x-4">
+        <div className="flex justify-center items-center mb-10 space-x-4">
           <button
             onClick={prevSlide}
             className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-200"
@@ -348,7 +234,7 @@ const HeroSection = () => {
 
           {/* Slide Indicators */}
           <div className="flex space-x-2">
-            {featuredProducts.map((_, index) => (
+            {heroProducts.map((_, index) => (
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}

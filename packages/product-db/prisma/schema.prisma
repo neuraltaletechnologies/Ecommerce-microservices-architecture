@@ -23,6 +23,8 @@ model Product {
   productFeatures    Json?    // Array of {title: string, description: string}
   technicalSpecs     Json?    // Object with categories containing {label: string, value: string}[]
   certifications     Json?    // Array of {label: string, icon: string}
+  isHeroProduct      Boolean  @default(false) // Flag for hero/slider products
+  heroOrder          Int?     // Order in hero slider (null if not hero product)
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   categorySlug       String
