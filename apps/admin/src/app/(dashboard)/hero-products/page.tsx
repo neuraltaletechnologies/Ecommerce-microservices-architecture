@@ -172,8 +172,11 @@ export default function HeroProductsPage() {
 
   const getProductImage = (product: ProductType): string => {
     const firstColor = product.colors?.[0];
-    if (firstColor && product.images && product.images[firstColor]) {
-      return product.images[firstColor][0] || "/products/placeholder.jpg";
+    if (firstColor && product.images) {
+      const images = product.images as Record<string, string[]>;
+      if (images[firstColor] && Array.isArray(images[firstColor])) {
+        return images[firstColor][0] || "/products/placeholder.jpg";
+      }
     }
     return "/products/placeholder.jpg";
   };
