@@ -123,6 +123,12 @@ export default function HeroProductsPage() {
       const currentProduct = heroProducts[currentIndex];
       const swapProduct = heroProducts[swapIndex];
 
+      // Type guard: ensure both products exist
+      if (!currentProduct || !swapProduct) {
+        toast.error("Unable to reorder products");
+        return;
+      }
+
       // Swap orders
       const updates = [
         fetch(
