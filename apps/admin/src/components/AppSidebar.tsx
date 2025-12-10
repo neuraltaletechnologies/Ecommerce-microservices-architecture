@@ -43,6 +43,7 @@ import {
 } from "./ui/dropdown-menu";
 import { Sheet, SheetTrigger } from "./ui/sheet";
 import AddOrder from "./AddOrder";
+import AddUserSheet from "./AddUserSheet";
 import AddCategory from "./AddCategory";
 import AddProduct from "./AddProduct";
 import { useUser, useClerk } from "@clerk/nextjs";
@@ -138,18 +139,18 @@ const AppSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="/products">
-                    <Laptop />
-                    All Products
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
+                   <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link href="/hero-products">
                     <Star />
                     Hero Products
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/products">
+                    <Laptop />
+                    All Products
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -212,10 +213,17 @@ const AppSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href="/users/new">
-                    <Plus />
-                    Add Customer
-                  </Link>
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <SidebarMenuButton asChild>
+                        <Link href="#">
+                          <Plus />
+                          Add Customer
+                        </Link>
+                      </SidebarMenuButton>
+                    </SheetTrigger>
+                    <AddUserSheet />
+                  </Sheet>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
