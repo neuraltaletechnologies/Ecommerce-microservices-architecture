@@ -15,6 +15,7 @@ import {
   Package,
   Boxes,
   LogOut,
+  Star,
 } from "lucide-react";
 import {
   Sidebar,
@@ -147,9 +148,9 @@ const AppSidebar = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href="/categories">
-                    <Boxes />
-                    Categories
+                  <Link href="/hero-products">
+                    <Star />
+                    Hero Products
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -168,6 +169,15 @@ const AppSidebar = () => {
                   </Sheet>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/categories">
+                    <Boxes />
+                    Categories
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+        
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Sheet>
