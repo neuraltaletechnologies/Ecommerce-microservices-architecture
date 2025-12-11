@@ -16,7 +16,7 @@ import { ProductType } from "@repo/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
+
 
 // export type Product = {
 //   id: string | number;
@@ -53,13 +53,23 @@ export const columns: ColumnDef<ProductType>[] = [
     header: "Image",
     cell: ({ row }) => {
       const product = row.original;
-      const imageUrl = (product.images as Record<string, string>)?.[
-        product.colors[0] || ""
-      ];
+      const images = product.images as Record<string, string | string[]>;
+      const firstColor = product.colors[0];
+      
+      // Get image URL - handle both string and array formats
+      let imageUrl: string | null = null;
+      if (images && firstColor) {
+        const colorImages = images[firstColor];
+        if (typeof colorImages === 'string') {
+          imageUrl = colorImages;
+        } else if (Array.isArray(colorImages) && colorImages.length > 0) {
+          imageUrl = colorImages[0];
+        }
+      }
       
       return (
         <div className="w-9 h-9 relative bg-gray-100 rounded-full flex items-center justify-center">
-          {imageUrl ? (
+          {imageUrl && imageUrl.trim() !== '' ? (
             <Image
               src={imageUrl}
               alt={product.name}
@@ -115,9 +125,6 @@ export const columns: ColumnDef<ProductType>[] = [
     id: "actions",
     cell: ({ row }) => {
       const product = row.original;
-      
-      // Debug: Log the product ID to verify it's correct
-      console.log('Product ID for view link:', product.id, 'Product name:', product.name);
 
       return (
         <DropdownMenu>
@@ -131,15 +138,14 @@ export const columns: ColumnDef<ProductType>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => {
-                console.log('Copying product ID:', product.id);
                 navigator.clipboard.writeText(product.id.toString());
               }}
             >
               Copy product ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href={`/products/${product.id}`}>View product</Link>
+            <DropdownMenuItem onClick={() => window.location.href = `/products/${product.id}`}>
+              View product
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
