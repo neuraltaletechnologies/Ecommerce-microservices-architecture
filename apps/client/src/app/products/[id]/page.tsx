@@ -25,19 +25,40 @@ import ImageGallery from "@/components/ImageGallery";
 import ExpandableSection from "@/components/ExpandableSection";
 import SimilarProducts from "@/components/SimilarProducts";
 import CustomerReviews from "@/components/CustomerReviews";
+import { auth } from "@clerk/nextjs/server";
 
 
 const fetchProduct = async (id: string) => {
   try {
+    const productServiceUrl = process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL;
+    
+    if (!productServiceUrl) {
+      console.error("Product service URL is not configured");
+      return null;
+    }
+
+    const { getToken } = await auth();
+    const token = await getToken();
+    
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+    };
+    
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+    
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products/${id}`,
+      `${productServiceUrl}/products/${id}`,
       {
+        headers,
         cache: "no-store",
       }
     );
     
     if (!res.ok) {
-      console.error(`Failed to fetch product ${id}: ${res.status} ${res.statusText}`);
+      const errorText = await res.text();
+      console.error(`Failed to fetch product ${id}: ${res.status} ${res.statusText}`, errorText);
       return null;
     }
     

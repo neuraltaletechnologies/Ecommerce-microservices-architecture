@@ -14,22 +14,37 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatTZS } from "@/lib/utils/currency";
 
-const fetchProduct = async (id: string): Promise<ProductType> => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products/${id}`
-  );
-  if (!res.ok) {
-    throw new Error("Failed to fetch product");
-  }
-  return res.json();
-};
-
 export default function ViewProductPage() {
   const params = useParams();
   const router = useRouter();
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
   const productId = params?.id as string;
+
+  const fetchProduct = async (id: string): Promise<ProductType> => {
+    const productServiceUrl = process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL;
+    if (!productServiceUrl) {
+      throw new Error("Product service URL is not configured");
+    }
+
+    const token = await getToken();
+    const res = await fetch(
+      `${productServiceUrl}/products/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("Failed to fetch product:", res.status, errorText);
+      throw new Error(`Failed to fetch product: ${res.status} - ${errorText}`);
+    }
+    
+    return res.json();
+  };
 
   const { data: product, isLoading, error } = useQuery({
     queryKey: ["product", productId],
