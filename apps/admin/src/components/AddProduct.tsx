@@ -594,9 +594,18 @@ const AddProduct = () => {
                                           if (data.url) {
                                             const currentImages =
                                               form.getValues("images") || {};
+                                            
+                                            // Store as array to match database structure
+                                            const existingImages = currentImages[color];
+                                            const imageArray = Array.isArray(existingImages) 
+                                              ? [...existingImages, data.url]
+                                              : typeof existingImages === 'string'
+                                              ? [existingImages, data.url]
+                                              : [data.url];
+                                            
                                             form.setValue("images", {
                                               ...currentImages,
-                                              [color]: data.url,
+                                              [color]: imageArray,
                                             });
                                             toast.success(`${color} image uploaded!`);
                                           }
@@ -608,12 +617,37 @@ const AddProduct = () => {
                                     }}
                                   />
                                   {field.value?.[color] && (
-                                    <div className="mt-2">
-                                      <img 
-                                        src={field.value[color]} 
-                                        alt={`${color} variant`}
-                                        className="w-20 h-20 object-cover rounded border"
-                                      />
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                      {(Array.isArray(field.value[color]) 
+                                        ? field.value[color] 
+                                        : [field.value[color]]
+                                      ).map((url: string, idx: number) => (
+                                        <div key={idx} className="relative">
+                                          <img 
+                                            src={url} 
+                                            alt={`${color} variant ${idx + 1}`}
+                                            className="w-20 h-20 object-cover rounded border"
+                                          />
+                                          <button
+                                            type="button"
+                                            onClick={() => {
+                                              const currentImages = form.getValues("images") || {};
+                                              const colorImages = Array.isArray(currentImages[color])
+                                                ? currentImages[color] as string[]
+                                                : [currentImages[color] as string];
+                                              const newImages = colorImages.filter((_, i) => i !== idx);
+                                              form.setValue("images", {
+                                                ...currentImages,
+                                                [color]: newImages.length > 0 ? newImages : undefined,
+                                              } as any);
+                                              toast.success(`Image removed`);
+                                            }}
+                                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                                          >
+                                            ×
+                                          </button>
+                                        </div>
+                                      ))}
                                     </div>
                                   )}
                                 </div>

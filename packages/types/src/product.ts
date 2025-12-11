@@ -103,7 +103,7 @@ export const ProductFormSchema = z
     colors: z
       .array(z.enum(colors))
       .min(1, { message: "At least one color is required!" }),
-    images: z.record(z.string(), z.string(), {
+    images: z.record(z.string(), z.union([z.string(), z.array(z.string())]), {
       message: "Image for each color is required!",
     }),
     techHighlights: z.array(z.object({
