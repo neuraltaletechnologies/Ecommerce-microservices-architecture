@@ -4,6 +4,8 @@ import { ShippingFormInputs } from "@repo/types";
 import { PaymentElement, useCheckout } from "@stripe/react-stripe-js";
 import { ConfirmError } from "@stripe/stripe-js";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import useCartStore from "@/stores/cartStore";
 
 const CheckoutForm = ({
   shippingForm,
@@ -11,6 +13,8 @@ const CheckoutForm = ({
   shippingForm: ShippingFormInputs;
 }) => {
   const checkout = useCheckout();
+  const router = useRouter();
+  const { clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ConfirmError | null>(null);
 
@@ -29,8 +33,12 @@ const CheckoutForm = ({
     const res = await checkout.confirm();
     if (res.type === "error") {
       setError(res.error);
+      setLoading(false);
+    } else {
+      // Payment successful - clear cart and redirect to home page
+      clearCart();
+      router.push("/");
     }
-    setLoading(false);
   };
 
   return (
