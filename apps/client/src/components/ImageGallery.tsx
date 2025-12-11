@@ -33,22 +33,39 @@ export default function ImageGallery({ product, selectedColor }: ImageGalleryPro
       ];
     }
     
-    // New structure: color-keyed images
+    // New structure: color-keyed images (can be string or array)
     if (images && typeof images === 'object') {
-      const colorImage = images[selectedColor] || Object.values(images)[0] as string || "/products/1g.png";
+      // Get images for the selected color
+      let selectedColorImages: string[] = [];
+      const colorData = images[selectedColor];
       
-      return [
-        { 
-          url: colorImage,
-          label: "Main View",
-          isMain: true
-        },
-        ...(product.colors?.slice(0, 4).map((color: string) => ({
-          url: images[color] || "/products/1g.png",
-          label: color,
-          isMain: false
-        })) || [])
-      ];
+      if (typeof colorData === 'string') {
+        selectedColorImages = [colorData];
+      } else if (Array.isArray(colorData)) {
+        selectedColorImages = colorData.filter((url: string) => url && url.trim() !== '');
+      }
+      
+      // If no images for selected color, try first available color
+      if (selectedColorImages.length === 0) {
+        const firstColor = Object.keys(images)[0];
+        if (firstColor) {
+          const firstColorData = images[firstColor];
+          if (typeof firstColorData === 'string') {
+            selectedColorImages = [firstColorData];
+          } else if (Array.isArray(firstColorData)) {
+            selectedColorImages = firstColorData.filter((url: string) => url && url.trim() !== '');
+          }
+        }
+      }
+      
+      // Build image array from selected color images
+      if (selectedColorImages.length > 0) {
+        return selectedColorImages.map((url: string, index: number) => ({
+          url: url,
+          label: index === 0 ? "Main View" : `View ${index + 1}`,
+          isMain: index === 0
+        }));
+      }
     }
     
     // Fallback: no images available

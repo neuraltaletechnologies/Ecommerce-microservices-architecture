@@ -58,13 +58,47 @@ const ProductCard = ({ product }: { product: ProductType }) => {
 
   const availability = getAvailabilityStatus();
 
+  // Get the image URL for the selected color
+  const getImageUrl = (): string => {
+    const images = product.images as Record<string, string | string[]>;
+    const colorImages = images?.[productTypes.color];
+    
+    // Handle both string and array formats
+    if (typeof colorImages === 'string' && colorImages.trim() !== '') {
+      return colorImages;
+    } else if (Array.isArray(colorImages)) {
+      const validImage = colorImages.find((url: string) => url && url.trim() !== '');
+      if (validImage) {
+        return validImage; // Use first valid image
+      }
+    }
+    
+    // Fallback to first available color
+    const firstColor = Object.keys(images || {})[0];
+    if (firstColor) {
+      const firstColorImages = images[firstColor];
+      if (typeof firstColorImages === 'string' && firstColorImages.trim() !== '') {
+        return firstColorImages;
+      } else if (Array.isArray(firstColorImages)) {
+        const validImage = firstColorImages.find((url: string) => url && url.trim() !== '');
+        if (validImage) {
+          return validImage;
+        }
+      }
+    }
+    
+    return "/products/placeholder.jpg";
+  };
+
+  const imageUrl = getImageUrl();
+
   return (
     <div className="group bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
       {/* IMAGE */}
       <Link href={`/products/${product.id}`}>
         <div className="relative aspect-square overflow-hidden bg-gray-50">
           <Image
-            src={(product.images as Record<string,string>)?.[productTypes.color] || "/products/placeholder.jpg"}
+            src={imageUrl}
             alt={product.name}
             fill
             className="object-cover group-hover:scale-105 transition-all duration-300"
