@@ -69,8 +69,7 @@ export function DataTable<TData, TValue>({
       return (
         product.name?.toLowerCase().includes(searchValue) ||
         product.shortDescription?.toLowerCase().includes(searchValue) ||
-        product.categorySlug?.toLowerCase().includes(searchValue) ||
-        product.slug?.toLowerCase().includes(searchValue)
+        product.categorySlug?.toLowerCase().includes(searchValue)
       );
     },
     state: {

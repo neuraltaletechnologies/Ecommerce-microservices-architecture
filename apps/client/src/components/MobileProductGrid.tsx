@@ -129,11 +129,11 @@ const MobileProductListItem = ({ product }: { product: ProductType }) => {
             <span className="font-semibold text-gray-900">
               {formatTZS(product.price)}
             </span>
-            <if condition="product.id % 4 === 0">
+            {product.id % 4 === 0 && (
               <span className="ml-2 text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
                 15% off
               </span>
-            </if>
+            )}
           </div>
           <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 px-3 rounded transition-colors">
             Add to Cart
