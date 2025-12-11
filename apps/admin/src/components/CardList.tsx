@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Card, CardContent, CardFooter, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { OrderType, ProductsType } from "@repo/types";
+import { formatTZSCompact } from "@/lib/utils/currency";
 import { auth } from "@clerk/nextjs/server";
 
 
@@ -73,7 +74,7 @@ const CardList = async ({ title }: { title: string }) => {
                     {item.name}
                   </CardTitle>
                 </CardContent>
-                <CardFooter className="p-0">${item.price}K</CardFooter>
+                <CardFooter className="p-0">{formatTZSCompact(item.price)}</CardFooter>
               </Card>
             ))
           : orders.map((item) => (

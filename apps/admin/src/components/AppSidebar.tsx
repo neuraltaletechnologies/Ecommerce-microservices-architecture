@@ -11,7 +11,6 @@ import {
   Plus,
   Laptop,
   User,
-  ShoppingBasket,
   Package,
   Boxes,
   LogOut,
@@ -102,7 +101,7 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/">
-                <Image src="/favicon.icon" alt="logo" width={20} height={20} />
+                <Image src="/favicon.ico" alt="logo" width={20} height={20} />
                 <span>Neurashop</span>
               </Link>
             </SidebarMenuButton>

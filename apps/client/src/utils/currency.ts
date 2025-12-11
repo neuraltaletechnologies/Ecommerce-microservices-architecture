@@ -26,13 +26,20 @@ export function convertTzsToUsd(tzsAmount: number): number {
 
 /**
  * Format TZS amount with proper formatting
- * @param amount - Amount to format (can be in USD or TZS)
+ * @param amount - Amount to format in cents (e.g., 119999 = TZS 1,199.99)
  * @param fromUsd - Whether to convert from USD first (default: false)
- * @returns Formatted TZS string
+ * @returns Formatted TZS string with proper currency symbol
  */
 export function formatTzs(amount: number, fromUsd: boolean = false): string {
   const tzsAmount = fromUsd ? convertUsdToTzs(amount) : amount;
-  return `TZs ${tzsAmount.toLocaleString()}`;
+  const priceInShillings = tzsAmount / 100;
+  
+  return new Intl.NumberFormat('en-TZ', {
+    style: 'currency',
+    currency: 'TZS',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(priceInShillings);
 }
 
 /**

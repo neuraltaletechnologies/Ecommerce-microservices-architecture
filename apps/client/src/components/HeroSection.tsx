@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { formatTZS } from "@/lib/utils/currency";
 
 import { ChevronLeft, ChevronRight, Star, Zap, Headphones, Gamepad2, Smartphone, Laptop } from "lucide-react";
 
@@ -180,7 +181,7 @@ const HeroSection = () => {
             <div className="space-y-2 sm:space-y-3">
               <div className="flex flex-wrap items-baseline gap-2 sm:gap-3">
                 <span className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
-                  TZs {(currentProduct.price * 2300).toLocaleString()}
+                  {formatTZS(currentProduct.price)}
                 </span>
               </div>
               <div className="flex items-center space-x-2">

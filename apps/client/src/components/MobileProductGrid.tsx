@@ -4,6 +4,7 @@ import { ProductType } from "@repo/types";
 import ProductCard from "./ProductCard";
 import { Grid, List } from "lucide-react";
 import { useState } from "react";
+import { formatTZS } from "@/lib/utils/currency";
 
 interface MobileProductGridProps {
   products: ProductType[];
@@ -126,13 +127,13 @@ const MobileProductListItem = ({ product }: { product: ProductType }) => {
         <div className="flex items-center justify-between">
           <div>
             <span className="font-semibold text-gray-900">
-              TZs {(product.price * 2300).toLocaleString()}
+              {formatTZS(product.price)}
             </span>
-            {product.id % 4 === 0 && (
+            <if condition="product.id % 4 === 0">
               <span className="ml-2 text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">
                 15% off
               </span>
-            )}
+            </if>
           </div>
           <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 px-3 rounded transition-colors">
             Add to Cart

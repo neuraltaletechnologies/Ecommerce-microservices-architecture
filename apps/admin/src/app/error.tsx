@@ -124,7 +124,7 @@ export default function Error({
                   href="tel:+1234567890"
                   className="text-blue-600 hover:text-blue-700 font-medium underline"
                 >
-                  +1 (234) 567-890
+                  +255 653 520 829  
                 </a>
               </div>
             </div>

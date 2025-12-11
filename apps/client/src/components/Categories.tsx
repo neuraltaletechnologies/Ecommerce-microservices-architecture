@@ -75,6 +75,7 @@ interface Category {
   id: number;
   name: string;
   slug: string;
+  count?: number; // Now coming from the API
 }
 
 interface CategoryWithCount extends Category {
@@ -124,14 +125,9 @@ const CategoriesContent = () => {
           console.log('Categories data length:', data.length);
           console.log('First few categories:', data.slice(0, 3));
           
-          // Fetch total product count
-          const productsRes = await fetch('/api/products');
-          let totalProducts = 150; // fallback
-          if (productsRes.ok) {
-            const productsData = await productsRes.json();
-            totalProducts = productsData.Count || 150;
-            console.log('Total products from API:', totalProducts);
-          }
+          // Calculate total products from all categories
+          const totalProducts = data.reduce((sum, cat) => sum + (cat.count || 0), 0);
+          console.log('Total products from categories:', totalProducts);
           
           setDebugInfo(`SUCCESS: ${data.length} categories loaded`);
           // Add "All" category and map icons
@@ -146,7 +142,7 @@ const CategoriesContent = () => {
             ...data.map(category => ({
               ...category,
               icon: iconMap[category.slug] || <Package className="w-4 h-4" />,
-              count: Math.floor(totalProducts / data.length), // Distribute products evenly for now
+              count: category.count || 0, // Use real count from database
             }))
           ];
           

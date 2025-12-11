@@ -21,9 +21,12 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DataTablePagination } from "@/components/TablePagination";
 import { useState } from "react";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import AddCategory from "@/components/AddCategory";
+import { Search, X, Trash2 } from "lucide-react";
+import { CategoryType } from "@repo/types";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -37,6 +40,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
+  const [globalFilter, setGlobalFilter] = useState("");
 
   const table = useReactTable({
     data,
@@ -48,24 +52,50 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
+    onGlobalFilterChange: setGlobalFilter,
+    globalFilterFn: (row, columnId, filterValue) => {
+      const category = row.original as CategoryType;
+      const searchValue = filterValue.toLowerCase();
+      
+      return (
+        category.name?.toLowerCase().includes(searchValue) ||
+        category.slug?.toLowerCase().includes(searchValue)
+      );
+    },
     state: {
       sorting,
       columnFilters,
       rowSelection,
+      globalFilter,
     },
   });
 
+  const selectedCount = Object.keys(rowSelection).length;
+
   return (
-    <div>
-      <div className="flex items-center justify-between py-4">
-        <Input
-          placeholder="Search categories..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+    <div className="space-y-4">
+      {/* Search and Actions */}
+      <div className="flex items-center justify-between gap-4">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Search categories by name, slug..."
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            className="pl-10"
+          />
+          {globalFilter && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0"
+              onClick={() => setGlobalFilter("")}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+        
         <Sheet>
           <SheetTrigger asChild>
             <Button>Add Category</Button>
@@ -73,6 +103,23 @@ export function DataTable<TData, TValue>({
           <AddCategory />
         </Sheet>
       </div>
+
+      {/* Bulk Actions */}
+      {selectedCount > 0 && (
+        <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-blue-900">
+              {selectedCount} categor{selectedCount > 1 ? "ies" : "y"} selected
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button variant="destructive" size="sm">
+              <Trash2 className="mr-2 h-4 w-4" />
+              Delete
+            </Button>
+          </div>
+        </div>
+      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -122,28 +169,7 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-      </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
-      <div className="text-sm text-muted-foreground">
-        {table.getFilteredSelectedRowModel().rows.length} of{" "}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+        <DataTablePagination table={table} />
       </div>
     </div>
   );

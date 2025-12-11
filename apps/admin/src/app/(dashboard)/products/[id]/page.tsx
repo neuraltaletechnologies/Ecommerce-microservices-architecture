@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2, ArrowLeft, Edit, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { formatTZS } from "@/lib/utils/currency";
 
 const fetchProduct = async (id: string): Promise<ProductType> => {
   const res = await fetch(
@@ -140,7 +141,7 @@ export default function ViewProductPage() {
               <p className="text-muted-foreground">{product.shortDescription}</p>
             </div>
             <div>
-              <p className="text-3xl font-bold">{product.price.toLocaleString()} TZS</p>
+              <p className="text-3xl font-bold">{formatTZS(product.price)}</p>
             </div>
             <Separator />
             <div>

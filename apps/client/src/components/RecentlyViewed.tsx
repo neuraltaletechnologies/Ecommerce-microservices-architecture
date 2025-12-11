@@ -5,6 +5,7 @@ import { Clock, Eye } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { formatTZS } from "@/lib/utils/currency";
 
 interface RecentlyViewedProps {
   currentProductId?: number;
@@ -153,7 +154,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
                 {product.name}
               </h4>
               <p className="text-sm font-semibold text-gray-900">
-                TZs {(product.price * 2300).toLocaleString()}
+                {formatTZS(product.price)}
               </p>
             </Link>
           );

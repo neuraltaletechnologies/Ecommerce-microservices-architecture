@@ -1,10 +1,11 @@
 "use client";
 
 import { ProductType } from "@repo/types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { 
   Star, 
   StarOff, 
@@ -14,11 +15,23 @@ import {
   EyeOff,
   Loader2,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Search,
+  X,
+  Filter
 } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
+import { formatTZS } from "@/lib/utils/currency";
 import { toast } from "react-toastify";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function HeroProductsPage() {
   const { getToken } = useAuth();
@@ -26,6 +39,8 @@ export default function HeroProductsPage() {
   const [heroProducts, setHeroProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
 
   useEffect(() => {
     fetchProducts();
@@ -181,6 +196,32 @@ export default function HeroProductsPage() {
     return "/products/placeholder.jpg";
   };
 
+  // Get unique categories
+  const categories = useMemo(() => {
+    return Array.from(new Set(products.map(p => p.categorySlug))).filter(Boolean) as string[];
+  }, [products]);
+
+  // Filter non-hero products
+  const filteredNonHeroProducts = useMemo(() => {
+    let filtered = products.filter((p) => !p.isHeroProduct);
+    
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.shortDescription.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.categorySlug.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    // Apply category filter
+    if (categoryFilter.length > 0) {
+      filtered = filtered.filter(p => categoryFilter.includes(p.categorySlug));
+    }
+    
+    return filtered;
+  }, [products, searchQuery, categoryFilter]);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -313,7 +354,7 @@ export default function HeroProductsPage() {
                       {product.shortDescription}
                     </p>
                     <p className="text-sm font-medium text-blue-600 mt-1">
-                      TZS {((product.price * 2300) / 100).toLocaleString()}
+                      {formatTZS(product.price)}
                     </p>
                   </div>
 
@@ -343,16 +384,85 @@ export default function HeroProductsPage() {
       {/* Available Products Section */}
       <Card>
         <CardHeader>
-          <CardTitle>Available Products</CardTitle>
-          <CardDescription>
-            Select products to add to the hero slider
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Available Products</CardTitle>
+              <CardDescription>
+                Select products to add to the hero slider
+              </CardDescription>
+            </div>
+            <Badge variant="outline" className="text-sm">
+              {filteredNonHeroProducts.length} products
+            </Badge>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          {/* Search and Filter */}
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10"
+              />
+              {searchQuery && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0"
+                  onClick={() => setSearchQuery("")}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+
+            {/* Category Filter */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <Filter className="h-4 w-4" />
+                  Category
+                  {categoryFilter.length > 0 && (
+                    <span className="ml-1 rounded-full bg-primary text-primary-foreground px-2 py-0.5 text-xs">
+                      {categoryFilter.length}
+                    </span>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {categories.map((category) => (
+                  <DropdownMenuCheckboxItem
+                    key={category}
+                    checked={categoryFilter.includes(category)}
+                    onCheckedChange={(checked) => {
+                      setCategoryFilter(prev =>
+                        checked
+                          ? [...prev, category]
+                          : prev.filter((c) => c !== category)
+                      );
+                    }}
+                  >
+                    {category}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* Products List */}
           <div className="space-y-3 max-h-[600px] overflow-y-auto">
-            {products
-              .filter((p) => !p.isHeroProduct)
-              .map((product) => (
+            {filteredNonHeroProducts.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <AlertCircle className="w-12 h-12 mx-auto mb-2 text-gray-400" />
+                <p>No products found</p>
+              </div>
+            ) : (
+              filteredNonHeroProducts.map((product) => (
                 <div
                   key={product.id}
                   className="flex items-center gap-4 p-4 border rounded-lg bg-white hover:bg-gray-50 transition-colors"
@@ -377,7 +487,7 @@ export default function HeroProductsPage() {
                     </p>
                     <div className="flex items-center gap-4 mt-1">
                       <p className="text-sm font-medium text-blue-600">
-                        TZS {((product.price * 2300) / 100).toLocaleString()}
+                        {formatTZS(product.price)}
                       </p>
                       <Badge variant="outline" className="text-xs">
                         {product.categorySlug}
@@ -404,7 +514,8 @@ export default function HeroProductsPage() {
                     )}
                   </Button>
                 </div>
-              ))}
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

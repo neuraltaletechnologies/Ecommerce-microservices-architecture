@@ -25,10 +25,18 @@ const getData = async (): Promise<ProductsType> => {
 const ProductPage = async () => {
   const data = await getData();
   return (
-    <div className="">
-      <div className="mb-8 px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+    <div className="container mx-auto py-6">
+      <div className="mb-8 px-6 py-6 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
+         <div className="flex items-center justify-between">
+          <div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Products Management</h1>
         <p className="text-gray-600">Manage your premium tech product catalog including smartphones, laptops, audio gear, and accessories.</p>
+        </div>
+          <div className="text-right">
+            <div className="text-sm text-gray-500 mb-1">Total Products</div>
+            <div className="text-3xl font-bold text-purple-600">{data.length}</div>
+          </div>
+          </div>
       </div>
       <DataTable columns={columns} data={data} />
     </div>
