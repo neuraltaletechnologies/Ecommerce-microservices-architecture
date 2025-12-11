@@ -115,6 +115,9 @@ export const columns: ColumnDef<ProductType>[] = [
     id: "actions",
     cell: ({ row }) => {
       const product = row.original;
+      
+      // Debug: Log the product ID to verify it's correct
+      console.log('Product ID for view link:', product.id, 'Product name:', product.name);
 
       return (
         <DropdownMenu>
@@ -127,14 +130,15 @@ export const columns: ColumnDef<ProductType>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() =>
-                navigator.clipboard.writeText(product.id.toString())
-              }
+              onClick={() => {
+                console.log('Copying product ID:', product.id);
+                navigator.clipboard.writeText(product.id.toString());
+              }}
             >
               Copy product ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem asChild>
               <Link href={`/products/${product.id}`}>View product</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
