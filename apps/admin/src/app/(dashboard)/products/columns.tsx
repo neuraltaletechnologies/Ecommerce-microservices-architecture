@@ -63,7 +63,7 @@ export const columns: ColumnDef<ProductType>[] = [
         if (typeof colorImages === 'string') {
           imageUrl = colorImages;
         } else if (Array.isArray(colorImages) && colorImages.length > 0) {
-          imageUrl = colorImages[0];
+          imageUrl = colorImages[0] || null;
         }
       }
       
