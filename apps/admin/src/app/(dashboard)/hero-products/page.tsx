@@ -51,8 +51,15 @@ export default function HeroProductsPage() {
       setLoading(true);
       const token = await getToken();
       
+      const productServiceUrl = process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL;
+      if (!productServiceUrl) {
+        console.error("NEXT_PUBLIC_PRODUCT_SERVICE_URL is not defined");
+        toast.error("Configuration error: Product service URL not set");
+        return;
+      }
+      
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products`,
+        `${productServiceUrl}/products`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -60,20 +67,25 @@ export default function HeroProductsPage() {
         }
       );
 
-      if (res.ok) {
-        const data = await res.json();
-        setProducts(data);
-        setHeroProducts(
-          data
-            .filter((p: ProductType) => p.isHeroProduct)
-            .sort((a: ProductType, b: ProductType) => 
-              (a.heroOrder || 999) - (b.heroOrder || 999)
-            )
-        );
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Failed to fetch products:", res.status, errorText);
+        toast.error(`Failed to fetch products: ${res.status}`);
+        return;
       }
+
+      const data = await res.json();
+      setProducts(data);
+      setHeroProducts(
+        data
+          .filter((p: ProductType) => p.isHeroProduct)
+          .sort((a: ProductType, b: ProductType) => 
+            (a.heroOrder || 999) - (b.heroOrder || 999)
+          )
+      );
     } catch (error) {
       console.error("Error fetching products:", error);
-      toast.error("Failed to fetch products");
+      toast.error(`Failed to fetch products: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setLoading(false);
     }
