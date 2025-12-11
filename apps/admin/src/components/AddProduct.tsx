@@ -571,27 +571,32 @@ const AddProduct = () => {
                                         try {
                                           toast.info(`Uploading ${color} image...`);
                                           const formData = new FormData();
-                                          formData.append("file", file);
-                                          formData.append(
-                                            "upload_preset",
-                                            "ecommerce"
-                                          );
+                                          formData.append("image", file);
 
+                                          const token = await getToken();
                                           const res = await fetch(
-                                            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+                                            `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/upload/upload`,
                                             {
                                               method: "POST",
+                                              headers: {
+                                                Authorization: `Bearer ${token}`,
+                                              },
                                               body: formData,
                                             }
                                           );
+
+                                          if (!res.ok) {
+                                            throw new Error('Upload failed');
+                                          }
+
                                           const data = await res.json();
 
-                                          if (data.secure_url) {
+                                          if (data.url) {
                                             const currentImages =
                                               form.getValues("images") || {};
                                             form.setValue("images", {
                                               ...currentImages,
-                                              [color]: data.secure_url,
+                                              [color]: data.url,
                                             });
                                             toast.success(`${color} image uploaded!`);
                                           }
