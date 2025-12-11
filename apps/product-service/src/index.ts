@@ -18,6 +18,8 @@ const allowedOrigins = [
   "http://localhost:3004",
   "https://neuraltale-client.onrender.com",
   "https://neuraltale-admin.onrender.com",
+  "https://backoffice.neuraltale.com",
+  "https://eshop.neuraltale.com",
   process.env.FRONTEND_URL,
   process.env.ADMIN_URL,
 ].filter(Boolean);

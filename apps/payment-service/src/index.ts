@@ -13,6 +13,7 @@ const app = new Hono();
 const allowedOrigins = [
   "http://localhost:3002",
   "https://neuraltale-client.onrender.com",
+  "https://eshop.neuraltale.com",
   process.env.FRONTEND_URL,
 ].filter(Boolean);
 

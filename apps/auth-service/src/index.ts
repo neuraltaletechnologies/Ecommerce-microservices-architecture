@@ -12,6 +12,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3003",
   "https://neuraltale-admin.onrender.com",
+  "https://backoffice.neuraltale.com",
   process.env.ADMIN_URL,
 ].filter(Boolean);
 
