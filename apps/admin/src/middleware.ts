@@ -25,21 +25,25 @@ export default clerkMiddleware(async (auth, req) => {
   if (userId && sessionClaims) {
     const claims = sessionClaims as CustomJwtSessionClaims;
     
-    // Debug logging
-    console.log('Session Claims:', JSON.stringify({
-      userId,
-      publicMetadata: claims.publicMetadata,
-      metadata: claims.metadata,
-      hasPublicMetadata: !!claims.publicMetadata,
-      hasMetadata: !!claims.metadata
-    }, null, 2));
+    // Only log in development for debugging
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Session Claims:', JSON.stringify({
+        userId,
+        publicMetadata: claims.publicMetadata,
+        metadata: claims.metadata,
+        hasPublicMetadata: !!claims.publicMetadata,
+        hasMetadata: !!claims.metadata
+      }, null, 2));
+    }
     
     // Check both publicMetadata and metadata for the role
     const userRole = claims.publicMetadata?.role || claims.metadata?.role;
 
     // Check if user has admin role
     if (userRole !== "admin") {
-      console.log(`Access denied for user ${userId}. Role: ${userRole || 'none'}. Redirecting to /unauthorized`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Access denied for user ${userId}. Role: ${userRole || 'none'}. Redirecting to /unauthorized`);
+      }
       
       // Avoid redirect loop - if already on unauthorized page, allow it
       if (pathname === "/unauthorized") {
@@ -51,6 +55,9 @@ export default clerkMiddleware(async (auth, req) => {
   }
 
   return NextResponse.next();
+}, {
+  // Enable debug mode only in development
+  debug: process.env.NODE_ENV === 'development',
 });
 
 export const config = {

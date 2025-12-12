@@ -122,6 +122,66 @@ export const columns: ColumnDef<ProductType>[] = [
     header: "Description",
   },
   {
+    accessorKey: "stockQuantity",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Stock
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const product = row.original;
+      const stock = product.stockQuantity || 0;
+      const threshold = product.lowStockThreshold || 10;
+      const status = product.stockStatus || "in_stock";
+      
+      return (
+        <div className="flex items-center gap-2">
+          <span className="font-medium">{stock}</span>
+          <Badge 
+            variant={
+              status === "out_of_stock" ? "destructive" :
+              status === "pre_order" ? "secondary" :
+              stock <= threshold ? "outline" : "default"
+            }
+            className={cn(
+              status === "limited_stock" && "bg-orange-100 text-orange-800 border-orange-300",
+              stock <= threshold && stock > 0 && "border-yellow-500 text-yellow-700"
+            )}
+          >
+            {status === "in_stock" ? "In Stock" :
+             status === "limited_stock" ? "Limited" :
+             status === "pre_order" ? "Pre-Order" :
+             "Out of Stock"}
+          </Badge>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "soldCount",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Sold
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const sold = row.original.soldCount || 0;
+      return <span className="font-medium">{sold}</span>;
+    },
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const product = row.original;

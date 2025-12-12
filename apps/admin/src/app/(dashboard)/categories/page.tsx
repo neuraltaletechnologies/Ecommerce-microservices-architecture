@@ -2,6 +2,8 @@ import { Metadata } from "next";
 import { CategoryType } from "@repo/types";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
 export const metadata: Metadata = {
   title: "Categories Management - Product Categories",
@@ -42,7 +44,9 @@ const CategoryPage = async () => {
           </div>
       </div>
       </div>
-      <DataTable columns={columns} data={data} />
+      <Suspense fallback={<TableSkeleton rows={6} columns={5} />}>
+        <DataTable columns={columns} data={data} />
+      </Suspense>
     </div>
   );
 };

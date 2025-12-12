@@ -82,6 +82,9 @@ const AddProduct = () => {
       productFeatures: [],
       technicalSpecs: {},
       certifications: [],
+      stockQuantity: 0,
+      stockStatus: "in_stock",
+      lowStockThreshold: 10,
     },
   });
 
@@ -206,6 +209,85 @@ const AddProduct = () => {
                     </FormItem>
                   )}
                 />
+
+                {/* Inventory Management Section */}
+                <div className="border-t pt-6 mt-6">
+                  <h3 className="text-lg font-semibold mb-4">Inventory Management</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="stockQuantity"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Stock Quantity</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min="0"
+                              {...field}
+                              onChange={(e) => field.onChange(Number(e.target.value))}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Current inventory count
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="stockStatus"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Stock Status</FormLabel>
+                          <FormControl>
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="in_stock">In Stock</SelectItem>
+                                <SelectItem value="limited_stock">Limited Stock</SelectItem>
+                                <SelectItem value="pre_order">Pre-Order</SelectItem>
+                                <SelectItem value="out_of_stock">Out of Stock</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          <FormDescription>
+                            Product availability status
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="lowStockThreshold"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Low Stock Alert</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              min="0"
+                              {...field}
+                              onChange={(e) => field.onChange(Number(e.target.value))}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Alert when stock falls below
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+
                 {data && (
                   <FormField
                     control={form.control}

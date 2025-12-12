@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatTZS } from "@/lib/utils/currency";
+import HeroSkeleton from "./skeletons/HeroSkeleton";
 
 import { ChevronLeft, ChevronRight, Star, Zap, Headphones, Gamepad2, Smartphone, Laptop } from "lucide-react";
 
@@ -73,11 +74,7 @@ const HeroSection = () => {
   };
 
   if (loading) {
-    return (
-      <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 text-white overflow-hidden h-screen min-h-[600px] -mt-2 sm:-mt-4 md:-mt-6 flex items-center justify-center">
-        <div className="text-xl">Loading featured products...</div>
-      </div>
-    );
+    return <HeroSkeleton />;
   }
 
   if (!heroProducts || heroProducts.length === 0) {

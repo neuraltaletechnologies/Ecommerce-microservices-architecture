@@ -2,6 +2,8 @@ import { ProductsType } from "@repo/types";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
 export const metadata: Metadata = {
   title: "Products Management - All Tech Products",
@@ -12,12 +14,26 @@ export const metadata: Metadata = {
 const getData = async (): Promise<ProductsType> => {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products`
+      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products`,
+      { cache: 'no-store' }
     );
+    
+    if (!res.ok) {
+      console.error('Failed to fetch products:', res.status, res.statusText);
+      return [];
+    }
+    
     const data = await res.json();
+    
+    // Ensure we return an array
+    if (!Array.isArray(data)) {
+      console.error('Products API returned non-array data:', typeof data, data);
+      return [];
+    }
+    
     return data;
   } catch (error) {
-    console.log(error);
+    console.error('Error fetching products:', error);
     return [];
   }
 };
@@ -38,7 +54,9 @@ const ProductPage = async () => {
           </div>
           </div>
       </div>
-      <DataTable columns={columns} data={data} />
+      <Suspense fallback={<TableSkeleton rows={10} columns={8} />}>
+        <DataTable columns={columns} data={data} />
+      </Suspense>
     </div>
   );
 };

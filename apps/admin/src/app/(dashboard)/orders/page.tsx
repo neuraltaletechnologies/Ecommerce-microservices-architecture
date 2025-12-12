@@ -3,6 +3,8 @@ import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { OrderType } from "@repo/types";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
 export const metadata: Metadata = {
   title: "Orders Management - Payments & Transactions",
@@ -38,7 +40,9 @@ const OrdersPage = async () => {
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Orders & Payments Management</h1>
         <p className="text-gray-600">Track and manage customer orders, payments, and transaction history for Neurashop Tanzania.</p>
       </div>
-      <DataTable columns={columns} data={data} />
+      <Suspense fallback={<TableSkeleton rows={8} columns={7} />}>
+        <DataTable columns={columns} data={data} />
+      </Suspense>
     </div>
   );
 };

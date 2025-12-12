@@ -2,6 +2,8 @@ import { auth, type User } from "@clerk/nextjs/server";
 import { enhancedColumns } from "./enhanced-columns";
 import { EnhancedDataTable } from "./enhanced-data-table";
 import { Metadata } from "next";
+import { Suspense } from "react";
+import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
 export const metadata: Metadata = {
   title: "Users Management - Customer Database",
@@ -63,7 +65,9 @@ const UsersPage = async () => {
         </div>
       </div>
       
-      <EnhancedDataTable columns={enhancedColumns} data={res.data} />
+      <Suspense fallback={<TableSkeleton rows={10} columns={6} />}>
+        <EnhancedDataTable columns={enhancedColumns} data={res.data} />
+      </Suspense>
     </div>
   );
 };

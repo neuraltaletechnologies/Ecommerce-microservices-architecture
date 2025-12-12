@@ -123,6 +123,9 @@ export const ProductFormSchema = z
       label: z.string(),
       icon: z.string(),
     })).optional(),
+    stockQuantity: z.number().min(0).default(0),
+    stockStatus: z.enum(["in_stock", "limited_stock", "pre_order", "out_of_stock"]).default("in_stock"),
+    lowStockThreshold: z.number().min(0).default(10),
   })
   .refine(
     (data) => {

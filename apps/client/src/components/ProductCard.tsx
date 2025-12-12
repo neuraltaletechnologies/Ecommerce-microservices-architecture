@@ -49,10 +49,20 @@ const ProductCard = ({ product }: { product: ProductType }) => {
   // Generate a realistic rating for demo purposes
   const rating = 4.3 + (product.id % 10) * 0.06;
 
-  // Determine availability status
+  // Determine availability status from database
+  // Client view: Show "Pre-Order" for both out_of_stock and pre_order statuses
   const getAvailabilityStatus = () => {
-    if (product.id % 3 === 0) return { status: "Limited Stock", color: "text-orange-600", bg: "bg-orange-50" };
-    if (product.id % 7 === 0) return { status: "Pre-Order", color: "text-blue-600", bg: "bg-blue-50" };
+    const stockStatus = product.stockStatus || "in_stock";
+    const stock = product.stockQuantity || 0;
+    const threshold = product.lowStockThreshold || 10;
+
+    // Client side: Display "Pre-Order" for out of stock items
+    if (stockStatus === "out_of_stock" || stockStatus === "pre_order" || stock === 0) {
+      return { status: "Pre-Order", color: "text-blue-600", bg: "bg-blue-50" };
+    }
+    if (stockStatus === "limited_stock" || stock <= threshold) {
+      return { status: "Limited Stock", color: "text-orange-600", bg: "bg-orange-50" };
+    }
     return { status: "In Stock", color: "text-green-600", bg: "bg-green-50" };
   };
 
@@ -92,15 +102,31 @@ const ProductCard = ({ product }: { product: ProductType }) => {
 
   const imageUrl = getImageUrl();
 
+  // Optimize Cloudinary images with transformations
+  const optimizeCloudinaryUrl = (url: string) => {
+    if (url.includes('cloudinary.com')) {
+      // Add Cloudinary transformations: auto quality, auto format, width 400px
+      const parts = url.split('/upload/');
+      if (parts.length === 2) {
+        return `${parts[0]}/upload/q_auto,f_auto,w_400,c_limit/${parts[1]}`;
+      }
+    }
+    return url;
+  };
+
+  const optimizedImageUrl = optimizeCloudinaryUrl(imageUrl);
+
   return (
     <div className="group bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
       {/* IMAGE */}
       <Link href={`/products/${product.id}`}>
         <div className="relative aspect-square overflow-hidden bg-gray-50">
           <Image
-            src={imageUrl}
+            src={optimizedImageUrl}
             alt={product.name}
             fill
+            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover group-hover:scale-105 transition-all duration-300"
           />
           

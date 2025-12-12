@@ -75,7 +75,8 @@ export const deleteProduct = async (req: Request, res: Response) => {
 };
 
 export const getProducts = async (req: Request, res: Response) => {
-  const { sort, category, search, limit, brands, rating, priceMin, priceMax, batteryCapacity } = req.query;
+  try {
+    const { sort, category, search, limit, brands, rating, priceMin, priceMax, batteryCapacity } = req.query;
 
   // Build order by clause
   const orderBy = (() => {
@@ -91,7 +92,7 @@ export const getProducts = async (req: Request, res: Response) => {
     }
   })();
 
-  // Build where clause with all filters
+  // Build where clause with all filters - optimized for single query
   const where: Prisma.ProductWhereInput = {
     // Category filter
     ...(category && {
@@ -117,11 +118,29 @@ export const getProducts = async (req: Request, res: Response) => {
       : {}),
   };
 
-  // Fetch products with basic filters
+  // Fetch products with optimized query - select only needed fields for better performance
   let products = await prisma.product.findMany({
     where,
     orderBy,
     take: limit ? Number(limit) : undefined,
+    select: {
+      id: true,
+      name: true,
+      price: true,
+      images: true,
+      colors: true,
+      sizes: true,
+      category: true,
+      categorySlug: true,
+      shortDescription: true,
+      description: true, // Include for brand and battery filters
+      stockQuantity: true,
+      stockStatus: true,
+      lowStockThreshold: true,
+      soldCount: true,
+      createdAt: true,
+      updatedAt: true,
+    },
   });
 
   // Apply brand filter (client-side for now, as brand info is in name/description)
@@ -169,6 +188,13 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 
   res.status(200).json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch products', 
+      message: error instanceof Error ? error.message : 'Unknown error' 
+    });
+  }
 };
 
 export const getProduct = async (req: Request, res: Response) => {

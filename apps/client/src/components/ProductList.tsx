@@ -3,6 +3,8 @@ import Categories from "./Categories";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
 import Filter from "./Filter";
+import ProductCardSkeleton from "./skeletons/ProductCardSkeleton";
+import { Suspense } from "react";
 
 interface FetchDataParams {
   category?: string;
@@ -151,11 +153,19 @@ const ProductList = async ({
       <Categories />
       {params === "products" && <Filter />}
       
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-        {Array.isArray(products) && products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      <Suspense fallback={
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+          {[...Array(8)].map((_, i) => (
+            <ProductCardSkeleton key={i} />
+          ))}
+        </div>
+      }>
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+          {Array.isArray(products) && products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      </Suspense>
       
       {params === "homepage" && (
         <div className="flex justify-center mt-12">
