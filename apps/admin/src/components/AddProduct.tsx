@@ -67,7 +67,7 @@ const fetchCategories = async () => {
 
 const AddProduct = () => {
   const form = useForm<z.infer<typeof ProductFormSchema>>({
-    resolver: zodResolver(ProductFormSchema),
+    resolver: zodResolver(ProductFormSchema) as any,
     defaultValues: {
       name: "",
       shortDescription: "",
@@ -83,8 +83,9 @@ const AddProduct = () => {
       technicalSpecs: {},
       certifications: [],
       stockQuantity: 0,
-      stockStatus: "in_stock",
+      stockStatus: "in_stock" as const,
       lowStockThreshold: 10,
+      soldCount: 0,
     },
   });
 

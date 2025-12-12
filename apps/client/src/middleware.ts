@@ -1,21 +1,45 @@
 import { clerkMiddleware } from '@clerk/nextjs/server';
-import { performanceMiddleware } from './middleware/performance';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export default function middleware(request: NextRequest) {
-  // Apply performance headers first
-  const performanceResponse = performanceMiddleware(request);
+export default clerkMiddleware((auth, request: NextRequest) => {
+  const response = NextResponse.next();
   
-  // Then apply Clerk authentication
-  return clerkMiddleware({
-    // Enable debug mode only in development
-    debug: process.env.NODE_ENV === 'development',
-    // Preload user data for better performance
-    signInUrl: '/sign-in',
-    signUpUrl: '/sign-up',
-  })(request, performanceResponse);
-}
+  // Add performance and caching headers
+  const { pathname } = request.nextUrl;
+  
+  // Cache static assets aggressively
+  if (
+    pathname.startsWith('/_next/static/') ||
+    pathname.match(/\.(jpg|jpeg|png|gif|svg|webp|avif|ico|woff|woff2|ttf|eot)$/i)
+  ) {
+    response.headers.set(
+      'Cache-Control',
+      'public, max-age=31536000, immutable'
+    );
+  }
+  
+  // Cache Cloudinary images
+  if (pathname.includes('cloudinary.com')) {
+    response.headers.set(
+      'Cache-Control',
+      'public, max-age=86400, stale-while-revalidate=43200'
+    );
+  }
+  
+  // Add security headers
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('X-DNS-Prefetch-Control', 'on');
+  
+  return response;
+}, {
+  debug: process.env.NODE_ENV === 'development',
+  signInUrl: '/sign-in',
+  signUpUrl: '/sign-up',
+});
 
 export const config = {
   matcher: [
