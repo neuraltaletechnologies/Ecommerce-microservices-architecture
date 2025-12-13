@@ -182,9 +182,11 @@ const CartPageContent = () => {
                           <div className="relative w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl overflow-hidden flex-shrink-0 shadow-sm group-hover:shadow-md transition-shadow duration-300">
                             <Image
                               src={
-                                (item.images as Record<string, string>)?.[
-                                  item.selectedColor
-                                ] || ""
+                                (() => {
+                                  const images = item.images as Record<string, string | string[]>;
+                                  const imageValue = images?.[item.selectedColor];
+                                  return Array.isArray(imageValue) ? imageValue[0] : imageValue || "/products/placeholder.jpg";
+                                })()
                               }
                               alt={item.name}
                               fill

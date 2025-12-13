@@ -75,6 +75,8 @@ export default function HeroProductsPage() {
       }
 
       const data = await res.json();
+      console.log("Fetched products:", data.length);
+      console.log("Hero products:", data.filter((p: ProductType) => p.isHeroProduct));
       setProducts(data);
       setHeroProducts(
         data
@@ -200,9 +202,10 @@ export default function HeroProductsPage() {
   const getProductImage = (product: ProductType): string => {
     const firstColor = product.colors?.[0];
     if (firstColor && product.images) {
-      const images = product.images as Record<string, string[]>;
-      if (images[firstColor] && Array.isArray(images[firstColor])) {
-        return images[firstColor][0] || "/products/placeholder.jpg";
+      const images = product.images as Record<string, string | string[]>;
+      const imageValue = images[firstColor];
+      if (imageValue) {
+        return Array.isArray(imageValue) ? imageValue[0] || "/products/placeholder.jpg" : imageValue;
       }
     }
     return "/products/placeholder.jpg";
@@ -353,6 +356,7 @@ export default function HeroProductsPage() {
                       src={getProductImage(product)}
                       alt={product.name}
                       fill
+                      sizes="64px"
                       className="object-cover"
                     />
                   </div>
@@ -485,6 +489,7 @@ export default function HeroProductsPage() {
                       src={getProductImage(product)}
                       alt={product.name}
                       fill
+                      sizes="64px"
                       className="object-cover"
                     />
                   </div>

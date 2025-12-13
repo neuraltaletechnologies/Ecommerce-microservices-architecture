@@ -138,6 +138,8 @@ export const getProducts = async (req: Request, res: Response) => {
       stockStatus: true,
       lowStockThreshold: true,
       soldCount: true,
+      isHeroProduct: true,
+      heroOrder: true,
       createdAt: true,
       updatedAt: true,
     },
