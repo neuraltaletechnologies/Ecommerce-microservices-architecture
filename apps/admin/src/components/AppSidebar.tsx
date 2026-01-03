@@ -6,14 +6,11 @@ import {
   Calendar,
   Search,
   Settings,
-  User2,
-  ChevronUp,
   Plus,
   Laptop,
   User,
   Package,
   Boxes,
-  LogOut,
   Star,
 } from "lucide-react";
 import {
@@ -29,25 +26,16 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-
   SidebarSeparator,
 } from "./ui/sidebar";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 import { Sheet, SheetTrigger } from "./ui/sheet";
 import AddOrder from "./AddOrder";
 import AddUserSheet from "./AddUserSheet";
 import AddCategory from "./AddCategory";
 import AddProduct from "./AddProduct";
-import { useUser, useClerk } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { UserButton, useUser } from "@clerk/nextjs";
 
 const items = [
   {
@@ -79,20 +67,6 @@ const items = [
 
 const AppSidebar = () => {
   const { user, isLoaded } = useUser();
-  const { signOut } = useClerk();
-  const router = useRouter();
-
-  const handleSignOut = async () => {
-    await signOut();
-    router.push("/sign-in");
-  };
-
-  const getUserInitials = () => {
-    if (!user) return "U";
-    const firstName = user.firstName || "";
-    const lastName = user.lastName || "";
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase() || "U";
-  };
 
   return (
     <Sidebar collapsible="icon">
@@ -259,43 +233,32 @@ const AppSidebar = () => {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton className="h-12">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={user?.imageUrl} />
-                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col items-start text-left">
-                    <span className="text-sm font-medium">
-                      {isLoaded && user ? user.fullName || "User" : "Loading..."}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {isLoaded && user ? user.primaryEmailAddress?.emailAddress : ""}
-                    </span>
-                  </div>
-                  <ChevronUp className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem asChild>
-                  <Link href="/profile" className="cursor-pointer">
-                    <User2 className="mr-2 h-4 w-4" />
-                    Account
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/settings" className="cursor-pointer">
-                    <Settings className="mr-2 h-4 w-4" />
-                    Settings
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign out
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <SidebarMenuButton className="h-12 hover:bg-gray-100 dark:hover:bg-gray-800">
+              <UserButton 
+                appearance={{
+                  elements: {
+                    avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-blue-500 transition-all duration-200",
+                    userButtonPopoverCard: "shadow-lg"
+                  }
+                }}
+              >
+                <UserButton.MenuItems>
+                  <UserButton.Link
+                    label="Settings"
+                    labelIcon={<Settings className="w-4 h-4" />}
+                    href="/settings"
+                  />
+                </UserButton.MenuItems>
+              </UserButton>
+              <div className="flex flex-col items-start text-left ml-2 overflow-hidden">
+                <span className="text-sm font-medium truncate w-full">
+                  {isLoaded && user ? user.fullName || "User" : "Loading..."}
+                </span>
+                <span className="text-xs text-muted-foreground truncate w-full">
+                  {isLoaded && user ? user.primaryEmailAddress?.emailAddress : ""}
+                </span>
+              </div>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

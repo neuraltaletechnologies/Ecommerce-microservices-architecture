@@ -27,6 +27,10 @@ import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import AddCategory from "@/components/AddCategory";
 import { Search, X, Trash2 } from "lucide-react";
 import { CategoryType } from "@repo/types";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,6 +45,40 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
+
+  const { getToken } = useAuth();
+  const router = useRouter();
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const token = await getToken();
+      const selectedRows = table.getSelectedRowModel().rows;
+
+      await Promise.all(
+        selectedRows.map(async (row) => {
+          const categorySlug = (row.original as CategoryType).slug;
+          await fetch(
+            `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories/${categorySlug}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+        })
+      );
+    },
+    onSuccess: () => {
+      toast.success("Category(s) deleted successfully");
+      setRowSelection({});
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete categories");
+    },
+  });
 
   const table = useReactTable({
     data,
@@ -113,9 +151,18 @@ export function DataTable<TData, TValue>({
             </span>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="destructive" size="sm">
+            <Button 
+              variant="destructive" 
+              size="sm"
+              onClick={() => {
+                if (confirm(`Are you sure you want to delete ${selectedCount} categor${selectedCount > 1 ? "ies" : "y"}?`)) {
+                  deleteMutation.mutate();
+                }
+              }}
+              disabled={deleteMutation.isPending}
+            >
               <Trash2 className="mr-2 h-4 w-4" />
-              Delete
+              {deleteMutation.isPending ? "Deleting..." : "Delete"}
             </Button>
           </div>
         </div>
