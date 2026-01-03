@@ -74,10 +74,10 @@ const ProductCard = ({ product }: { product: ProductType }) => {
 
     // Client side: Display "Pre-Order" for out of stock items
     if (stockStatus === "out_of_stock" || stockStatus === "pre_order" || stock === 0) {
-      return { status: "Pre-Order", color: "text-blue-600", bg: "bg-blue-50" };
+      return { status: "Pre-Order", color: "text-[#0A7EA4]", bg: "bg-[#0A7EA4]/10" };
     }
     if (stockStatus === "limited_stock" || stock <= threshold) {
-      return { status: "Limited Stock", color: "text-orange-600", bg: "bg-orange-50" };
+      return { status: "Limited Stock", color: "text-[#FDB913]", bg: "bg-[#FDB913]/10" };
     }
     return { status: "In Stock", color: "text-green-600", bg: "bg-green-50" };
   };
@@ -133,7 +133,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
   const optimizedImageUrl = optimizeCloudinaryUrl(imageUrl);
 
   return (
-    <div className="group bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+    <div className="group bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:border-[#FDB913]/30 transition-all duration-300 transform hover:-translate-y-1">
       {/* IMAGE */}
       <Link href={`/products/${product.id}`}>
         <div className="relative aspect-square overflow-hidden bg-gray-50">
@@ -175,7 +175,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
         {/* Product Name & Rating */}
         <div>
           <Link href={`/products/${product.id}`}>
-            <h1 className="font-medium text-sm text-gray-900 hover:text-blue-600 transition-colors duration-200 line-clamp-2 mb-1">
+            <h1 className="font-medium text-sm text-[#001E3C] hover:text-[#0A7EA4] transition-colors duration-200 line-clamp-2 mb-1">
               {product.name}
             </h1>
           </Link>
@@ -186,7 +186,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
                   key={i}
                   className={`w-3 h-3 ${
                     i < Math.floor(rating)
-                      ? "text-yellow-400 fill-current"
+                      ? "text-[#FDB913] fill-current"
                       : "text-gray-300"
                   }`}
                 />
@@ -203,7 +203,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
         <div className="pt-2 border-t border-gray-100">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <span className="text-lg font-bold text-gray-900">
+              <span className="text-lg font-bold text-[#001E3C]">
                 {formatTzs(product.price)}
               </span>
               {/* Show savings if applicable */}
@@ -212,7 +212,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
                   <span className="text-xs text-gray-500 line-through">
                     {formatTzs(product.price * 1.15)}
                   </span>
-                  <span className="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-medium">
+                  <span className="text-xs bg-[#FDB913]/20 text-[#001E3C] px-1.5 py-0.5 rounded font-medium">
                     Save 15%
                   </span>
                 </div>
@@ -222,7 +222,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
           
           <button
             onClick={handleAddToCart}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-3 rounded-lg transition-colors duration-200 flex items-center justify-center gap-1"
+            className="w-full bg-[#FDB913] hover:bg-[#e5a811] text-[#001E3C] font-bold py-2 px-3 rounded-lg transition-colors duration-200 flex items-center justify-center gap-1 shadow-md hover:shadow-lg"
           >
             <ShoppingCart className="w-3 h-3" />
             <span className="text-xs sm:text-sm">Add to Cart</span>

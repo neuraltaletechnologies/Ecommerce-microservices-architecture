@@ -29,7 +29,7 @@ const CategoryPage = async () => {
   const data = await getData();
   return (
     <div className="container mx-auto py-6">
-      <div className="mb-8 px-6 py-6 bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg">
+      <div className="mb-8 px-6 py-6 bg-gradient-to-r from-[#001E3C]/10 to-[#0A7EA4]/10 border border-[#0A7EA4]/30 rounded-lg">
         <div className="flex items-center justify-between">
         <div>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">Categories Management</h1>
@@ -40,7 +40,7 @@ const CategoryPage = async () => {
            
         <div className="text-right">
             <div className="text-sm text-gray-500 mb-1">Total Categories</div>
-            <div className="text-3xl font-bold text-purple-600">{data.length}</div>
+            <div className="text-3xl font-bold text-[#FDB913]">{data.length}</div>
           </div>
       </div>
       </div>

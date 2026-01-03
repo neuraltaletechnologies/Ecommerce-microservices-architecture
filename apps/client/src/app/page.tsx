@@ -2,6 +2,12 @@ import ProductList from "@/components/ProductList";
 import HeroSection from "@/components/HeroSection";
 import TrustIndicators from "@/components/TrustIndicators";
 import ShopByCategory from "@/components/ShopByCategory";
+import FlashDealsSection from "@/components/homepage/FlashDealsSection";
+import WhyChooseSection from "@/components/homepage/WhyChooseSection";
+import TestimonialsSection from "@/components/homepage/TestimonialsSection";
+import NewsletterSection from "@/components/homepage/NewsletterSection";
+import LiveStatsCounter from "@/components/homepage/LiveStatsCounter";
+import BackToTopButton from "@/components/homepage/BackToTopButton";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -25,34 +31,57 @@ const Homepage = async ({
   const category = (await searchParams).category;
   return (
     <div className="min-h-screen">
-      {/* Hero Section - Full width */}
-      <HeroSection  />
+      {/* Hero Section - Full width with brand gradients */}
+      <HeroSection />
       
-    
       
-      {/* Featured Products - With container */}
-      <section className="py-16 bg-gray-50">
+      
+      {/* Flash Deals Section - Full width golden yellow */}
+      <FlashDealsSection />
+      
+      {/* Featured Products - White background */}
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="text-center mb-12">
-        <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-          Premium Tech Products
-        </h2>
-        
-      </div>
+          <div className="text-center mb-10">
+            <span className="inline-block bg-[#FDB913]/20 text-[#001E3C] text-sm font-bold px-4 py-1.5 rounded-full mb-4">
+              Featured Collection
+            </span>
+            <h2 className="text-3xl md:text-4xl font-black text-[#001E3C]">
+              Trending Products
+            </h2>
+            <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
+              Discover our most popular tech products, handpicked for quality and performance
+            </p>
+          </div>
           <ProductList category={category} params="homepage"/>
         </div>
       </section>
 
-       {/* Trust Indicators - With container */}
+        
+      {/* Why Choose Neurashop - Cream background */}
+      <WhyChooseSection />
+
+      {/* Trust Indicators - Cream gradient background */}
       <section className="py-12 bg-white">
         <div className="max-w-10xl mx-auto px-4 sm:px-6 lg:px-8">
           <TrustIndicators />
         </div>
       </section>
-      <section>
-        {/* Shop By Category Section */}
-      <ShopByCategory />
+    
+      
+      {/* Shop By Category Section */}
+      <section className="bg-white">
+        <ShopByCategory />
       </section>
+      
+      {/* Customer Testimonials - White background */}
+      <TestimonialsSection />
+      
+      {/* Newsletter & Community - Teal to Navy gradient */}
+      <NewsletterSection />
+      
+      {/* Back to Top Button */}
+      <BackToTopButton />
     </div>
   );
 };

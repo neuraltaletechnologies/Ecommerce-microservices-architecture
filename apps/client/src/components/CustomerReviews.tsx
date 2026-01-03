@@ -63,7 +63,7 @@ export default function CustomerReviews({ productId }: CustomerReviewsProps) {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+          className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#FDB913]"
           title="Sort reviews"
         >
           <option value="helpful">Most Helpful</option>
@@ -76,7 +76,7 @@ export default function CustomerReviews({ productId }: CustomerReviewsProps) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         {/* Overall Rating */}
         <div className="lg:col-span-1">
-          <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-6">
+          <div className="bg-gradient-to-br from-[#FDB913]/10 to-[#0A7EA4]/10 border border-[#FDB913]/30 rounded-xl p-6">
             <div className="text-center mb-4">
               <div className="text-5xl font-bold text-gray-900 mb-2">4.8</div>
               <div className="flex items-center justify-center gap-1 mb-2">
@@ -84,7 +84,7 @@ export default function CustomerReviews({ productId }: CustomerReviewsProps) {
                   <Star
                     key={i}
                     className={`w-5 h-5 ${
-                      i < 4 ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                      i < 4 ? "text-[#FDB913] fill-[#FDB913]" : "text-gray-300"
                     }`}
                   />
                 ))}
@@ -99,7 +99,7 @@ export default function CustomerReviews({ productId }: CustomerReviewsProps) {
                   <span className="text-sm text-gray-600 w-8">{rating.stars}★</span>
                   <div className="flex-1 bg-gray-200 rounded-full h-2">
                     <div
-                      className={`bg-yellow-400 rounded-full h-2 ${
+                      className={`bg-[#FDB913] rounded-full h-2 ${
                         rating.percentage >= 75 ? 'w-3/4' :
                         rating.percentage >= 50 ? 'w-1/2' :
                         rating.percentage >= 25 ? 'w-1/4' :
@@ -140,7 +140,7 @@ export default function CustomerReviews({ productId }: CustomerReviewsProps) {
                           key={i}
                           className={`w-4 h-4 ${
                             i < review.rating
-                              ? "text-yellow-400 fill-yellow-400"
+                              ? "text-[#FDB913] fill-[#FDB913]"
                               : "text-gray-300"
                           }`}
                         />
@@ -155,10 +155,10 @@ export default function CustomerReviews({ productId }: CustomerReviewsProps) {
               <p className="text-gray-700 leading-relaxed mb-4">{review.content}</p>
 
               <div className="flex items-center gap-4 text-sm">
-                <button className="text-gray-600 hover:text-blue-600 transition-colors">
+                <button className="text-gray-600 hover:text-[#0A7EA4] transition-colors">
                   Helpful ({review.helpful})
                 </button>
-                <button className="text-gray-600 hover:text-blue-600 transition-colors">
+                <button className="text-gray-600 hover:text-[#0A7EA4] transition-colors">
                   Report
                 </button>
               </div>

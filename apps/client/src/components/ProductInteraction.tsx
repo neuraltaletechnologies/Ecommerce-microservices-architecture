@@ -134,14 +134,14 @@ const ProductInteractionContent = ({
       {/* BUTTONS */}
       <button
         onClick={handleAddToCart}
-        className="bg-gray-800 text-white px-4 py-2 rounded-md shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-medium"
+        className="bg-[#FDB913] text-[#001E3C] px-4 py-2 rounded-md shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-semibold hover:bg-[#e5a811] transition-all"
       >
         <Plus className="w-4 h-4" />
         Add to Cart
       </button>
       <button 
         onClick={handleBuyNow}
-        className="ring-1 ring-gray-400 shadow-lg text-gray-800 px-4 py-2 rounded-md flex items-center justify-center cursor-pointer gap-2 text-sm font-medium hover:ring-gray-500 hover:bg-gray-50 transition-all"
+        className="ring-1 ring-[#001E3C] shadow-lg text-[#001E3C] px-4 py-2 rounded-md flex items-center justify-center cursor-pointer gap-2 text-sm font-semibold hover:ring-[#0A7EA4] hover:bg-[#001E3C]/5 transition-all"
       >
         <ShoppingCart className="w-4 h-4" />
         Buy this Item

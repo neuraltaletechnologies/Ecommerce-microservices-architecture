@@ -48,7 +48,7 @@ const Navbar = () => {
         <UserButton 
           appearance={{
             elements: {
-              avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-blue-500 transition-all duration-200"
+              avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200"
             }
           }}
         >

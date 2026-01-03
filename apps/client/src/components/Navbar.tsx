@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import SearchBar from "./SearchBar";
 import { User, Menu, X, ChevronDown } from "lucide-react";
 import ShoppingCartIcon from "./ShoppingCartIcon";
@@ -134,8 +135,14 @@ const Navbar = () => {
             {/* Logo */}
             <Link href="/" className="flex items-center group">
               <div className="flex items-center space-x-2">
-                
-                <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-200">
+                <Image 
+                  src="/logo.svg" 
+                  alt="Neurashop Logo" 
+                  width={36} 
+                  height={36}
+                  className="object-contain"
+                />
+                <span className="text-xl font-bold bg-gradient-to-r from-[#001E3C] to-[#0A7EA4] bg-clip-text text-transparent group-hover:from-[#FDB913] group-hover:to-[#0A7EA4] transition-all duration-200">
                   Neurashop
                 </span>
               </div>
@@ -150,7 +157,7 @@ const Navbar = () => {
                 >
                   <span>Categories</span>
                   <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-200" />
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-200"></span>
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FDB913] group-hover:w-full transition-all duration-200"></span>
                 </button>
                 
                 {/* Mega Menu Dropdown */}
@@ -162,7 +169,7 @@ const Navbar = () => {
                       <div key={category.name} className="space-y-3">
                         <Link
                           href={category.href}
-                          className="font-semibold text-gray-900 hover:text-blue-600 transition-colors duration-200 block"
+                          className="font-semibold text-gray-900 hover:text-[#0A7EA4] transition-colors duration-200 block"
                         >
                           {category.name}
                         </Link>
@@ -171,7 +178,7 @@ const Navbar = () => {
                             <li key={subcategory.name}>
                               <Link
                                 href={subcategory.href}
-                                className="text-sm text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                                className="text-sm text-gray-600 hover:text-[#0A7EA4] transition-colors duration-200"
                               >
                                 {subcategory.name}
                               </Link>
@@ -186,13 +193,13 @@ const Navbar = () => {
                   <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 rounded-b-lg">
                     <div className="flex items-center justify-between">
                       <div className="flex space-x-6">
-                        <Link href="/products?featured=true" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+                        <Link href="/products?featured=true" className="text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
                           Featured Products
                         </Link>
-                        <Link href="/products?new=true" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+                        <Link href="/products?new=true" className="text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
                           New Arrivals
                         </Link>
-                        <Link href="/products?sale=true" className="text-sm font-medium text-blue-600 hover:text-blue-700">
+                        <Link href="/products?sale=true" className="text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
                           On Sale
                         </Link>
                       </div>
@@ -215,7 +222,7 @@ const Navbar = () => {
                     className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 relative group"
                   >
                     {item.name}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-200"></span>
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FDB913] group-hover:w-full transition-all duration-200"></span>
                   </a>
                 ) : (
                   <Link
@@ -224,7 +231,7 @@ const Navbar = () => {
                     className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 relative group"
                   >
                     {item.name}
-                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-200"></span>
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FDB913] group-hover:w-full transition-all duration-200"></span>
                   </Link>
                 )
               ))}
@@ -249,7 +256,7 @@ const Navbar = () => {
                   <UserButton 
                     appearance={{
                       elements: {
-                        avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-blue-500 transition-all duration-200"
+                        avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200"
                       }
                     }}
                   >
@@ -284,7 +291,7 @@ const Navbar = () => {
                   <UserButton 
                     appearance={{
                       elements: {
-                        avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-blue-500 transition-all duration-200"
+                        avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200"
                       }
                     }}
                   >

@@ -49,7 +49,7 @@ const OrdersPage = async () => {
   if (!orders) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-2xl my-4 font-medium">Your Orders</h1>
+        <h1 className="text-2xl my-4 font-medium text-[#001E3C]">Your Orders</h1>
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
           Failed to load orders. Please try again later.
         </div>
@@ -60,10 +60,10 @@ const OrdersPage = async () => {
   if (orders.length === 0) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <h1 className="text-2xl my-4 font-medium">Your Orders</h1>
+        <h1 className="text-2xl my-4 font-medium text-[#001E3C]">Your Orders</h1>
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
           <p className="text-gray-600 mb-2">You haven't placed any orders yet.</p>
-          <a href="/products" className="text-blue-600 hover:underline">
+          <a href="/products" className="text-[#0A7EA4] hover:text-[#001E3C] hover:underline font-medium">
             Start shopping
           </a>
         </div>
@@ -77,7 +77,7 @@ const OrdersPage = async () => {
       <h1 className="text-2xl my-4 font-medium">Your Orders</h1>
       <div className="space-y-4">
         {orders.map((order) => (
-          <div key={order._id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+          <div key={order._id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md hover:border-[#FDB913]/30 transition-all">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               <div>
                 <span className="font-medium text-sm text-gray-500 block mb-1">

@@ -77,7 +77,7 @@ export default function Error({
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={reset}
-              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#001E3C] to-[#0A7EA4] hover:from-[#0A7EA4] hover:to-[#001E3C] text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <RefreshCcw className="w-5 h-5" />
               Try Again
@@ -103,7 +103,7 @@ export default function Error({
           {/* Admin Help Section */}
           <div className="mt-8 pt-8 border-t border-gray-200">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <LifeBuoy className="w-5 h-5 text-blue-600" />
+              <LifeBuoy className="w-5 h-5 text-[#0A7EA4]" />
               <p className="text-sm font-semibold text-gray-700">
                 Need Technical Support?
               </p>
@@ -115,14 +115,14 @@ export default function Error({
               <div className="flex flex-col sm:flex-row gap-2 justify-center items-center text-sm">
                 <a
                   href="mailto:admin@neuraltale.com"
-                  className="text-blue-600 hover:text-blue-700 font-medium underline"
+                  className="text-[#0A7EA4] hover:text-[#001E3C] font-medium underline"
                 >
                   admin@neuraltale.com
                 </a>
                 <span className="hidden sm:inline text-gray-400">|</span>
                 <a
                   href="tel:+1234567890"
-                  className="text-blue-600 hover:text-blue-700 font-medium underline"
+                  className="text-[#0A7EA4] hover:text-[#001E3C] font-medium underline"
                 >
                   +255 653 520 829  
                 </a>

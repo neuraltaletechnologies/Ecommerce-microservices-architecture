@@ -166,7 +166,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                 />
               </div>
-              <h4 className="font-medium text-sm text-gray-900 line-clamp-2 mb-1 group-hover:text-blue-600 transition-colors">
+              <h4 className="font-medium text-sm text-gray-900 line-clamp-2 mb-1 group-hover:text-[#0A7EA4] transition-colors">
                 {product.name}
               </h4>
               <p className="text-sm font-semibold text-gray-900">
@@ -180,7 +180,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
       <div className="mt-4 pt-4 border-t border-gray-100">
         <Link
           href="/products"
-          className="inline-flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+          className="inline-flex items-center gap-2 text-sm text-[#0A7EA4] hover:text-[#001E3C] font-medium"
         >
           <Eye className="w-4 h-4" />
           View All Products

@@ -84,12 +84,12 @@ const FilterContent = () => {
         
         {/* Show active filter tags */}
         {searchParams.get("category") && (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#FDB913]/20 text-[#001E3C] text-xs font-medium rounded-full">
             Category: {searchParams.get("category")}
           </span>
         )}
         {searchParams.get("brands") && (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full">
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-[#0A7EA4]/20 text-[#001E3C] text-xs font-medium rounded-full">
             {searchParams.get("brands")?.split(",").length} brand(s)
           </span>
         )}
@@ -118,7 +118,7 @@ const FilterContent = () => {
             id="sort"
             value={currentSort}
             onChange={(e) => handleFilter(e.target.value)}
-            className="appearance-none bg-white border border-gray-200 text-gray-700 text-sm font-medium pl-4 pr-10 py-2.5 rounded-lg shadow-sm hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 cursor-pointer transition-all"
+            className="appearance-none bg-white border border-gray-200 text-gray-700 text-sm font-medium pl-4 pr-10 py-2.5 rounded-lg shadow-sm hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#FDB913] focus:border-[#FDB913] cursor-pointer transition-all"
           >
             {sortOptions.map((option) => (
               <option key={option.value} value={option.value}>

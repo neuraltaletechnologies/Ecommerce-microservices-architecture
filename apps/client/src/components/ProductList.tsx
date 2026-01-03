@@ -5,6 +5,7 @@ import Link from "next/link";
 import Filter from "./Filter";
 import ProductCardSkeleton from "./skeletons/ProductCardSkeleton";
 import { Suspense } from "react";
+import { ArrowRight } from "lucide-react";
 
 interface FetchDataParams {
   category?: string;
@@ -168,12 +169,14 @@ const ProductList = async ({
       </Suspense>
       
       {params === "homepage" && (
-        <div className="flex justify-center mt-12">
-          <Link
-            href={category ? `/products/?category=${category}` : "/products"}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold text-lg transition-all duration-200 transform hover:scale-105"
+       
+        <div className="text-center mt-12">
+          <Link 
+            href="/products" 
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-semibold transition-colors group"
           >
-            View All Products
+            View All Categories
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       )}

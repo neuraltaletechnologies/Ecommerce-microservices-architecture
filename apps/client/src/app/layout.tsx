@@ -55,6 +55,16 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo.svg', sizes: 'any', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/logo.svg', sizes: 'any', type: 'image/svg+xml' },
+    ],
+    shortcut: '/favicon.png',
+  },
   robots: {
     index: true,
     follow: true,
@@ -79,9 +89,9 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/logo.png",
-        width: 1200,
-        height: 630,
+        url: "/logo.svg",
+        width: 611,
+        height: 611,
         alt: "Neurashop - Premium Tech Store by Neuraltale",
       },
     ],
@@ -92,7 +102,7 @@ export const metadata: Metadata = {
     description: "Shop premium tech products in Tanzania. Powered by Neuraltale. Laptops, smartphones, gaming gear & more. Fast delivery across Tanzania.",
     site: "@neuraltale",
     creator: "@neuraltale",
-    images: ["/logo.png"],
+    images: ["/logo.svg"],
   },
   other: {
     'geo.region': 'TZ',
@@ -127,7 +137,7 @@ export default function RootLayout({
                 name: 'Neuraltale',
                 alternateName: 'Neurashop',
                 url: 'https://neuraltale-client.vercel.app',
-                logo: 'https://neurashop.neuraltale.com/logo.png',
+                logo: 'https://neurashop.neuraltale.com/logo.svg',
                 description: 'Neurashop is the premium e-commerce platform by Neuraltale, offering technology and electronics in Tanzania including laptops, smartphones, gaming gear and accessories across Dar es Salaam and East Africa.',
                 address: {
                   '@type': 'PostalAddress',
@@ -179,7 +189,7 @@ export default function RootLayout({
           <ToastContainer 
             position="bottom-right" 
             toastClassName="!bg-white !text-gray-900 !shadow-lg !border !border-gray-200"
-            progressClassName="!bg-blue-600"
+            progressClassName="!bg-[#FDB913]"
           />
           <Analytics />
           <SpeedInsights />

@@ -109,7 +109,7 @@ const CartPageContent = () => {
               <div
                 className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-300 ${
                   step.id === activeStep 
-                    ? "bg-gradient-to-r from-gray-900 to-gray-800 shadow-lg shadow-gray-900/20" 
+                    ? "bg-gradient-to-r from-[#001E3C] to-[#0A7EA4] shadow-lg shadow-[#001E3C]/20" 
                     : step.id < activeStep
                     ? "bg-green-50 border border-green-200"
                     : "bg-gray-100 border border-gray-200"
@@ -118,7 +118,7 @@ const CartPageContent = () => {
                 <div
                   className={`w-8 h-8 rounded-lg flex items-center justify-center font-semibold text-sm transition-all duration-300 ${
                     step.id === activeStep 
-                      ? "bg-white text-gray-900" 
+                      ? "bg-[#FDB913] text-[#001E3C]" 
                       : step.id < activeStep
                       ? "bg-green-500 text-white"
                       : "bg-white text-gray-400"
@@ -160,7 +160,7 @@ const CartPageContent = () => {
                       <p className="text-gray-600 mb-8">Add some items to get started!</p>
                       <button
                         onClick={() => router.push("/")}
-                        className="inline-flex items-center gap-2 bg-gray-900 hover:bg-gray-800 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg shadow-gray-900/20 hover:shadow-xl hover:shadow-gray-900/30 hover:scale-105"
+                        className="inline-flex items-center gap-2 bg-[#FDB913] hover:bg-[#e5a811] text-[#001E3C] px-8 py-3 rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-[#FDB913]/20 hover:shadow-xl hover:shadow-[#FDB913]/30 hover:scale-105"
                       >
                         Continue Shopping
                         <ArrowRight className="w-4 h-4" />
@@ -207,7 +207,7 @@ const CartPageContent = () => {
                                 
                                 {isEditing ? (
                                   // EDITING MODE
-                                  <div className="space-y-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
+                                  <div className="space-y-4 bg-[#FDB913]/10 border border-[#FDB913]/30 rounded-xl p-4">
                                     {/* Quantity Editor */}
                                     <div className="flex items-center gap-3">
                                       <label className="text-sm font-semibold text-gray-900 w-20">Quantity:</label>
@@ -303,7 +303,7 @@ const CartPageContent = () => {
                                     </div>
                                     <button
                                       onClick={() => setEditingItem(itemKey)}
-                                      className="inline-flex items-center gap-1.5 text-xs lg:text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                                      className="inline-flex items-center gap-1.5 text-xs lg:text-sm text-[#0A7EA4] hover:text-[#001E3C] font-medium transition-colors"
                                     >
                                       <Edit2 className="w-3.5 h-3.5" />
                                       Edit options
@@ -340,7 +340,7 @@ const CartPageContent = () => {
               ) : activeStep === 2 ? (
                 <div className="p-6 lg:p-8">
                   <div className="mb-6">
-                    <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-lg mb-4">
+                    <div className="inline-flex items-center gap-2 bg-[#FDB913]/20 text-[#001E3C] px-4 py-2 rounded-lg mb-4">
                       <Package className="w-5 h-5" />
                       <span className="font-medium text-sm">Shipping Information</span>
                     </div>
@@ -368,20 +368,20 @@ const CartPageContent = () => {
                     </h4>
                     <div className="grid gap-3">
                       <label className="relative flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl hover:border-gray-300 hover:bg-gray-50 cursor-pointer transition-all duration-300 group">
-                        <input type="radio" name="delivery" value="pickup" className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500" />
+                        <input type="radio" name="delivery" value="pickup" className="w-5 h-5 text-[#FDB913] focus:ring-2 focus:ring-[#FDB913]" />
                         <div className="flex-1">
                           <span className="font-semibold text-gray-900 block">In-Store Pickup and Pay</span>
                           <span className="text-sm text-gray-600">Pick up from our store location</span>
                         </div>
-                        <div className="absolute top-4 right-4 w-2 h-2 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <div className="absolute top-4 right-4 w-2 h-2 bg-[#FDB913] rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
                       </label>
-                      <label className="relative flex items-center gap-4 p-4 border-2 border-blue-500 bg-blue-50 rounded-xl cursor-pointer transition-all duration-300 shadow-sm">
-                        <input type="radio" name="delivery" value="delivery" className="w-5 h-5 text-blue-600 focus:ring-2 focus:ring-blue-500" defaultChecked />
+                      <label className="relative flex items-center gap-4 p-4 border-2 border-[#FDB913] bg-[#FDB913]/10 rounded-xl cursor-pointer transition-all duration-300 shadow-sm">
+                        <input type="radio" name="delivery" value="delivery" className="w-5 h-5 text-[#FDB913] focus:ring-2 focus:ring-[#FDB913]" defaultChecked />
                         <div className="flex-1">
                           <span className="font-semibold text-gray-900 block">Pay and Deliver</span>
                           <span className="text-sm text-gray-600">Home delivery service</span>
                         </div>
-                        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                        <div className="w-2 h-2 bg-[#FDB913] rounded-full animate-pulse" />
                       </label>
                     </div>
                   </div>
@@ -451,9 +451,9 @@ const CartPageContent = () => {
 
                     {/* Terms and Conditions */}
                     <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                      <input type="checkbox" id="terms" className="w-5 h-5 text-blue-600 mt-0.5 rounded focus:ring-2 focus:ring-blue-500" required />
+                      <input type="checkbox" id="terms" className="w-5 h-5 text-[#FDB913] mt-0.5 rounded focus:ring-2 focus:ring-[#FDB913]" required />
                       <label htmlFor="terms" className="text-sm text-gray-700 leading-relaxed flex-1">
-                        I have read and agree to the website <a href="/terms" className="text-blue-600 hover:text-blue-700 font-semibold underline decoration-2 underline-offset-2">terms and conditions</a> *
+                        I have read and agree to the website <a href="/terms" className="text-[#0A7EA4] hover:text-[#001E3C] font-semibold underline decoration-2 underline-offset-2">terms and conditions</a> *
                       </label>
                     </div>
 
@@ -516,15 +516,15 @@ const CartPageContent = () => {
                 {activeStep === 1 && !isEmpty && (
                   <button
                     onClick={() => router.push("/cart?step=2", { scroll: false })}
-                    className="w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 active:from-gray-950 active:to-gray-900 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-xl shadow-gray-900/20 hover:shadow-2xl hover:shadow-gray-900/30 hover:scale-[1.02] active:scale-[0.98] group"
+                    className="w-full bg-gradient-to-r from-[#001E3C] to-[#0A7EA4] hover:from-[#0A7EA4] hover:to-[#001E3C] active:from-[#001E3C] active:to-[#0A7EA4] text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-xl shadow-[#001E3C]/20 hover:shadow-2xl hover:shadow-[#001E3C]/30 hover:scale-[1.02] active:scale-[0.98] group"
                   >
                     Continue to Shipping
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
                 )}
                 {activeStep === 2 && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
-                    <p className="text-sm text-blue-800 font-medium">Complete shipping form to continue</p>
+                  <div className="bg-[#FDB913]/10 border border-[#FDB913]/30 rounded-xl p-4 text-center">
+                    <p className="text-sm text-[#001E3C] font-medium">Complete shipping form to continue</p>
                   </div>
                 )}
               </div>

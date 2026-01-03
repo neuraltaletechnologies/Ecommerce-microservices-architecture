@@ -235,9 +235,9 @@ export function DataTable<TData, TValue>({
 
       {/* Bulk Actions */}
       {selectedCount > 0 && (
-        <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <div className="flex items-center justify-between bg-[#001E3C]/10 border border-[#0A7EA4]/30 rounded-lg p-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-blue-900">
+            <span className="text-sm font-medium text-[#001E3C]">
               {selectedCount} product{selectedCount > 1 ? "s" : ""} selected
             </span>
           </div>

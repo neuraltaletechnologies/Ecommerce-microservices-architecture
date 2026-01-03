@@ -4,29 +4,7 @@ import { Star, Shield, Truck, RotateCcw } from "lucide-react";
 import Image from "next/image";
 
 const TrustIndicators = () => {
-  const trustMetrics = [
-    {
-      icon: <Star className="w-5 h-5 text-yellow-500 fill-current" />,
-      rating: "4.9/5",
-      label: "Rating",
-      description: "12.8K reviews"
-    },
-    {
-      icon: <Truck className="w-5 h-5 text-green-600" />,
-      label: "Free Shipping",
-      description: "Orders 115K+"
-    },
-    {
-      icon: <Shield className="w-5 h-5 text-blue-600" />,
-      label: "Secure Pay",
-      description: "SSL encrypted"
-    },
-    {
-      icon: <RotateCcw className="w-5 h-5 text-purple-600" />,
-      label: "Easy Returns",
-      description: "30-day policy"
-    }
-  ];
+
 
   const brands = [
     {
@@ -68,35 +46,13 @@ const TrustIndicators = () => {
   ];
 
   return (
-    <div className="bg-gradient-to-b from-white to-gray-50 py-12">
+    <div className="bg-gradient-to-b from-white to-[#F5E6D3]/30 py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Compact Trust Indicators */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          {trustMetrics.map((metric, index) => (
-            <div key={index} className="flex items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 hover:shadow-md transition-shadow duration-200">
-              <div className="flex-shrink-0">
-                {metric.icon}
-              </div>
-              <div className="min-w-0">
-                {metric.rating && (
-                  <div className="text-lg font-bold text-gray-900">
-                    {metric.rating}
-                  </div>
-                )}
-                <div className="font-semibold text-gray-900 text-sm truncate">
-                  {metric.label}
-                </div>
-                <div className="text-xs text-gray-500 truncate">
-                  {metric.description}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+      
 
         {/* Brand Logo Cloud */}
         <div className="text-center mb-6">
-          <p className="text-sm font-semibold text-gray-500 uppercase tracking-wider">
+          <p className="text-sm font-semibold text-[#001E3C] uppercase tracking-wider">
             Trusted Brands We Partner With
           </p>
         </div>
@@ -104,7 +60,7 @@ const TrustIndicators = () => {
         <div className="relative overflow-hidden">
           {/* Gradient Overlays */}
           <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-[#F5E6D3]/30 to-transparent z-10 pointer-events-none"></div>
           
           {/* Scrolling Logo Container */}
           <div className="flex animate-scroll hover:pause-animation">
@@ -169,13 +125,13 @@ const TrustIndicators = () => {
         `}</style>
 
         {/* Bottom Trust Line */}
-        <div className="flex flex-wrap justify-center items-center gap-6 mt-8 pt-8 border-t border-gray-200">
+        <div className="flex flex-wrap justify-center items-center gap-6 mt-8 pt-8 border-t border-[#0A7EA4]/20">
           <div className="flex items-center gap-2 text-xs text-gray-600">
-            <Shield className="w-4 h-4 text-blue-600" />
+            <Shield className="w-4 h-4 text-[#0A7EA4]" />
             <span>256-bit SSL</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-600">
-            <Star className="w-4 h-4 text-yellow-500 fill-current" />
+            <Star className="w-4 h-4 text-[#FDB913] fill-current" />
             <span>50K+ Happy Customers</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-600">
@@ -183,7 +139,7 @@ const TrustIndicators = () => {
             <span>PCI DSS Compliant</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-600">
-            <Truck className="w-4 h-4 text-blue-600" />
+            <Truck className="w-4 h-4 text-[#0A7EA4]" />
             <span>Trusted Delivery Partners</span>
           </div>
         </div>

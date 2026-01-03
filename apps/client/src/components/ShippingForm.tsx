@@ -106,7 +106,7 @@ const ShippingForm = ({
       </div>
       <button
         type="submit"
-        className="w-full bg-gray-800 hover:bg-gray-900 transition-all duration-300 text-white p-2 rounded-lg cursor-pointer flex items-center justify-center gap-2"
+        className="w-full bg-[#FDB913] hover:bg-[#e5a811] transition-all duration-300 text-[#001E3C] p-2 rounded-lg cursor-pointer flex items-center justify-center gap-2 font-semibold shadow-lg"
       >
         Continue
         <ArrowRight className="w-3 h-3" />

@@ -57,7 +57,7 @@ export default function UnauthorizedPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               href="/sign-in"
-              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-[#001E3C] to-[#0A7EA4] hover:from-[#0A7EA4] hover:to-[#001E3C] text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <User className="w-5 h-5" />
               Sign In as Admin
@@ -95,7 +95,7 @@ export default function UnauthorizedPage() {
               <div className="flex flex-col sm:flex-row gap-2 justify-center items-center text-sm">
                 <a
                   href="mailto:admin@neuraltale.com"
-                  className="text-blue-600 hover:text-blue-700 font-medium underline"
+                  className="text-[#0A7EA4] hover:text-[#001E3C] font-medium underline"
                 >
                   admin@neuraltale.com
                 </a>

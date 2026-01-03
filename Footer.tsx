@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin,Github } from "lucide-react";
+import { Twitter, Instagram, Youtube, Linkedin, Mail, Phone, MapPin, Github, ShoppingBag, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 const Footer = () => {
@@ -16,183 +16,158 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-white border-t border-gray-100">
+    <footer className="bg-gray-900 text-white">
       {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {/* Brand Section */}
-          <div className="md:col-span-1">
-            <Link href="/" className="flex items-center group mb-3">
-              <div className="relative w-8 h-8 mr-2">
-                <Image
-                  src="/favicon.png"
-                  alt="Neuraltale Logo"
-                  fill
-                  className="object-contain"
-                />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+          {/* Brand Section - Larger */}
+          <div className="lg:col-span-2">
+            <Link href="/" className="flex items-center group mb-5">
+              <Image 
+                src="/logo.svg" 
+                alt="Neurashop Logo" 
+                width={44} 
+                height={44}
+                className="object-contain mr-3"
+              />
+              <div className="flex flex-col">
+                <span className="text-2xl font-bold text-white">
+                  Neurashop
+                </span>
+                <span className="text-xs text-gray-400 -mt-1">by Neuraltale</span>
               </div>
-              <span className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
-                Neuraltale
-              </span>
             </Link>
-            <p className="text-gray-600 mb-3 leading-relaxed text-sm">
-              Discover the future of technology and exceptional quality.
+            <p className="text-gray-400 mb-6 leading-relaxed max-w-sm">
+              Your trusted destination for premium technology. Discover cutting-edge gadgets 
+              and exceptional quality at the best prices in Tanzania.
             </p>
-            <div className="mb-3">
-              <a 
-                href="https://www.neuraltale.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors"
-              >
-                Visit our company website →
-              </a>
-            </div>
             
-            {/* Newsletter - Integrated */}
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <h5 className="text-xs font-semibold text-gray-900 mb-1.5">
-                Stay Updated
-              </h5>
-              <p className="text-xs text-gray-600 mb-2">
-                Get exclusive deals and tech insights.
-              </p>
-              <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email"
-                  className="flex-1 px-2 py-1.5 text-xs rounded border border-gray-300 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 focus:outline-none"
-                  required
-                />
-                <button
-                  type="submit"
-                  className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium rounded transition-colors duration-200 flex items-center gap-1"
-                >
-                  Subscribe
-                </button>
-              </form>
-            </div>
-            
-            <div className="flex space-x-3 mt-4">
-              <a href="https://twitter.com/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-500 transition-colors" aria-label="Twitter">
-                <Twitter className="w-5 h-5" />
+            {/* Social Links */}
+            <div className="flex space-x-3 mb-6">
+              <a href="https://twitter.com/neuraltale" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-blue-500 flex items-center justify-center transition-colors duration-300" aria-label="Twitter">
+                <Twitter className="w-4 h-4" />
               </a>
-              <a href="https://instagram.com/neuraltaletechnologiestz" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-500 transition-colors" aria-label="Instagram">
-                <Instagram className="w-5 h-5" />
+              <a href="https://instagram.com/neuraltaletechnologiestz" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-pink-500 flex items-center justify-center transition-colors duration-300" aria-label="Instagram">
+                <Instagram className="w-4 h-4" />
               </a>
-              <a href="https://youtube.com/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-red-500 transition-colors" aria-label="YouTube">
-                <Youtube className="w-5 h-5" />
+              <a href="https://youtube.com/neuraltale" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-red-500 flex items-center justify-center transition-colors duration-300" aria-label="YouTube">
+                <Youtube className="w-4 h-4" />
               </a>
-              <a href="https://linkedin.com/company/neuraltale" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors" aria-label="LinkedIn">
-                <Linkedin className="w-5 h-5" />
+              <a href="https://linkedin.com/company/neuraltale" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-blue-600 flex items-center justify-center transition-colors duration-300" aria-label="LinkedIn">
+                <Linkedin className="w-4 h-4" />
               </a>
-              <a href="https://github.com/neuraltaletechnologies" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-blue-600 transition-colors" aria-label="LinkedIn">
-                <Github className="w-5 h-5" />
+              <a href="https://github.com/neuraltaletechnologies" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-gray-800 hover:bg-gray-600 flex items-center justify-center transition-colors duration-300" aria-label="GitHub">
+                <Github className="w-4 h-4" />
               </a>
             </div>
+
+            {/* Neuraltale Link */}
+            <a 
+              href="https://www.neuraltale.com" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-full text-sm font-medium transition-colors"
+            >
+              <Sparkles className="w-4 h-4 text-purple-400" />
+              Visit Neuraltale.com
+            </a>
           </div>
 
           {/* Shop Section */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-2 text-sm">Shop</h4>
-            <ul className="space-y-1.5 text-sm">
-              <li><Link href="/products" className="text-gray-600 hover:text-gray-900 transition-colors">All Products</Link></li>
-              <li><Link href="/products?category=smartphones" className="text-gray-600 hover:text-gray-900 transition-colors">Smartphones</Link></li>
-              <li><Link href="/products?category=laptops" className="text-gray-600 hover:text-gray-900 transition-colors">Laptops</Link></li>
-              <li><Link href="/products?category=audio" className="text-gray-600 hover:text-gray-900 transition-colors">Audio</Link></li>
-              <li><Link href="/products?category=gaming-laptops" className="text-gray-600 hover:text-gray-900 transition-colors">Gaming</Link></li>
-              <li><Link href="/products?category=accessories" className="text-gray-600 hover:text-gray-900 transition-colors">Accessories</Link></li>
+            <h4 className="text-white font-bold mb-5 text-sm uppercase tracking-wider">Shop</h4>
+            <ul className="space-y-3">
+              <li><Link href="/products" className="text-gray-400 hover:text-white transition-colors">All Products</Link></li>
+              <li><Link href="/products?category=smartphones" className="text-gray-400 hover:text-white transition-colors">Smartphones</Link></li>
+              <li><Link href="/products?category=laptops" className="text-gray-400 hover:text-white transition-colors">Laptops</Link></li>
+              <li><Link href="/products?category=audio" className="text-gray-400 hover:text-white transition-colors">Audio</Link></li>
+              <li><Link href="/products?category=gaming-laptops" className="text-gray-400 hover:text-white transition-colors">Gaming</Link></li>
+              <li><Link href="/products?category=accessories" className="text-gray-400 hover:text-white transition-colors">Accessories</Link></li>
             </ul>
           </div>
 
           {/* Support Section */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-2 text-sm">Support</h4>
-            <ul className="space-y-1.5 text-sm">
-              <li><Link href="/help" className="text-gray-600 hover:text-gray-900 transition-colors">Help Center</Link></li>
-              <li><Link href="/contact" className="text-gray-600 hover:text-gray-900 transition-colors">Contact Us</Link></li>
-              <li><Link href="/shipping" className="text-gray-600 hover:text-gray-900 transition-colors">Shipping Info</Link></li>
-              <li><Link href="/returns" className="text-gray-600 hover:text-gray-900 transition-colors">Returns</Link></li>
-              <li><Link href="/warranty" className="text-gray-600 hover:text-gray-900 transition-colors">Warranty</Link></li>
-              <li><Link href="/track-order" className="text-gray-600 hover:text-gray-900 transition-colors">Track Order</Link></li>
+            <h4 className="text-white font-bold mb-5 text-sm uppercase tracking-wider">Support</h4>
+            <ul className="space-y-3">
+              <li><Link href="/help" className="text-gray-400 hover:text-white transition-colors">Help Center</Link></li>
+              <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
+              <li><Link href="/shipping" className="text-gray-400 hover:text-white transition-colors">Shipping Info</Link></li>
+              <li><Link href="/returns" className="text-gray-400 hover:text-white transition-colors">Returns</Link></li>
+              <li><Link href="/warranty" className="text-gray-400 hover:text-white transition-colors">Warranty</Link></li>
+              <li><Link href="/track-order" className="text-gray-400 hover:text-white transition-colors">Track Order</Link></li>
             </ul>
           </div>
 
-          {/* Company Section */}
+          {/* Contact Section */}
           <div>
-            <h4 className="text-gray-900 font-semibold mb-2 text-sm">Company</h4>
-            <ul className="space-y-1.5 mb-4 text-sm">
-              <li><a href="https://www.neuraltale.com/about" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">About Us</a></li>
-              <li><a href="https://www.neuraltale.com/careers" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Careers</a></li>
-              <li><a href="https://www.neuraltale.com/press" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Press</a></li>
-              <li><a href="https://www.neuraltale.com/blog" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors">Blog</a></li>
-             </ul>
+            <h4 className="text-white font-bold mb-5 text-sm uppercase tracking-wider">Contact</h4>
+            <div className="space-y-4">
+              <a href="mailto:hello@neuraltale.com" className="flex items-center text-gray-400 hover:text-white transition-colors">
+                <Mail className="w-4 h-4 mr-3 text-blue-400" />
+                <span>hello@neuraltale.com</span>
+              </a>
+              <a href="tel:+255653520829" className="flex items-center text-gray-400 hover:text-white transition-colors">
+                <Phone className="w-4 h-4 mr-3 text-green-400" />
+                <span>+255 653 520 829</span>
+              </a>
+              <div className="flex items-start text-gray-400">
+                <MapPin className="w-4 h-4 mr-3 text-red-400 mt-0.5" />
+                <span>Dar es Salaam, Tanzania</span>
+              </div>
+            </div>
             
-            {/* Contact Info */}
-            <div className="space-y-1.5">
-              <div className="flex items-center text-gray-600">
-                <Mail className="w-4 h-4 mr-2" />
-                <span className="text-sm">hello@neuraltale.com</span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <Phone className="w-4 h-4 mr-2" />
-                <span className="text-sm">+255 653 520 829  </span>
-              </div>
-              <div className="flex items-center text-gray-600">
-                <MapPin className="w-4 h-4 mr-2" />
-                <span className="text-sm">San Francisco, CA</span>
-              </div>
-              <div className="mt-2">
-                <a 
-                  href="https://www.neuraltale.com/support" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-                >
-                  Technical Support →
-                </a>
-              </div>
+            {/* Company Links */}
+            <div className="mt-6 pt-6 border-t border-gray-800">
+              <h5 className="text-white font-semibold mb-3 text-sm">Company</h5>
+              <ul className="space-y-2 text-sm">
+                <li><a href="https://www.neuraltale.com/about" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">About Neuraltale</a></li>
+                <li><a href="https://www.neuraltale.com/careers" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Careers</a></li>
+                <li><a href="https://www.neuraltale.com/blog" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">Blog</a></li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="flex items-center space-x-6">
-              <p className="text-gray-600 text-sm">
-                © 2025 Neuraltale. All rights reserved.
+      <div className="border-t border-gray-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
+            <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-6">
+              <p className="text-gray-500 text-sm">
+                © 2025 <span className="text-white">Neurashop</span> by Neuraltale. All rights reserved.
               </p>
-              <div className="hidden md:flex items-center space-x-4">
-                <a href="https://www.neuraltale.com/privacy" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">
-                  Privacy Policy
+              <div className="flex items-center space-x-4 text-sm">
+                <a href="https://www.neuraltale.com/privacy" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-white transition-colors">
+                  Privacy
                 </a>
-                <Link href="/terms" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">
-                  Terms of Service
+                <span className="text-gray-700">•</span>
+                <Link href="/terms" className="text-gray-500 hover:text-white transition-colors">
+                  Terms
                 </Link>
-                <Link href="/cookies" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">
-                  Cookie Policy
+                <span className="text-gray-700">•</span>
+                <Link href="/cookies" className="text-gray-500 hover:text-white transition-colors">
+                  Cookies
                 </Link>
-                <a href="https://www.neuraltale.com/sitemap-page" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-900 text-sm transition-colors">
-                  Sitemap
-                </a>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-500 text-sm">Secure payments powered by</span>
+            
+            {/* Payment Methods */}
+            <div className="flex items-center space-x-3">
+              <span className="text-gray-500 text-sm mr-2">We accept</span>
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-5 bg-gradient-to-r from-blue-600 to-purple-600 rounded text-white text-xs flex items-center justify-center font-bold">
+                <div className="px-3 py-1.5 bg-gray-800 rounded text-white text-xs font-bold">
                   VISA
                 </div>
-                <div className="w-8 h-5 bg-gradient-to-r from-red-600 to-orange-600 rounded text-white text-xs flex items-center justify-center font-bold">
+                <div className="px-3 py-1.5 bg-gray-800 rounded text-white text-xs font-bold">
                   MC
                 </div>
-                <div className="w-8 h-5 bg-gradient-to-r from-blue-700 to-blue-800 rounded text-white text-xs flex items-center justify-center font-bold">
-                  PP
+                <div className="px-3 py-1.5 bg-gray-800 rounded text-white text-xs font-bold">
+                  AMEX
+                </div>
+                <div className="px-3 py-1.5 bg-gradient-to-r from-blue-600 to-blue-700 rounded text-white text-xs font-bold">
+                  PayPal
                 </div>
               </div>
             </div>

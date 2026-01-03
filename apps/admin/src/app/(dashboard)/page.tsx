@@ -35,9 +35,9 @@ const Homepage = async () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg">
+      <div className="bg-gradient-to-r from-[#001E3C] to-[#0A7EA4] text-white p-6 rounded-lg">
         <h1 className="text-3xl font-bold mb-2">Neuraltale Admin Dashboard</h1>
-        <p className="text-blue-100">Manage your premium tech products and track sales performance</p>
+        <p className="text-[#FDB913]/80">Manage your premium tech products and track sales performance</p>
       </div>
 
       {/* Main Dashboard Grid */}

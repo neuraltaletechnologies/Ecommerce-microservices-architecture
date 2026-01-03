@@ -239,7 +239,7 @@ const CategoriesContent = () => {
         {/* Scrollable Categories */}
         <div
           ref={scrollContainerRef}
-          className={`flex gap-4 overflow-x-auto pb-3 px-1 scroll-smooth no-scrollbar ${
+          className={`flex gap-4 overflow-x-auto px-1 scroll-smooth no-scrollbar ${
             isDragging ? "cursor-grabbing" : "cursor-grab"
           }`}
           onMouseDown={handleMouseDown}
@@ -297,15 +297,6 @@ const CategoriesContent = () => {
                   }`}
                 >
                   {category.name}
-                </span>
-
-                {/* Product Count */}
-                <span
-                  className={`text-[10px] ${
-                    isSelected ? "text-[#0066FF]" : "text-[#666666]"
-                  }`}
-                >
-                  {category.count}
                 </span>
               </button>
             );

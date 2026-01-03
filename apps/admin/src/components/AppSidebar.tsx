@@ -75,7 +75,7 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/">
-                <Image src="/favicon.ico" alt="logo" width={20} height={20} />
+                <Image src="/logo.svg" alt="Neurashop Logo" width={24} height={24} className="object-contain" />
                 <span>Neurashop</span>
               </Link>
             </SidebarMenuButton>
@@ -237,7 +237,7 @@ const AppSidebar = () => {
               <UserButton 
                 appearance={{
                   elements: {
-                    avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-blue-500 transition-all duration-200",
+                    avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200",
                     userButtonPopoverCard: "shadow-lg"
                   }
                 }}

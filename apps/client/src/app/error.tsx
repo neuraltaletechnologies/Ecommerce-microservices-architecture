@@ -62,7 +62,7 @@ export default function Error({
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <button
               onClick={reset}
-              className="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+              className="w-full sm:w-auto px-6 py-3 bg-[#FDB913] hover:bg-[#e5a811] text-[#001E3C] font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
             >
               <RefreshCcw className="w-5 h-5" />
               Try Again
@@ -70,7 +70,7 @@ export default function Error({
 
             <Link
               href="/"
-              className="w-full sm:w-auto px-6 py-3 bg-gray-800 hover:bg-gray-900 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+              className="w-full sm:w-auto px-6 py-3 bg-[#001E3C] hover:bg-[#0A7EA4] text-white font-semibold rounded-lg transition-all duration-200 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
             >
               <Home className="w-5 h-5" />
               Go Home
@@ -91,7 +91,7 @@ export default function Error({
               If this problem persists, please{" "}
               <Link
                 href="/contact"
-                className="text-blue-600 hover:text-blue-700 font-medium underline"
+                className="text-[#0A7EA4] hover:text-[#001E3C] font-medium underline"
               >
                 contact our support team
               </Link>

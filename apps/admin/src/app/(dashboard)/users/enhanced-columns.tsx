@@ -69,7 +69,7 @@ export const enhancedColumns: ColumnDef<User>[] = [
                       user.username?.[0]?.toUpperCase() || "?";
       
       return (
-        <div className="w-10 h-10 relative bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
+        <div className="w-10 h-10 relative bg-gradient-to-br from-[#001E3C]/20 to-[#0A7EA4]/20 rounded-full flex items-center justify-center overflow-hidden border-2 border-white shadow-sm">
           {hasImage ? (
             <Image
               src={user.imageUrl}

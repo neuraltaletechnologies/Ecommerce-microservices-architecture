@@ -92,7 +92,7 @@ export const generateMetadata = async ({
     const getImageUrl = (): string => {
       const images = product.images as any;
       
-      if (!images) return '/logo.png';
+      if (!images) return '/logo.svg';
       
       // Old structure: {main, gallery}
       if (images.main) return String(images.main);
@@ -108,7 +108,7 @@ export const generateMetadata = async ({
         return String(images[0]);
       }
       
-      return '/logo.png';
+      return '/logo.svg';
     };
     
     const imageUrl = getImageUrl();
@@ -172,7 +172,7 @@ const ProductPage = async ({
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-4">Product Not Found</h1>
           <p className="text-gray-600 mb-8">The product you're looking for doesn't exist or has been removed.</p>
-          <Link href="/products" className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors">
+          <Link href="/products" className="inline-block bg-[#FDB913] text-[#001E3C] px-6 py-3 rounded-lg hover:bg-[#e5a811] transition-colors font-semibold">
             Browse All Products
           </Link>
         </div>
@@ -280,7 +280,7 @@ const ProductPage = async ({
   const getStructuredDataImage = (): string => {
     const images = product.images as any;
     
-    if (!images) return '/logo.png';
+    if (!images) return '/logo.svg';
     
     // Old structure: {main, gallery}
     if (images.main) return String(images.main);
@@ -296,7 +296,7 @@ const ProductPage = async ({
       return String(images[0]);
     }
     
-    return '/logo.png';
+    return '/logo.svg';
   };
 
   return (
@@ -378,11 +378,11 @@ const ProductPage = async ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Breadcrumb Navigation */}
         <nav className="flex items-center space-x-2 text-sm text-gray-500 mb-6">
-          <Link href="/" className="hover:text-blue-600 transition-colors">
+          <Link href="/" className="hover:text-[#0A7EA4] transition-colors">
             Home
           </Link>
           <span className="text-gray-400">/</span>
-          <Link href="/products" className="hover:text-blue-600 transition-colors">
+          <Link href="/products" className="hover:text-[#0A7EA4] transition-colors">
             Products
           </Link>
           <span className="text-gray-400">/</span>
@@ -390,7 +390,7 @@ const ProductPage = async ({
             <>
               <Link 
                 href={`/products?category=${product.categorySlug}`}
-                className="hover:text-blue-600 transition-colors capitalize"
+                className="hover:text-[#0A7EA4] transition-colors capitalize"
               >
                 {product.categorySlug.replace(/-/g, ' ')}
               </Link>
@@ -450,7 +450,7 @@ const ProductPage = async ({
                   {Object.entries(technicalSpecs).map(([category, specs]) => (
                     <div key={category} className="border-b border-gray-200 last:border-0 pb-4 last:pb-0">
                       <h4 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                        <span className="w-1 h-4 bg-blue-600 rounded"></span>
+                        <span className="w-1 h-4 bg-[#0A7EA4] rounded"></span>
                         {category}
                       </h4>
                       <dl className="grid grid-cols-1 gap-2">
@@ -491,7 +491,7 @@ const ProductPage = async ({
               >
                 <div className="space-y-4">
                   {productFeatures.map((feature, index) => (
-                    <div key={index} className="p-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg border border-blue-100">
+                    <div key={index} className="p-4 bg-gradient-to-br from-[#FDB913]/10 to-[#0A7EA4]/10 rounded-lg border border-[#FDB913]/20">
                       <h4 className="font-semibold text-gray-900 mb-2">{feature.title}</h4>
                       <p className="text-sm text-gray-700">{feature.description}</p>
                     </div>
@@ -610,13 +610,13 @@ const ProductPage = async ({
                   <Star
                     key={i}
                     className={`w-5 h-5 ${
-                      i < 4 ? "text-yellow-400 fill-yellow-400" : "text-gray-300"
+                      i < 4 ? "text-[#FDB913] fill-[#FDB913]" : "text-gray-300"
                     }`}
                   />
                 ))}
               </div>
               <span className="text-sm font-medium text-gray-900">4.8</span>
-              <Link href="#reviews" className="text-sm text-blue-600 hover:text-blue-700 underline">
+              <Link href="#reviews" className="text-sm text-[#0A7EA4] hover:text-[#001E3C] underline">
                 (2,847 reviews)
               </Link>
             </div>
@@ -653,10 +653,10 @@ const ProductPage = async ({
                   return (
                     <div
                       key={index}
-                      className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg"
+                      className="flex items-center gap-2 px-3 py-2 bg-gradient-to-r from-[#FDB913]/10 to-[#0A7EA4]/10 border border-[#FDB913]/30 rounded-lg"
                     >
-                      <IconComponent className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-medium text-blue-900">{highlight.label}</span>
+                      <IconComponent className="w-4 h-4 text-[#0A7EA4]" />
+                      <span className="text-sm font-medium text-[#001E3C]">{highlight.label}</span>
                     </div>
                   );
                 })}
@@ -676,8 +676,8 @@ const ProductPage = async ({
                       href={`/products/${product.id}?color=${colorOption}${selectedSize ? `&size=${selectedSize}` : ''}`}
                       className={`px-4 py-2 border-2 rounded-lg font-medium text-sm transition-all ${
                         selectedColor === colorOption
-                          ? "border-blue-600 bg-blue-50 text-blue-700"
-                          : "border-gray-300 text-gray-700 hover:border-gray-400"
+                          ? "border-[#FDB913] bg-[#FDB913]/10 text-[#001E3C]"
+                          : "border-gray-300 text-gray-700 hover:border-[#FDB913]/50"
                       }`}
                     >
                       {colorOption}
@@ -700,8 +700,8 @@ const ProductPage = async ({
                       href={`/products/${product.id}?size=${sizeOption}${selectedColor ? `&color=${selectedColor}` : ''}`}
                       className={`px-4 py-3 border-2 rounded-lg font-medium text-sm text-center transition-all ${
                         selectedSize === sizeOption
-                          ? "border-blue-600 bg-blue-50 text-blue-700"
-                          : "border-gray-300 text-gray-700 hover:border-gray-400"
+                          ? "border-[#FDB913] bg-[#FDB913]/10 text-[#001E3C]"
+                          : "border-gray-300 text-gray-700 hover:border-[#FDB913]/50"
                       }`}
                     >
                       {sizeOption}
@@ -719,7 +719,7 @@ const ProductPage = async ({
               </p>
               <p className="text-gray-700 leading-relaxed">
                 Experience cutting-edge technology with the <strong className="text-gray-900">{product.name}</strong>. 
-                Engineered for tech enthusiasts who demand <strong className="text-blue-600">premium performance</strong> and 
+                Engineered for tech enthusiasts who demand <strong className="text-[#0A7EA4]">premium performance</strong> and 
                 innovative features. Whether you&apos;re working, gaming, or creating content, this product delivers exceptional results.
               </p>
               <p className="text-gray-700 leading-relaxed">
@@ -745,11 +745,11 @@ const ProductPage = async ({
                 <span>2-Year Warranty</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-700">
-                <Truck className="w-5 h-5 text-blue-600" />
+                <Truck className="w-5 h-5 text-[#0A7EA4]" />
                 <span>Free Shipping</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-700">
-                <RotateCcw className="w-5 h-5 text-purple-600" />
+                <RotateCcw className="w-5 h-5 text-[#0A7EA4]" />
                 <span>30-Day Returns</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-700">
@@ -773,9 +773,9 @@ const ProductPage = async ({
               return (
                 <div
                   key={index}
-                  className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-blue-300 hover:shadow-md transition-all"
+                  className="flex flex-col items-center justify-center p-6 bg-white border-2 border-gray-200 rounded-xl hover:border-[#FDB913] hover:shadow-md transition-all"
                 >
-                  <IconComponent className="w-8 h-8 text-blue-600 mb-2" />
+                  <IconComponent className="w-8 h-8 text-[#0A7EA4] mb-2" />
                   <span className="text-sm font-medium text-gray-900 text-center">{cert.label}</span>
                 </div>
               );
@@ -792,7 +792,7 @@ const ProductPage = async ({
         <div className="mt-16 border-t border-gray-200 pt-12">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Questions & Answers</h2>
-            <button className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-all">
+            <button className="px-6 py-2 bg-[#FDB913] text-[#001E3C] rounded-lg font-semibold hover:bg-[#e5a811] transition-all">
               Ask a Question
             </button>
           </div>
@@ -801,15 +801,15 @@ const ProductPage = async ({
             {/* Q&A Item */}
             <div className="bg-white border border-gray-200 rounded-xl p-6">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <MessageSquare className="w-5 h-5 text-blue-600" />
+                <div className="flex-shrink-0 w-10 h-10 bg-[#FDB913]/20 rounded-full flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5 text-[#0A7EA4]" />
                 </div>
                 <div className="flex-1">
                   <div className="mb-3">
                     <span className="font-semibold text-gray-900">Q:</span>
                     <span className="ml-2 text-gray-700">Is this compatible with iPhone 15 Pro?</span>
                   </div>
-                  <div className="pl-4 border-l-2 border-blue-200">
+                  <div className="pl-4 border-l-2 border-[#FDB913]">
                     <span className="font-semibold text-gray-900">A:</span>
                     <span className="ml-2 text-gray-700">
                       Yes, this product is fully compatible with iPhone 15 Pro and all iOS 14+ devices.
@@ -822,15 +822,15 @@ const ProductPage = async ({
 
             <div className="bg-white border border-gray-200 rounded-xl p-6">
               <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                  <MessageSquare className="w-5 h-5 text-blue-600" />
+                <div className="flex-shrink-0 w-10 h-10 bg-[#FDB913]/20 rounded-full flex items-center justify-center">
+                  <MessageSquare className="w-5 h-5 text-[#0A7EA4]" />
                 </div>
                 <div className="flex-1">
                   <div className="mb-3">
                     <span className="font-semibold text-gray-900">Q:</span>
                     <span className="ml-2 text-gray-700">What&apos;s the Bluetooth range?</span>
                   </div>
-                  <div className="pl-4 border-l-2 border-blue-200">
+                  <div className="pl-4 border-l-2 border-[#FDB913]">
                     <span className="font-semibold text-gray-900">A:</span>
                     <span className="ml-2 text-gray-700">
                       Up to 10 meters (33 feet) with Bluetooth 5.3 connectivity in optimal conditions.
@@ -843,7 +843,7 @@ const ProductPage = async ({
           </div>
 
           <div className="mt-6 text-center">
-            <button className="text-blue-600 hover:text-blue-700 font-medium">
+            <button className="text-[#0A7EA4] hover:text-[#001E3C] font-medium">
               View all questions ({12})
             </button>
           </div>

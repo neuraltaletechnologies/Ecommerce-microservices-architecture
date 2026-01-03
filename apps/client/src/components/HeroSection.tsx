@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatTZS } from "@/lib/utils/currency";
 import HeroSkeleton from "./skeletons/HeroSkeleton";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from "lucide-react";
 
 interface HeroProduct {
   id: number;
@@ -21,15 +21,23 @@ interface HeroProduct {
   stockQuantity?: number;
 }
 
+// Brand colors - Neuraltale palette
+const BRAND_COLORS = {
+  goldenYellow: '#FDB913',
+  deepNavy: '#001E3C',
+  tealBlue: '#0A7EA4',
+  cream: '#F5E6D3',
+};
+
 // Helper function to get stock status badge info
 const getStockBadge = (status: string) => {
   switch (status) {
     case 'in_stock':
       return { label: 'In Stock', bgColor: 'bg-green-100', textColor: 'text-green-800', dotColor: 'bg-green-500' };
     case 'limited_stock':
-      return { label: 'Limited Stock', bgColor: 'bg-orange-100', textColor: 'text-orange-800', dotColor: 'bg-orange-500' };
+      return { label: 'Limited Stock', bgColor: 'bg-[#FDB913]/20', textColor: 'text-[#001E3C]', dotColor: 'bg-[#FDB913]' };
     case 'pre_order':
-      return { label: 'Pre-Order', bgColor: 'bg-blue-100', textColor: 'text-blue-800', dotColor: 'bg-blue-500' };
+      return { label: 'Pre-Order', bgColor: 'bg-[#0A7EA4]/20', textColor: 'text-[#0A7EA4]', dotColor: 'bg-[#0A7EA4]' };
     case 'out_of_stock':
       return { label: 'Out of Stock', bgColor: 'bg-red-100', textColor: 'text-red-800', dotColor: 'bg-red-500' };
     default:
@@ -204,13 +212,27 @@ const HeroSection = () => {
 
   return (
     <section
-      className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-[#F8F8F8] overflow-hidden min-h-[600px] lg:min-h-[700px]"
+      className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-gradient-to-br from-[#F8F8F8] via-white to-[#F5E6D3]/30 overflow-hidden min-h-[600px] lg:min-h-[700px]"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
       aria-label="Featured products carousel"
       role="region"
     >
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#FDB913]/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[#0A7EA4]/10 rounded-full blur-3xl" />
+      </div>
+
+      {/* Powered by Neuraltale badge */}
+      <div className="absolute top-4 left-4 sm:top-8 sm:left-8 lg:top-8 lg:left-12 z-20">
+        <div className="flex items-center gap-2 bg-[#001E3C] text-white px-3 py-1.5 rounded-full text-xs font-semibold">
+          <Sparkles className="w-3 h-3 text-[#FDB913]" />
+          <span>Powered by Neuraltale</span>
+        </div>
+      </div>
+
       {/* Main Content Container */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[600px] lg:min-h-[700px] py-12 lg:py-0">
@@ -250,14 +272,14 @@ const HeroSection = () => {
             >
               <Link
                 href={`/products/${currentProduct.id}`}
-                className="inline-flex items-center justify-center gap-2 bg-gray-900 hover:bg-black text-white px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 group"
+                className="inline-flex items-center justify-center gap-2 bg-[#FDB913] hover:bg-[#e5a811] text-[#001E3C] px-6 py-3 rounded-lg font-bold text-sm transition-all duration-200 group shadow-lg hover:shadow-xl hover:scale-[1.02]"
               >
                 Explore {formatCategoryName(currentProduct.categorySlug)}
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
               <Link
                 href="/products"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm text-gray-900 border-2 border-gray-900 hover:bg-gray-50 transition-all duration-200"
+                className="inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm text-[#001E3C] border-2 border-[#001E3C] hover:bg-[#001E3C] hover:text-white transition-all duration-200"
               >
                 Browse All
               </Link>
@@ -275,8 +297,8 @@ const HeroSection = () => {
                   onClick={() => handleSlideChange(index)}
                   className={`transition-all duration-300 rounded-full ${
                     index === currentSlide
-                      ? "w-8 h-2 bg-gray-900"
-                      : "w-2 h-2 bg-gray-300 hover:bg-gray-400"
+                      ? "w-8 h-2 bg-[#FDB913]"
+                      : "w-2 h-2 bg-gray-300 hover:bg-[#0A7EA4]"
                   }`}
                   aria-label={`Go to slide ${index + 1}`}
                   aria-current={index === currentSlide ? "true" : "false"}
@@ -346,7 +368,7 @@ const HeroSection = () => {
               
               <Link
                 href={`/products/${currentProduct.id}`}
-                className="block w-full text-center py-2 text-sm bg-gray-900 hover:bg-black text-white font-semibold rounded-lg transition-colors duration-200"
+                className="block w-full text-center py-2 text-sm bg-[#001E3C] hover:bg-[#0A7EA4] text-white font-semibold rounded-lg transition-colors duration-200"
               >
                 View Details
               </Link>
@@ -360,7 +382,7 @@ const HeroSection = () => {
         <button
           onClick={prevSlide}
           disabled={isTransitioning}
-          className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white hover:bg-gray-900 text-gray-900 hover:text-white border border-gray-200 transition-all duration-300 disabled:opacity-50 shadow-lg"
+          className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white hover:bg-[#FDB913] text-[#001E3C] border border-gray-200 transition-all duration-300 disabled:opacity-50 shadow-lg hover:shadow-xl"
           aria-label="Previous slide"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -369,7 +391,7 @@ const HeroSection = () => {
         <button
           onClick={nextSlide}
           disabled={isTransitioning}
-          className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white hover:bg-gray-900 text-gray-900 hover:text-white border border-gray-200 transition-all duration-300 disabled:opacity-50 shadow-lg"
+          className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white hover:bg-[#FDB913] text-[#001E3C] border border-gray-200 transition-all duration-300 disabled:opacity-50 shadow-lg hover:shadow-xl"
           aria-label="Next slide"
         >
           <ChevronRight className="w-5 h-5" />
@@ -384,8 +406,8 @@ const HeroSection = () => {
             onClick={() => handleSlideChange(index)}
             className={`transition-all duration-300 rounded-full ${
               index === currentSlide
-                ? "w-6 h-2 bg-gray-900"
-                : "w-2 h-2 bg-gray-300 hover:bg-gray-400"
+                ? "w-6 h-2 bg-[#FDB913]"
+                : "w-2 h-2 bg-gray-300 hover:bg-[#0A7EA4]"
             }`}
             aria-label={`Go to slide ${index + 1}`}
             aria-current={index === currentSlide ? "true" : "false"}
@@ -394,8 +416,8 @@ const HeroSection = () => {
       </div>
       {/* Slide Counter - Top Right */}
       <div className="absolute top-4 right-4 sm:top-8 sm:right-8 lg:top-8 lg:right-12 text-sm font-medium z-20">
-        <span className="text-gray-900">{String(currentSlide + 1).padStart(2, "0")}</span>
-        <span className="text-gray-400 mx-2">/</span>
+        <span className="text-[#001E3C] font-bold">{String(currentSlide + 1).padStart(2, "0")}</span>
+        <span className="text-[#0A7EA4] mx-2">/</span>
         <span className="text-gray-500">{String(heroProducts.length).padStart(2, "0")}</span>
       </div>
     </section>

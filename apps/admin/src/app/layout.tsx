@@ -20,6 +20,16 @@ export const metadata: Metadata = {
   },
   description: "Admin dashboard for Neuraltale Tanzania tech store. Manage products, categories, users, orders, and inventory. Track sales analytics and customer data.",
   keywords: "admin dashboard, e-commerce management, product management, inventory system, order management, user management, sales analytics, neuraltale admin",
+  icons: {
+    icon: [
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo.svg', sizes: 'any', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/logo.svg', sizes: 'any', type: 'image/svg+xml' },
+    ],
+    shortcut: '/favicon.png',
+  },
   robots: {
     index: false,
     follow: false,

@@ -167,7 +167,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
           <SlidersHorizontal className="w-5 h-5 text-gray-700" />
           <h3 className="text-lg font-semibold text-gray-900">Filters</h3>
           {activeFiltersCount > 0 && (
-            <span className="bg-blue-600 text-white text-xs font-semibold px-2 py-0.5 rounded-full">
+            <span className="bg-[#FDB913] text-[#001E3C] text-xs font-semibold px-2 py-0.5 rounded-full">
               {activeFiltersCount}
             </span>
           )}
@@ -176,7 +176,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
           {activeFiltersCount > 0 && (
             <button
               onClick={clearAllFilters}
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+              className="text-sm text-[#0A7EA4] hover:text-[#001E3C] font-medium"
             >
               Clear all
             </button>
@@ -223,7 +223,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
                     type="checkbox"
                     checked={filters.brands.includes(brand)}
                     onChange={() => handleBrandToggle(brand)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                    className="w-4 h-4 text-[#FDB913] border-gray-300 rounded focus:ring-2 focus:ring-[#FDB913] cursor-pointer"
                   />
                   <span className="text-sm text-gray-700 group-hover:text-gray-900">
                     {brand}
@@ -260,7 +260,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
                     placeholder="100,000"
                     value={filters.priceMin}
                     onChange={(e) => handlePriceChange("min", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FDB913]"
                   />
                 </div>
                 <span className="text-gray-400 mt-5">-</span>
@@ -271,7 +271,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
                     placeholder="5,000,000"
                     value={filters.priceMax}
                     onChange={(e) => handlePriceChange("max", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#FDB913]"
                   />
                 </div>
               </div>
@@ -308,7 +308,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
                     name="rating"
                     checked={filters.rating === rating}
                     onChange={() => handleRatingChange(rating)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                    className="w-4 h-4 text-[#FDB913] border-gray-300 focus:ring-2 focus:ring-[#FDB913] cursor-pointer"
                   />
                   <div className="flex items-center gap-1">
                     {[...Array(5)].map((_, index) => (
@@ -316,7 +316,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
                         key={index}
                         className={`w-4 h-4 ${
                           index < rating
-                            ? "fill-yellow-400 text-yellow-400"
+                            ? "fill-[#FDB913] text-[#FDB913]"
                             : "text-gray-300"
                         }`}
                       />
@@ -356,7 +356,7 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
                     type="checkbox"
                     checked={filters.batteryCapacity.includes(option)}
                     onChange={() => handleBatteryToggle(option)}
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                    className="w-4 h-4 text-[#FDB913] border-gray-300 rounded focus:ring-2 focus:ring-[#FDB913] cursor-pointer"
                   />
                   <span className="text-sm text-gray-700 group-hover:text-gray-900">
                     {option}

@@ -108,7 +108,7 @@ const MobileProductListItem = ({ product }: { product: ProductType }) => {
                 key={i}
                 className={`w-3 h-3 ${
                   i < Math.floor(rating)
-                    ? "text-yellow-400"
+                    ? "text-[#FDB913]"
                     : "text-gray-300"
                 }`}
                 fill="currentColor"
@@ -135,7 +135,7 @@ const MobileProductListItem = ({ product }: { product: ProductType }) => {
               </span>
             )}
           </div>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-1.5 px-3 rounded transition-colors">
+          <button className="bg-[#FDB913] hover:bg-[#e5a811] text-[#001E3C] text-sm font-semibold py-1.5 px-3 rounded transition-colors">
             Add to Cart
           </button>
         </div>

@@ -85,7 +85,7 @@ const SingleUserPage = async ({
                 <HoverCardTrigger>
                   <BadgeCheck
                     size={36}
-                    className="rounded-full bg-blue-500/30 border-1 border-blue-500/50 p-2"
+                    className="rounded-full bg-[#0A7EA4]/30 border-1 border-[#0A7EA4]/50 p-2"
                   />
                 </HoverCardTrigger>
                 <HoverCardContent>

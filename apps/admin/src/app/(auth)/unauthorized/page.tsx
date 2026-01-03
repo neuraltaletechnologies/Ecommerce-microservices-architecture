@@ -93,7 +93,7 @@ const Page = () => {
 
           <p className="text-xs text-center text-gray-500 mt-2">
             Need admin access? Contact{" "}
-            <a href="mailto:support@neuraltale.com" className="text-blue-600 hover:underline">
+            <a href="mailto:support@neuraltale.com" className="text-[#0A7EA4] hover:underline">
               support@neuraltale.com
             </a>
           </p>
