@@ -135,7 +135,7 @@ const CategoriesContent = () => {
             },
             ...data.map((category) => ({
               ...category,
-              image: categoryImages[category.slug] || categoryImages.accessories,
+              image: categoryImages[category.slug] || categoryImages.accessories || "",
               count: category.count || 0,
             })),
           ];

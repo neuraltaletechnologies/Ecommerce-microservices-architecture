@@ -15,7 +15,6 @@ import { useState } from "react";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
 
   const categories = [
     {
@@ -148,8 +147,6 @@ const Navbar = () => {
               <div className="relative group">
                 <button 
                   className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 group"
-                  onMouseEnter={() => setIsCategoriesOpen(true)}
-                  onMouseLeave={() => setIsCategoriesOpen(false)}
                 >
                   <span>Categories</span>
                   <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-200" />
@@ -159,8 +156,6 @@ const Navbar = () => {
                 {/* Mega Menu Dropdown */}
                 <div 
                   className="absolute top-full left-0 w-screen max-w-6xl bg-white shadow-xl border border-gray-200 rounded-lg mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
-                  onMouseEnter={() => setIsCategoriesOpen(true)}
-                  onMouseLeave={() => setIsCategoriesOpen(false)}
                 >
                   <div className="grid grid-cols-5 gap-6 p-6">
                     {categories.map((category) => (
