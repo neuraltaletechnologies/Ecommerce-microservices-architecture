@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   publisher: "Neurashop by Neuraltale",
   category: "E-commerce",
   classification: "Electronics & Technology",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://eshop.neuraltale.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://neurashop.neuraltale.com'),
   alternates: {
     canonical: '/',
   },
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Neurashop - Premium Tech Store by Neuraltale | Buy Electronics Online",
     description: "Shop premium laptops, smartphones, gaming gear & electronics in Tanzania. Powered by Neuraltale. Fast shipping across Dar es Salaam & all regions. Best prices guaranteed.",
-    url: "https://eshop.neuraltale.com",
+    url: "https://neurashop.neuraltale.com",
     siteName: "Neurashop by Neuraltale",
     type: "website",
     locale: "en_US",
@@ -127,7 +127,7 @@ export default function RootLayout({
                 name: 'Neuraltale',
                 alternateName: 'Neurashop',
                 url: 'https://neuraltale-client.vercel.app',
-                logo: 'https://eshop.neuraltale.com/logo.png',
+                logo: 'https://neurashop.neuraltale.com/logo.png',
                 description: 'Neurashop is the premium e-commerce platform by Neuraltale, offering technology and electronics in Tanzania including laptops, smartphones, gaming gear and accessories across Dar es Salaam and East Africa.',
                 address: {
                   '@type': 'PostalAddress',
@@ -155,10 +155,10 @@ export default function RootLayout({
                 '@context': 'https://schema.org',
                 '@type': 'WebSite',
                 name: 'Neurashop by Neuraltale',
-                url: 'https://eshop.neuraltale.com',
+                url: 'https://neurashop.neuraltale.com',
                 potentialAction: {
                   '@type': 'SearchAction',
-                  target: 'https://eshop.neuraltale.com/products?search={search_term_string}',
+                  target: 'https://neurashop.neuraltale.com/products?search={search_term_string}',
                   'query-input': 'required name=search_term_string',
                 },
               }),
@@ -169,7 +169,7 @@ export default function RootLayout({
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50`}
         >
           {/* Main page layout: Navbar at top, content in the middle, Footer at bottom */}
-          <div className="min-h-screen flex flex-col">
+          <div className="min-h-screen flex flex-col overflow-x-hidden">
             <Navbar />
             <main className="flex-1 ">
               {children}

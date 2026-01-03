@@ -45,7 +45,7 @@ export async function generateMetadata({
       openGraph: {
         title: `${categoryTitles[category]} - Neurashop`,
         description: categoryDescriptions[category],
-        url: `https://eshop.neuraltale.com/products?category=${category}`,
+        url: `https://neurashop.neuraltale.com/products?category=${category}`,
       },
     };
   }
@@ -58,7 +58,7 @@ export async function generateMetadata({
     openGraph: {
       title: "All Products - Neurashop Tech Store",
       description: "Browse our complete collection of premium tech products. Fast worldwide shipping.",
-      url: "https://eshop.neuraltale.com/products",
+      url: "https://neurashop.neuraltale.com/products",
     },
   };
 }

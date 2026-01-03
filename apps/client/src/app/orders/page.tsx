@@ -1,69 +1,128 @@
 import { auth } from "@clerk/nextjs/server";
 import { OrderType } from "@repo/types";
 
+/**
+ * Format TZS amount from Stripe (which stores in cents)
+ * Stripe amounts are in smallest currency unit, so we divide by 100
+ */
+function formatOrderAmount(amountInCents: number): string {
+  const amountInTzs = amountInCents / 100;
+  return new Intl.NumberFormat('en-TZ', {
+    style: 'currency',
+    currency: 'TZS',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amountInTzs);
+}
+
 const fetchOrders = async () => {
-  const { getToken } = await auth();
-  const token = await getToken();
+  try {
+    const { getToken } = await auth();
+    const token = await getToken();
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_ORDER_SERVICE_URL}/user-orders`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_ORDER_SERVICE_URL}/user-orders`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        cache: 'no-store',
+      }
+    );
+
+    if (!res.ok) {
+      console.error('Failed to fetch orders:', res.status, res.statusText);
+      return null;
     }
-  );
 
-  const data: OrderType[] = await res.json();
-  return data;
+    const data: OrderType[] = await res.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    return null;
+  }
 };
 
 const OrdersPage = async () => {
   const orders = await fetchOrders();
 
   if (!orders) {
-    return <div className="">No orders found!</div>;
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <h1 className="text-2xl my-4 font-medium">Your Orders</h1>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+          Failed to load orders. Please try again later.
+        </div>
+      </div>
+    );
   }
 
-  console.log(orders);
+  if (orders.length === 0) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <h1 className="text-2xl my-4 font-medium">Your Orders</h1>
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-8 text-center">
+          <p className="text-gray-600 mb-2">You haven't placed any orders yet.</p>
+          <a href="/products" className="text-blue-600 hover:underline">
+            Start shopping
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  console.log('Orders:', orders);
   return (
-    <div className="">
+    <div className="max-w-6xl mx-auto px-4 py-8">
       <h1 className="text-2xl my-4 font-medium">Your Orders</h1>
-      <ul>
+      <div className="space-y-4">
         {orders.map((order) => (
-          <li key={order._id} className="flex items-center mb-4">
-            <div className="w-1/4">
-              <span className="font-medium text-sm text-gray-500">
-                Order ID
-              </span>
-              <p>{order._id}</p>
+          <div key={order._id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <div>
+                <span className="font-medium text-sm text-gray-500 block mb-1">
+                  Order ID
+                </span>
+                <p className="text-sm font-mono">{order._id}</p>
+              </div>
+              <div>
+                <span className="font-medium text-sm text-gray-500 block mb-1">Total</span>
+                <p className="font-semibold text-lg">{formatOrderAmount(order.amount)}</p>
+              </div>
+              <div>
+                <span className="font-medium text-sm text-gray-500 block mb-1">Status</span>
+                <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                  order.status === 'success' 
+                    ? 'bg-green-100 text-green-800' 
+                    : order.status === 'pending'
+                    ? 'bg-yellow-100 text-yellow-800'
+                    : 'bg-red-100 text-red-800'
+                }`}>
+                  {order.status}
+                </span>
+              </div>
+              <div>
+                <span className="font-medium text-sm text-gray-500 block mb-1">Date</span>
+                <p className="text-sm">
+                  {order.createdAt
+                    ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })
+                    : "-"}
+                </p>
+              </div>
+              <div>
+                <span className="font-medium text-sm text-gray-500 block mb-1">
+                  Products
+                </span>
+                <p className="text-sm">{order.products?.map(product=> product.name).join(", ") || "-"}</p>
+              </div>
             </div>
-            <div className="w-1/12">
-              <span className="font-medium text-sm text-gray-500">Total</span>
-              <p>{order.amount / 100}</p>
-            </div>
-            <div className="w-1/12">
-              <span className="font-medium text-sm text-gray-500">Status</span>
-              <p>{order.status}</p>
-            </div>
-            <div className="w-1/8">
-              <span className="font-medium text-sm text-gray-500">Date</span>
-              <p>
-                {order.createdAt
-                  ? new Date(order.createdAt).toLocaleDateString("en-US")
-                  : "-"}
-              </p>
-            </div>
-            <div className="">
-              <span className="font-medium text-sm text-gray-500">
-                Products
-              </span>
-              <p>{order.products?.map(product=> product.name).join(", ") || "-"}</p>
-            </div>
-            
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };

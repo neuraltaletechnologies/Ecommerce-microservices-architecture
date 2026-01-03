@@ -1,4 +1,5 @@
 import ProductInteraction from "@/components/ProductInteraction";
+import WishlistCompareButtons from "@/components/WishlistCompareButtons";
 import { formatTzs } from "@/utils/currency";
 import { ProductType } from "@repo/types";
 import type { Metadata } from "next";
@@ -8,8 +9,7 @@ import {
   Shield, 
   Truck, 
   RotateCcw, 
-  CheckCircle, 
-  Heart,
+  CheckCircle,
   Package,
   Zap,
   Info,
@@ -19,7 +19,6 @@ import {
   Award,
   Globe,
   MessageSquare,
-  GitCompare
 } from "lucide-react";
 import ImageGallery from "@/components/ImageGallery";
 import ExpandableSection from "@/components/ExpandableSection";
@@ -86,7 +85,7 @@ export const generateMetadata = async ({
       };
     }
     
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://eshop.neuraltale.com';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://neurashop.neuraltale.com';
     const productUrl = `${baseUrl}/products/${id}`;
     
     // Extract image URL - handle both old {main, gallery} and new {color: url} structures
@@ -321,7 +320,7 @@ const ProductPage = async ({
               price: product.price,
               priceCurrency: 'TZS',
               availability: 'https://schema.org/InStock',
-              url: `https://eshop.neuraltale.com/products/${product.id}`,
+              url: `https://neurashop.neuraltale.com/products/${product.id}`,
               seller: {
                 '@type': 'Organization',
                 name: 'Neuraltale',
@@ -351,25 +350,25 @@ const ProductPage = async ({
                 '@type': 'ListItem',
                 position: 1,
                 name: 'Home',
-                item: 'https://eshop.neuraltale.com',
+                item: 'https://neurashop.neuraltale.com',
               },
               {
                 '@type': 'ListItem',
                 position: 2,
                 name: 'Products',
-                item: 'https://eshop.neuraltale.com/products',
+                item: 'https://neurashop.neuraltale.com/products',
               },
               {
                 '@type': 'ListItem',
                 position: 3,
                 name: product.categorySlug ? product.categorySlug.replace(/-/g, ' ') : 'Products',
-                item: product.categorySlug ? `https://eshop.neuraltale.com/products?category=${product.categorySlug}` : 'https://eshop.neuraltale.com/products',
+                item: product.categorySlug ? `https://neurashop.neuraltale.com/products?category=${product.categorySlug}` : 'https://neurashop.neuraltale.com/products',
               },
               {
                 '@type': 'ListItem',
                 position: 4,
                 name: product.name,
-                item: `https://eshop.neuraltale.com/products/${product.id}`,
+                item: `https://neurashop.neuraltale.com/products/${product.id}`,
               },
             ],
           }),
@@ -626,11 +625,11 @@ const ProductPage = async ({
             <div className="space-y-3 pb-6 border-b border-gray-200">
               <div className="flex items-baseline gap-3">
                 <span className="text-4xl font-bold text-gray-900">
-                  {formatTzs(product.price / 100, true)}
+                  {formatTzs(product.price)}
                 </span>
-                {product.price < 50000 && (
+                {product.price < 500000 && (
                   <span className="text-xl text-gray-500 line-through">
-                    {formatTzs((product.price * 1.2) / 100, true)}
+                    {formatTzs(product.price * 1.2)}
                   </span>
                 )}
               </div>
@@ -736,22 +735,7 @@ const ProductPage = async ({
                 selectedSize={selectedSize}
                 selectedColor={selectedColor}
               />
-              <div className="grid grid-cols-2 gap-3">
-                <button 
-                  className="flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-900 rounded-lg font-semibold text-gray-900 hover:bg-gray-50 transition-all"
-                  aria-label="Add to wishlist"
-                >
-                  <Heart className="w-5 h-5" />
-                  Wishlist
-                </button>
-                <button 
-                  className="flex items-center justify-center gap-2 px-6 py-3 border-2 border-gray-300 rounded-lg font-semibold text-gray-700 hover:bg-gray-50 transition-all"
-                  aria-label="Compare products"
-                >
-                  <GitCompare className="w-5 h-5" />
-                  Compare
-                </button>
-              </div>
+              <WishlistCompareButtons product={product} />
             </div>
 
             {/* Trust Signals */}

@@ -46,7 +46,19 @@ const ProductInteractionContent = ({
       selectedColor,
       selectedSize,
     });
-    toast.success("Product added to cart")
+    toast.success("Product added to cart");
+  };
+
+  const handleBuyNow = () => {
+    addToCart({
+      ...product,
+      quantity,
+      selectedColor,
+      selectedSize,
+    });
+    toast.success("Proceeding to checkout...");
+    // Navigate to cart with shipping step
+    router.push("/cart?step=2");
   };
   return (
     <div className="flex flex-col gap-4 mt-4">
@@ -127,7 +139,10 @@ const ProductInteractionContent = ({
         <Plus className="w-4 h-4" />
         Add to Cart
       </button>
-      <button className="ring-1 ring-gray-400 shadow-lg text-gray-800 px-4 py-2 rounded-md flex items-center justify-center cursor-pointer gap-2 text-sm font-medium">
+      <button 
+        onClick={handleBuyNow}
+        className="ring-1 ring-gray-400 shadow-lg text-gray-800 px-4 py-2 rounded-md flex items-center justify-center cursor-pointer gap-2 text-sm font-medium hover:ring-gray-500 hover:bg-gray-50 transition-all"
+      >
         <ShoppingCart className="w-4 h-4" />
         Buy this Item
       </button>

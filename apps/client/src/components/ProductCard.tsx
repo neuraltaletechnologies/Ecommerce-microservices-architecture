@@ -1,12 +1,13 @@
 "use client";
 
 import useCartStore from "@/stores/cartStore";
+import useWishlistStore from "@/stores/wishlistStore";
 import { formatTzs } from "@/utils/currency";
 import { ProductType } from "@repo/types";
 import { ShoppingCart, Star, Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 
 const ProductCard = ({ product }: { product: ProductType }) => {
@@ -14,9 +15,17 @@ const ProductCard = ({ product }: { product: ProductType }) => {
     size: product.sizes?.[0] || "",
     color: product.colors?.[0] || "",
   });
-  const [isWishlisted, setIsWishlisted] = useState(false);
-
+  
   const { addToCart } = useCartStore();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Check wishlist status after hydration
+  useEffect(() => {
+    setMounted(true);
+    setIsWishlisted(isInWishlist(product.id));
+  }, [product.id, isInWishlist]);
 
   const handleProductType = ({
     type,
@@ -42,8 +51,15 @@ const ProductCard = ({ product }: { product: ProductType }) => {
   };
 
   const handleWishlist = () => {
-    setIsWishlisted(!isWishlisted);
-    toast.success(isWishlisted ? "Removed from wishlist" : "Added to wishlist");
+    if (isWishlisted) {
+      removeFromWishlist(product.id);
+      setIsWishlisted(false);
+      toast.success("Removed from wishlist");
+    } else {
+      addToWishlist(product);
+      setIsWishlisted(true);
+      toast.success("Added to wishlist");
+    }
   };
 
   // Generate a realistic rating for demo purposes
@@ -182,45 +198,19 @@ const ProductCard = ({ product }: { product: ProductType }) => {
           </div>
         </div>
 
-        {/* PRODUCT TYPES - Simplified for mobile */}
-        <div className="space-y-2 sm:space-y-3">
-          {/* Storage/Size Options - Show only 2 on mobile */}
-          <div className="sm:block hidden">
-            <span className="text-xs font-medium text-gray-700 block mb-1">
-              {product.categorySlug === "smartphones" || product.categorySlug === "tablets" ? "Storage" : "Size"}
-            </span>
-            <div className="flex flex-wrap gap-1">
-              {product.sizes.slice(0, 2).map((size: string) => (
-                <button
-                  key={size}
-                  onClick={() => handleProductType({ type: "size", value: size })}
-                  className={`px-2 py-1 text-xs rounded border transition-colors ${
-                    productTypes.size === size
-                      ? "border-blue-500 bg-blue-50 text-blue-700"
-                      : "border-gray-200 text-gray-600 hover:border-gray-300"
-                  }`}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
-
- 
-        </div>
 
         {/* PRICE AND ACTIONS */}
         <div className="pt-2 border-t border-gray-100">
           <div className="flex items-center justify-between mb-2">
             <div>
               <span className="text-lg font-bold text-gray-900">
-                {formatTzs(product.price, true)}
+                {formatTzs(product.price)}
               </span>
               {/* Show savings if applicable */}
               {product.id % 4 === 0 && (
                 <div className="flex items-center gap-1 mt-1">
                   <span className="text-xs text-gray-500 line-through">
-                    {formatTzs(product.price * 1.15, true)}
+                    {formatTzs(product.price * 1.15)}
                   </span>
                   <span className="text-xs bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-medium">
                     Save 15%

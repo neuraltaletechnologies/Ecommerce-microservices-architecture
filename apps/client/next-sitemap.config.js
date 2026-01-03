@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_BASE_URL || 'https://eshop.neuraltale.com',
+  siteUrl: process.env.NEXT_PUBLIC_BASE_URL || 'https://neurashop.neuraltale.com',
   generateRobotsTxt: true,
   generateIndexSitemap: false,
   robotsTxtOptions: {

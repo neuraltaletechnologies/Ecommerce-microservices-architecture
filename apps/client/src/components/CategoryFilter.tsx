@@ -254,10 +254,10 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <div className="flex-1">
-                  <label className="block text-xs text-gray-600 mb-1">Min</label>
+                  <label className="block text-xs text-gray-600 mb-1">Min (TZS)</label>
                   <input
                     type="number"
-                    placeholder="0"
+                    placeholder="100,000"
                     value={filters.priceMin}
                     onChange={(e) => handlePriceChange("min", e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -265,16 +265,17 @@ const CategoryFilter = ({ onFilterChange, isSheet = false, onClose }: CategoryFi
                 </div>
                 <span className="text-gray-400 mt-5">-</span>
                 <div className="flex-1">
-                  <label className="block text-xs text-gray-600 mb-1">Max</label>
+                  <label className="block text-xs text-gray-600 mb-1">Max (TZS)</label>
                   <input
                     type="number"
-                    placeholder="10000"
+                    placeholder="5,000,000"
                     value={filters.priceMax}
                     onChange={(e) => handlePriceChange("max", e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
+              <p className="text-xs text-gray-500">Enter price in Tanzanian Shillings</p>
             </div>
           )}
         </div>

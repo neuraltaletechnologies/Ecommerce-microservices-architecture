@@ -39,10 +39,17 @@ app.post('/send-order-email', async (req, res) => {
     const { email, amount, status } = req.body;
 
     if (email) {
+      // Format amount from Stripe cents to TZS
+      const formattedAmount = new Intl.NumberFormat('en-TZ', {
+        style: 'currency',
+        currency: 'TZS',
+        minimumFractionDigits: 0,
+      }).format(amount / 100);
+      
       await sendMail({
         email,
         subject: "Order Confirmation",
-        text: `Hello! Your order has been ${status}. Amount: ${amount / 100} TZS`,
+        text: `Hello! Your order has been ${status}. Amount: ${formattedAmount}`,
       });
       res.json({ success: true, message: 'Order email sent' });
     } else {

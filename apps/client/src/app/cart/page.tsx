@@ -181,13 +181,16 @@ const CartPageContent = () => {
                           {/* IMAGE */}
                           <div className="relative w-24 h-24 lg:w-32 lg:h-32 bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl overflow-hidden flex-shrink-0 shadow-sm group-hover:shadow-md transition-shadow duration-300">
                             <Image
-                              src={
-                                (() => {
+                              src={(() => {
+                                try {
                                   const images = item.images as Record<string, string | string[]>;
                                   const imageValue = images?.[item.selectedColor];
-                                  return Array.isArray(imageValue) ? imageValue[0] : imageValue || "/products/placeholder.jpg";
-                                })()
-                              }
+                                  const result = Array.isArray(imageValue) ? imageValue[0] : imageValue;
+                                  return result && typeof result === 'string' ? result : "/products/placeholder.jpg";
+                                } catch {
+                                  return "/products/placeholder.jpg";
+                                }
+                              })()}
                               alt={item.name}
                               fill
                               className="object-contain p-2 group-hover:scale-105 transition-transform duration-300"

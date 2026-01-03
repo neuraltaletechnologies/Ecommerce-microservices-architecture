@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Neurashop by Neuraltale Tanzania - Premium Tech Store | Home",
     description: "Shop premium laptops, smartphones, gaming gear & electronics in Tanzania. Fast delivery across all regions.",
-    url: "https://eshop.neuraltale.com",
+    url: "https://neurashop.neuraltale.com",
   },
 };
 
@@ -37,10 +37,7 @@ const Homepage = async ({
         <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
           Premium Tech Products
         </h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Discover cutting-edge technology from leading brands. From smartphones to gaming gear, 
-          find the perfect tech products for your lifestyle.
-        </p>
+        
       </div>
           <ProductList category={category} params="homepage"/>
         </div>

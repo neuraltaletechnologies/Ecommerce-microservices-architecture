@@ -6,10 +6,11 @@ export const createOrder = async (order: OrderType) => {
   const newOrder = new Order(order);
 
   try {
-    const order = await newOrder.save();
+    const savedOrder = await newOrder.save();
     // Send email notification directly
-    await sendOrderEmail(order.email, order.amount, order.status);
-} catch (error) {
+    await sendOrderEmail(savedOrder.email, savedOrder.amount, savedOrder.status);
+    return savedOrder;
+  } catch (error) {
     console.log(error);
     throw error;
   }

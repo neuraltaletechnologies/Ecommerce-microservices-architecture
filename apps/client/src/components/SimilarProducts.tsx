@@ -123,7 +123,7 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
                     style: 'currency',
                     currency: 'TZS',
                     minimumFractionDigits: 0,
-                  }).format(product.price / 100)}
+                  }).format(product.price)}
                 </p>
               </div>
             </div>

@@ -88,7 +88,13 @@ const CardList = async ({ title }: { title: string }) => {
                   </CardTitle>
                   <Badge variant="secondary">{item.status}</Badge>
                 </CardContent>
-                <CardFooter className="p-0">${item.amount / 100}</CardFooter>
+                <CardFooter className="p-0">
+                  {new Intl.NumberFormat('en-TZ', {
+                    style: 'currency',
+                    currency: 'TZS',
+                    minimumFractionDigits: 0,
+                  }).format(item.amount / 100)}
+                </CardFooter>
               </Card>
             ))}
       </div>
