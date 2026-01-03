@@ -206,7 +206,7 @@ const HeroSection = () => {
 
           {/* Product Image */}
           <div className="relative flex items-center justify-center order-first lg:order-last">
-            <div className="relative w-full max-w-sm sm:max-w-md h-64 sm:h-80 lg:h-[450px] rounded-2xl overflow-hidden bg-white/10 backdrop-blur-sm border border-white/20">
+            <div className="relative w-full max-w-sm sm:max-w-md h-64 sm:h-80 lg:h-[450px] rounded-2xl overflow-hidden ">
               <Image
                 src={getProductImage(currentProduct)}
                 alt={currentProduct.name}
