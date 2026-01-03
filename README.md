@@ -24,7 +24,7 @@ Modern e-commerce platform built with TypeScript microservices in a Turborepo mo
 - **Communication**: Direct HTTP (no message queue)
 - **Deployment**: Render (backends) + Vercel (frontends)
 
-## 🚀 Quick Start
+## 🚀 Quick Start up
 
 ### Prerequisites
 - Node.js 18+
