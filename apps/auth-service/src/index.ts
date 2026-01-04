@@ -14,7 +14,7 @@ const allowedOrigins = [
   "https://neuraltale-admin.onrender.com",
   "https://backoffice.neuraltale.com",
   process.env.ADMIN_URL,
-].filter(Boolean);
+].filter((origin): origin is string => Boolean(origin));
 
 app.use(
   cors({
@@ -49,7 +49,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     .json({ message: err.message || "Inter Server Error!" });
 });
 
-const PORT = process.env.PORT || 8003;
+const PORT = Number(process.env.PORT) || 8003;
 
 const start = async () => {
   try {

@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatTZS } from "@/lib/utils/currency";
-import HeroSkeleton from "./skeletons/HeroSkeleton";
 import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from "lucide-react";
 
 interface HeroProduct {
@@ -21,8 +20,8 @@ interface HeroProduct {
   stockQuantity?: number;
 }
 
-interface HeroSectionProps {
-  initialProducts?: HeroProduct[];
+interface HeroSectionClientProps {
+  initialProducts: HeroProduct[];
 }
 
 // Brand colors - Neuraltale palette
@@ -81,35 +80,10 @@ const categoryHeadlines: Record<string, { headline: string; subheadline: string 
   },
 };
 
-const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
-  const [heroProducts, setHeroProducts] = useState<HeroProduct[]>(initialProducts);
+const HeroSectionClient = ({ initialProducts }: HeroSectionClientProps) => {
+  const [heroProducts] = useState<HeroProduct[]>(initialProducts);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-
-  // Only fetch if no initial products provided (fallback for client-side navigation)
-  useEffect(() => {
-    if (initialProducts.length === 0 && heroProducts.length === 0) {
-      const fetchHeroProducts = async () => {
-        try {
-          const res = await fetch("/api/hero-products", {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          });
-
-          if (res.ok) {
-            const data = await res.json();
-            if (data && data.length > 0) {
-              setHeroProducts(data);
-            }
-          }
-        } catch (error) {
-          console.error("Error fetching hero products:", error);
-        }
-      };
-
-      fetchHeroProducts();
-    }
-  }, [initialProducts.length, heroProducts.length]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -171,12 +145,7 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [nextSlide, prevSlide]);
 
-  // Show skeleton only when no initial products and still loading via client fetch
   if (!heroProducts || heroProducts.length === 0) {
-    // If initialProducts were empty, show skeleton while fetching
-    if (initialProducts.length === 0) {
-      return <HeroSkeleton />;
-    }
     return null;
   }
 
@@ -428,4 +397,4 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
   );
 };
 
-export default HeroSection;
+export default HeroSectionClient;

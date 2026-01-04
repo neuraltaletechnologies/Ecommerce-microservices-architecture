@@ -46,7 +46,6 @@ export const getCategories = async (req: Request, res: Response) => {
     id: category.id,
     name: category.name,
     slug: category.slug,
-    description: category.description,
     count: category._count.products
   }));
 

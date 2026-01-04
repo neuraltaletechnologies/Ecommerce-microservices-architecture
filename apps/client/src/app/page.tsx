@@ -1,5 +1,5 @@
 import ProductList from "@/components/ProductList";
-import HeroSection from "@/components/HeroSection";
+import HeroSectionWrapper from "@/components/HeroSectionWrapper";
 import TrustIndicators from "@/components/TrustIndicators";
 import ShopByCategory from "@/components/ShopByCategory";
 import FlashDealsSection from "@/components/homepage/FlashDealsSection";
@@ -32,7 +32,7 @@ const Homepage = async ({
   return (
     <div className="min-h-screen">
       {/* Hero Section - Full width with brand gradients */}
-      <HeroSection />
+      <HeroSectionWrapper />
       
       
       

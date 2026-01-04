@@ -36,6 +36,7 @@ import AddUserSheet from "./AddUserSheet";
 import AddCategory from "./AddCategory";
 import AddProduct from "./AddProduct";
 import { UserButton, useUser } from "@clerk/nextjs";
+import { useEffect, useState } from "react";
 
 const items = [
   {
@@ -67,6 +68,14 @@ const items = [
 
 const AppSidebar = () => {
   const { user, isLoaded } = useUser();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Avoid SSR hydration mismatches from Radix-generated IDs
+  if (!mounted) return null;
 
   return (
     <Sidebar collapsible="icon">

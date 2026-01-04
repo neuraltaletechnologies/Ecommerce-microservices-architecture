@@ -24,7 +24,6 @@ export const createProduct = async (req: Request, res: Response) => {
 
   const product = await prisma.product.create({ data });
 
-  // Product created successfully - Stripe integration removed (was Kafka-based)
   console.log(`Product created: ${product.id} - ${product.name}`);
   
   res.status(201).json(product);

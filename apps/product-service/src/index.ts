@@ -23,7 +23,7 @@ const allowedOrigins = [
   "https://neurashop.neuraltale.com",
   process.env.FRONTEND_URL,
   process.env.ADMIN_URL,
-].filter(Boolean);
+].filter((origin): origin is string => Boolean(origin));
 
 app.use(
   cors({
@@ -58,7 +58,7 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     .json({ message: err.message || "Inter Server Error!" });
 });
 
-const PORT = process.env.PORT || 8000;
+const PORT = Number(process.env.PORT) || 8000;
 
 const start = async () => {
   try {

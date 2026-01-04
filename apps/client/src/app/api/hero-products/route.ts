@@ -9,7 +9,7 @@ export async function GET() {
       headers: {
         'Content-Type': 'application/json',
       },
-      cache: 'no-store',
+      next: { revalidate: 60 }, // Cache for 1 minute like products
     });
 
     if (!response.ok) {

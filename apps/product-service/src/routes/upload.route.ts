@@ -1,5 +1,5 @@
-import express from 'express';
-import multer from 'multer';
+import express, { Router } from 'express';
+import multer, { FileFilterCallback } from 'multer';
 import { shouldBeAdmin } from '../middleware/authMiddleware.js';
 import {
   uploadImage,
@@ -8,7 +8,7 @@ import {
   deleteImages,
 } from '../controllers/upload.controller';
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Configure multer for memory storage
 const upload = multer({
@@ -16,7 +16,7 @@ const upload = multer({
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
   },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (req: Express.Request, file: Express.Multer.File, cb: FileFilterCallback) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {

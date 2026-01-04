@@ -15,7 +15,7 @@ const allowedOrigins = [
   "https://neuraltale-client.onrender.com",
   "https://neurashop.neuraltale.com",
   process.env.FRONTEND_URL,
-].filter(Boolean);
+].filter((origin): origin is string => Boolean(origin));
 
 app.use("*", clerkMiddleware());
 app.use("*", cors({ origin: allowedOrigins }));

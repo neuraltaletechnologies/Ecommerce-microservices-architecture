@@ -1,4 +1,4 @@
-// Simple email notification utility (no Kafka needed)
+// Email notification utility - uses direct HTTP to email-service
 export const sendUserWelcomeEmail = async (email: string, username: string) => {
   const EMAIL_SERVICE_URL = process.env.EMAIL_SERVICE_URL || 'http://localhost:8004';
   

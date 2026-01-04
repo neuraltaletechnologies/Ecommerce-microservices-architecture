@@ -7,12 +7,13 @@ import { Readable } from 'stream';
  */
 export const uploadImage = async (req: Request, res: Response) => {
   try {
-    if (!req.file) {
+    const file = req.file as Express.Multer.File | undefined;
+    if (!file) {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
     // Convert buffer to stream
-    const stream = Readable.from(req.file.buffer);
+    const stream = Readable.from(file.buffer);
 
     // Upload to Cloudinary
     const result = await new Promise((resolve, reject) => {
@@ -53,11 +54,12 @@ export const uploadImage = async (req: Request, res: Response) => {
  */
 export const uploadImages = async (req: Request, res: Response) => {
   try {
-    if (!req.files || !Array.isArray(req.files) || req.files.length === 0) {
+    const files = req.files as Express.Multer.File[] | undefined;
+    if (!files || !Array.isArray(files) || files.length === 0) {
       return res.status(400).json({ error: 'No files uploaded' });
     }
 
-    const uploadPromises = req.files.map(async (file) => {
+    const uploadPromises = files.map(async (file: Express.Multer.File) => {
       const stream = Readable.from(file.buffer);
 
       return new Promise((resolve, reject) => {
