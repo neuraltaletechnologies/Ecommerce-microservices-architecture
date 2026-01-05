@@ -346,6 +346,9 @@ importers:
       stripe:
         specifier: ^18.5.0
         version: 18.5.0(@types/node@20.19.13)
+      tsx:
+        specifier: ^4.7.1
+        version: 4.20.5
     devDependencies:
       '@repo/types':
         specifier: workspace:*
@@ -356,9 +359,6 @@ importers:
       '@types/node':
         specifier: ^20.11.17
         version: 20.19.13
-      tsx:
-        specifier: ^4.7.1
-        version: 4.20.5
       typescript:
         specifier: ^5.8.3
         version: 5.9.2
