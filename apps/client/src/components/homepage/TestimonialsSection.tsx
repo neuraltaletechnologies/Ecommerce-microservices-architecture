@@ -15,7 +15,7 @@ const TestimonialsSection = () => {
       location: "Dar es Salaam",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
       rating: 5,
-      text: "Best tech store in Tanzania! The MacBook I ordered arrived in perfect condition with all accessories. Fast delivery and excellent customer service. Highly recommend Neurashop!",
+      text: "Best tech store in Tanzania! The MacBook I ordered arrived in perfect condition with all accessories. Fast delivery and excellent user service. Highly recommend Neurashop!",
       product: "MacBook Pro M3"
     },
     {
@@ -73,13 +73,13 @@ const TestimonialsSection = () => {
         <div className="text-center mb-12">
           <span className="inline-flex items-center gap-2 bg-[#F5E6D3] text-[#001E3C] text-xs font-bold px-4 py-2 rounded-full mb-4">
             <Star className="w-4 h-4 text-[#FDB913]" fill="currentColor" />
-            CUSTOMER REVIEWS
+            user REVIEWS
           </span>
           <h2 className="text-3xl md:text-4xl font-black text-[#001E3C] mb-4">
-            What Our Customers Say
+            What Our Users Say
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who trust Neurashop for their tech needs
+            Join thousands of satisfied users who trust Neurashop for their tech needs
           </p>
         </div>
 

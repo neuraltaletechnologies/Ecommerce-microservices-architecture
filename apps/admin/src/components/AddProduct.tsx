@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   SheetContent,
   SheetDescription,
@@ -12,7 +13,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,772 +28,731 @@ import {
 } from "@/components/ui/select";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { Checkbox } from "./ui/checkbox";
 import { ScrollArea } from "./ui/scroll-area";
-import { CategoryType, colors, ProductFormSchema, sizes } from "@repo/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { CategoryType, colors, ProductFormSchema, ProductType, sizes } from "@repo/types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useAuth } from "@clerk/nextjs";
-
-// const categories = [
-//   "T-shirts",
-//   "Shoes",
-//   "Accessories",
-//   "Bags",
-//   "Dresses",
-//   "Jackets",
-//   "Gloves",
-// ] as const;
+import { useEffect } from "react";
+import { 
+  Upload, 
+  Package, 
+  Palette, 
+  Image as ImageIcon, 
+  FileJson, 
+  Sparkles,
+  X,
+  Plus,
+  Check,
+  Loader2
+} from "lucide-react";
 
 const fetchCategories = async () => {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`
-    );
-
-    if (!res.ok) {
-      const errorText = await res.text();
-      console.error('Failed to fetch categories:', res.status, errorText);
-      throw new Error(`Failed to fetch categories: ${res.statusText}`);
-    }
-
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-    throw error;
-  }
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`
+  );
+  if (!res.ok) throw new Error("Failed to fetch categories");
+  return res.json();
 };
 
-const AddProduct = () => {
+// Color hex mapping for visual display
+const colorHexMap: Record<string, string> = {
+  'Natural Titanium': '#8B8680',
+  'Blue Titanium': '#5B7C99',
+  'White Titanium': '#E8E4E0',
+  'Black Titanium': '#3A3A3C',
+  'Titanium Gray': '#71706E',
+  'Space Black': '#1C1C1E',
+  'Silver': '#C0C0C0',
+  'Graphite': '#41424C',
+  'Platinum': '#E5E4E2',
+  'Sapphire': '#0F52BA',
+  'blue': '#3B82F6',
+  'green': '#22C55E',
+  'red': '#EF4444',
+  'yellow': '#EAB308',
+  'purple': '#A855F7',
+  'orange': '#F97316',
+  'pink': '#EC4899',
+  'black': '#000000',
+  'white': '#FFFFFF',
+  'gray': '#6B7280',
+  'brown': '#92400E',
+};
+
+interface AddProductProps {
+  product?: ProductType;
+  onSuccess?: () => void;
+}
+
+const AddProduct = ({ product, onSuccess }: AddProductProps) => {
+  const isEditMode = !!product;
+  const [activeTab, setActiveTab] = useState("basic");
+  const [jsonInput, setJsonInput] = useState("");
+  const [uploadingColor, setUploadingColor] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+
   const form = useForm<z.infer<typeof ProductFormSchema>>({
     resolver: zodResolver(ProductFormSchema) as any,
     defaultValues: {
-      name: "",
-      shortDescription: "",
-      description: "",
-      price: 0,
-      categorySlug: "",
-      sizes: [],
-      colors: [],
-      images: {},
-      techHighlights: [],
-      boxContents: [],
-      productFeatures: [],
-      technicalSpecs: {},
-      certifications: [],
-      stockQuantity: 0,
-      stockStatus: "in_stock" as const,
-      lowStockThreshold: 10,
-      soldCount: 0,
+      name: product?.name || "",
+      shortDescription: product?.shortDescription || "",
+      description: product?.description || "",
+      price: product?.price || 0,
+      categorySlug: product?.categorySlug || "",
+      sizes: (product?.sizes || []) as z.infer<typeof ProductFormSchema>["sizes"],
+      colors: (product?.colors || []) as z.infer<typeof ProductFormSchema>["colors"],
+      images: (product?.images || {}) as z.infer<typeof ProductFormSchema>["images"],
+      techHighlights: product?.techHighlights || [],
+      boxContents: product?.boxContents || [],
+      productFeatures: product?.productFeatures || [],
+      technicalSpecs: product?.technicalSpecs || {},
+      certifications: product?.certifications || [],
+      stockQuantity: product?.stockQuantity || 0,
+      stockStatus: (product?.stockStatus || "in_stock") as z.infer<typeof ProductFormSchema>["stockStatus"],
+      lowStockThreshold: product?.lowStockThreshold || 10,
+      soldCount: product?.soldCount || 0,
     },
   });
 
-  const { isPending, error, data } = useQuery({
+  // Reset form when product changes (for edit mode)
+  useEffect(() => {
+    if (product) {
+      form.reset({
+        name: product.name || "",
+        shortDescription: product.shortDescription || "",
+        description: product.description || "",
+        price: product.price || 0,
+        categorySlug: product.categorySlug || "",
+        sizes: (product.sizes || []) as z.infer<typeof ProductFormSchema>["sizes"],
+        colors: (product.colors || []) as z.infer<typeof ProductFormSchema>["colors"],
+        images: (product.images || {}) as z.infer<typeof ProductFormSchema>["images"],
+        techHighlights: product.techHighlights || [],
+        boxContents: product.boxContents || [],
+        productFeatures: product.productFeatures || [],
+        technicalSpecs: product.technicalSpecs || {},
+        certifications: product.certifications || [],
+        stockQuantity: product.stockQuantity || 0,
+        stockStatus: (product.stockStatus || "in_stock") as z.infer<typeof ProductFormSchema>["stockStatus"],
+        lowStockThreshold: product.lowStockThreshold || 10,
+        soldCount: product.soldCount || 0,
+      });
+    }
+  }, [product, form]);
+
+  const { data: categories } = useQuery({
     queryKey: ["categories"],
     queryFn: fetchCategories,
-    retry: 2,
-    staleTime: 5 * 60 * 1000, // 5 minutes
   });
-
-  // Show error message if categories failed to load
-  if (error) {
-    console.error('Categories query error:', error);
-  }
 
   const { getToken } = useAuth();
 
   const mutation = useMutation({
     mutationFn: async (data: z.infer<typeof ProductFormSchema>) => {
       const token = await getToken();
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products`,
-        {
-          method: "POST",
-          body: JSON.stringify(data),
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (!res.ok) {
-        throw new Error("Failed to create product!");
-      }
+      const url = isEditMode
+        ? `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products/${product?.id}`
+        : `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products`;
+      
+      const res = await fetch(url, {
+        method: isEditMode ? "PUT" : "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error(isEditMode ? "Failed to update product!" : "Failed to create product!");
     },
     onSuccess: () => {
-      toast.success("Product created successfully");
+      toast.success(isEditMode ? "Product updated successfully!" : "Product created successfully!");
+      queryClient.invalidateQueries({ queryKey: ["products"] });
+      if (isEditMode && product?.id) {
+        queryClient.invalidateQueries({ queryKey: ["product", product.id] });
+      }
+      if (!isEditMode) {
+        form.reset();
+        setActiveTab("basic");
+      }
+      onSuccess?.();
     },
     onError: (error) => {
       toast.error(error.message);
     },
   });
 
+  // Import from JSON - quick way to populate form
+  const handleJsonImport = () => {
+    try {
+      const data = JSON.parse(jsonInput);
+      
+      // Map the JSON data to form fields
+      if (data.name) form.setValue("name", data.name);
+      if (data.shortDescription) form.setValue("shortDescription", data.shortDescription);
+      if (data.description) form.setValue("description", data.description);
+      if (data.price) form.setValue("price", Number(data.price));
+      if (data.categorySlug) form.setValue("categorySlug", data.categorySlug);
+      if (data.sizes) form.setValue("sizes", data.sizes);
+      if (data.colors) form.setValue("colors", data.colors);
+      if (data.images) form.setValue("images", data.images);
+      if (data.stockQuantity) form.setValue("stockQuantity", Number(data.stockQuantity));
+      if (data.stockStatus) form.setValue("stockStatus", data.stockStatus);
+      if (data.lowStockThreshold) form.setValue("lowStockThreshold", Number(data.lowStockThreshold));
+      if (data.techHighlights) form.setValue("techHighlights", data.techHighlights);
+      if (data.boxContents) form.setValue("boxContents", data.boxContents);
+      if (data.productFeatures) form.setValue("productFeatures", data.productFeatures);
+      if (data.technicalSpecs) form.setValue("technicalSpecs", data.technicalSpecs);
+      if (data.certifications) form.setValue("certifications", data.certifications);
+
+      toast.success("Data imported! Review and submit.");
+      setJsonInput("");
+      setActiveTab("basic");
+    } catch (e) {
+      toast.error("Invalid JSON format");
+    }
+  };
+
+  const selectedColors = form.watch("colors") || [];
+  const selectedSizes = form.watch("sizes") || [];
+  const currentImages = form.watch("images") || {};
+
+  // Upload handler
+  const handleImageUpload = async (color: string, file: File) => {
+    setUploadingColor(color);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/upload`,
+        { method: "POST", body: formData }
+      );
+      const data = await res.json();
+      
+      const currentImages = form.getValues("images") || {};
+      const colorImages = currentImages[color]
+        ? (Array.isArray(currentImages[color]) 
+            ? currentImages[color] as string[]
+            : [currentImages[color] as string])
+        : [];
+
+      form.setValue("images", {
+        ...currentImages,
+        [color]: [...colorImages, data.url],
+      } as any);
+      
+      toast.success(`Image uploaded for ${color}`);
+    } catch {
+      toast.error("Upload failed");
+    } finally {
+      setUploadingColor(null);
+    }
+  };
+
   return (
-    <SheetContent>
-      <ScrollArea className="h-screen">
-        <SheetHeader>
-          <SheetTitle className="mb-4">Add New Tech Product</SheetTitle>
-          <SheetDescription asChild>
+    <SheetContent className="w-full sm:max-w-xl p-0">
+      <div className="flex flex-col h-full">
+        <SheetHeader className="px-6 py-4 border-b">
+          <SheetTitle className="flex items-center gap-2">
+            <Package className="h-5 w-5 text-primary" />
+            {isEditMode ? "Edit Product" : "Add New Product"}
+          </SheetTitle>
+          <SheetDescription>
+            {isEditMode ? "Update product details" : "Fill in the details or import from JSON"}
+          </SheetDescription>
+        </SheetHeader>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+          <div className="px-6 pt-4">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="basic" className="text-xs gap-1">
+                <Package className="h-3 w-3" />
+                <span className="hidden sm:inline">Basic</span>
+              </TabsTrigger>
+              <TabsTrigger value="variants" className="text-xs gap-1">
+                <Palette className="h-3 w-3" />
+                <span className="hidden sm:inline">Variants</span>
+              </TabsTrigger>
+              <TabsTrigger value="images" className="text-xs gap-1">
+                <ImageIcon className="h-3 w-3" />
+                <span className="hidden sm:inline">Images</span>
+              </TabsTrigger>
+              <TabsTrigger value="extras" className="text-xs gap-1">
+                <Sparkles className="h-3 w-3" />
+                <span className="hidden sm:inline">Extras</span>
+              </TabsTrigger>
+              <TabsTrigger value="import" className="text-xs gap-1">
+                <FileJson className="h-3 w-3" />
+                <span className="hidden sm:inline">Import</span>
+              </TabsTrigger>
+            </TabsList>
+          </div>
+
+          <ScrollArea className="flex-1 px-6">
             <Form {...form}>
-              <form
-                className="space-y-8"
-                onSubmit={form.handleSubmit((data) => mutation.mutate(data))}
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Enter the product name (e.g., Gaming Laptop, Wireless Earbuds, Smartphone).
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="shortDescription"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Short Description</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Brief specs and features (e.g., "Intel Core i7, RTX 4060, 16GB RAM").
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} />
-                      </FormControl>
-                      <FormDescription>
-                        Enter the description of the product.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Price</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          {...field}
-                          onChange={(e) =>
-                            field.onChange(Number(e.target.value))
-                          }
+              <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="pb-6">
+                
+                {/* BASIC INFO TAB */}
+                <TabsContent value="basic" className="space-y-4 mt-4">
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm">Product Details</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Name *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="iPhone 15 Pro Max" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="shortDescription"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Tagline *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="A17 Pro chip, Titanium design" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description *</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                placeholder="Full product description..." 
+                                className="min-h-[80px] resize-none"
+                                {...field} 
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <FormField
+                          control={form.control}
+                          name="price"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Price (TZS) *</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  placeholder="2500000"
+                                  {...field}
+                                  onChange={(e) => field.onChange(Number(e.target.value))}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
                         />
-                      </FormControl>
-                      <FormDescription>
-                        Enter the price in TZS (Tanzanian Shillings).
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
 
-                {/* Inventory Management Section */}
-                <div className="border-t pt-6 mt-6">
-                  <h3 className="text-lg font-semibold mb-4">Inventory Management</h3>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="stockQuantity"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Stock Quantity</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              min="0"
-                              {...field}
-                              onChange={(e) => field.onChange(Number(e.target.value))}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Current inventory count
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                        <FormField
+                          control={form.control}
+                          name="categorySlug"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Category *</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="Select" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {categories?.map((cat: CategoryType) => (
+                                    <SelectItem key={cat.id} value={cat.slug}>
+                                      {cat.name}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                    <FormField
-                      control={form.control}
-                      name="stockStatus"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Stock Status</FormLabel>
-                          <FormControl>
-                            <Select onValueChange={field.onChange} value={field.value}>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select status" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="in_stock">In Stock</SelectItem>
-                                <SelectItem value="limited_stock">Limited Stock</SelectItem>
-                                <SelectItem value="pre_order">Pre-Order</SelectItem>
-                                <SelectItem value="out_of_stock">Out of Stock</SelectItem>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormDescription>
-                            Product availability status
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm">Inventory</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-3 gap-3">
+                        <FormField
+                          control={form.control}
+                          name="stockQuantity"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Qty</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  {...field}
+                                  onChange={(e) => field.onChange(Number(e.target.value))}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                    <FormField
-                      control={form.control}
-                      name="lowStockThreshold"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Low Stock Alert</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="number"
-                              min="0"
-                              {...field}
-                              onChange={(e) => field.onChange(Number(e.target.value))}
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Alert when stock falls below
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
+                        <FormField
+                          control={form.control}
+                          name="stockStatus"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Status</FormLabel>
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="in_stock">In Stock</SelectItem>
+                                  <SelectItem value="limited_stock">Limited</SelectItem>
+                                  <SelectItem value="pre_order">Pre-Order</SelectItem>
+                                  <SelectItem value="out_of_stock">Out of Stock</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
 
-                {data && (
-                  <FormField
-                    control={form.control}
-                    name="categorySlug"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Category</FormLabel>
-                        <FormControl>
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {data.map((cat: CategoryType) => (
-                                <SelectItem key={cat.id} value={cat.slug}>
-                                  {cat.name}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormDescription>
-                          Select category: Laptops, Smartphones, Audio, Gaming, Wearables, etc.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
-                <FormField
-                  control={form.control}
-                  name="sizes"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Sizes / Capacities / Variants</FormLabel>
-                      <FormControl>
-                        <div className="space-y-4">
-                          {/* Storage Capacities */}
-                          <div>
-                            <p className="text-sm font-medium mb-2 text-muted-foreground">Storage Capacity</p>
-                            <div className="grid grid-cols-3 gap-3">
-                              {sizes.filter(s => s.includes('GB') || s.includes('TB')).map((size) => (
-                                <div className="flex items-center gap-2" key={size}>
-                                  <Checkbox
-                                    id={`size-${size}`}
-                                    checked={field.value?.includes(size)}
-                                    onCheckedChange={(checked) => {
-                                      const currentValues = field.value || [];
-                                      if (checked) {
-                                        field.onChange([...currentValues, size]);
-                                      } else {
-                                        field.onChange(
-                                          currentValues.filter((v) => v !== size)
-                                        );
-                                      }
-                                    }}
-                                  />
-                                  <label htmlFor={`size-${size}`} className="text-xs font-medium cursor-pointer">
-                                    {size}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          
-                          {/* Screen Sizes */}
-                          <div>
-                            <p className="text-sm font-medium mb-2 text-muted-foreground">Screen Size / Watch Size</p>
-                            <div className="grid grid-cols-3 gap-3">
-                              {sizes.filter(s => s.includes('inch') || s.includes('mm')).map((size) => (
-                                <div className="flex items-center gap-2" key={size}>
-                                  <Checkbox
-                                    id={`size-${size}`}
-                                    checked={field.value?.includes(size)}
-                                    onCheckedChange={(checked) => {
-                                      const currentValues = field.value || [];
-                                      if (checked) {
-                                        field.onChange([...currentValues, size]);
-                                      } else {
-                                        field.onChange(
-                                          currentValues.filter((v) => v !== size)
-                                        );
-                                      }
-                                    }}
-                                  />
-                                  <label htmlFor={`size-${size}`} className="text-xs font-medium cursor-pointer">
-                                    {size}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          
-                          {/* Other Sizes */}
-                          <div>
-                            <p className="text-sm font-medium mb-2 text-muted-foreground">Other Variants</p>
-                            <div className="grid grid-cols-3 gap-3">
-                              {sizes.filter(s => !s.includes('GB') && !s.includes('TB') && !s.includes('inch') && !s.includes('mm')).map((size) => (
-                                <div className="flex items-center gap-2" key={size}>
-                                  <Checkbox
-                                    id={`size-${size}`}
-                                    checked={field.value?.includes(size)}
-                                    onCheckedChange={(checked) => {
-                                      const currentValues = field.value || [];
-                                      if (checked) {
-                                        field.onChange([...currentValues, size]);
-                                      } else {
-                                        field.onChange(
-                                          currentValues.filter((v) => v !== size)
-                                        );
-                                      }
-                                    }}
-                                  />
-                                  <label htmlFor={`size-${size}`} className="text-xs font-medium cursor-pointer">
-                                    {size}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </FormControl>
-                      <FormDescription>
-                        Select available storage capacities, screen sizes, or other product variants.
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="colors"
-                  render={({ field }) => {
-                    // Color mapping for better visual representation
-                    const getColorStyle = (color: string) => {
-                      const colorMap: Record<string, string> = {
-                        'Natural Titanium': '#8B8680',
-                        'Blue Titanium': '#5B7C99',
-                        'White Titanium': '#E8E4E0',
-                        'Black Titanium': '#3A3A3C',
-                        'Titanium Gray': '#71706E',
-                        'Titanium Black': '#2D2D2F',
-                        'Titanium Violet': '#8B6C9C',
-                        'Titanium Yellow': '#F5D547',
-                        'Space Black': '#1C1C1E',
-                        'Silver': '#C0C0C0',
-                        'Platinum Silver': '#E5E4E2',
-                        'Graphite': '#41424C',
-                        'Off Black': '#2C2C2E',
-                        'Storm Grey': '#6C7278',
-                        'White Smoke': '#F5F5F5',
-                        'Moonstone Blue': '#73A9C2',
-                        'Pale Gray': '#D3D3D3',
-                        'Off-White': '#FAF9F6',
-                        'Dark Grey': '#4A4A4A',
-                        'Natural': '#E8DCC8',
-                        'Platinum': '#E5E4E2',
-                        'Sapphire': '#0F52BA',
-                        'Dune': '#C5B59A',
-                        'Black/Cyan': 'linear-gradient(90deg, #000000 50%, #00FFFF 50%)',
-                        'White/Black': 'linear-gradient(90deg, #FFFFFF 50%, #000000 50%)',
-                        'blue': '#3B82F6',
-                        'green': '#22C55E',
-                        'red': '#EF4444',
-                        'yellow': '#EAB308',
-                        'purple': '#A855F7',
-                        'orange': '#F97316',
-                        'pink': '#EC4899',
-                        'brown': '#92400E',
-                        'gray': '#6B7280',
-                        'black': '#000000',
-                        'white': '#FFFFFF',
-                      };
-                      return colorMap[color] || color.toLowerCase();
-                    };
+                        <FormField
+                          control={form.control}
+                          name="lowStockThreshold"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Low Alert</FormLabel>
+                              <FormControl>
+                                <Input
+                                  type="number"
+                                  min="0"
+                                  {...field}
+                                  onChange={(e) => field.onChange(Number(e.target.value))}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </CardContent>
+                  </Card>
 
-                    return (
-                      <FormItem>
-                        <FormLabel>Colors / Finishes</FormLabel>
-                        <FormControl>
-                          <div className="space-y-4">
-                            {/* Premium/Titanium Colors */}
-                            <div>
-                              <p className="text-sm font-medium mb-2 text-muted-foreground">Premium Finishes</p>
-                              <div className="grid grid-cols-2 gap-3">
-                                {colors.filter(c => c.includes('Titanium') || c === 'Platinum' || c === 'Sapphire').map((color) => {
-                                  const colorStyle = getColorStyle(color);
-                                  const isGradient = colorStyle.includes('gradient');
+                  <Button type="button" className="w-full" onClick={() => setActiveTab("variants")}>
+                    Next: Select Variants →
+                  </Button>
+                </TabsContent>
+
+                {/* VARIANTS TAB */}
+                <TabsContent value="variants" className="space-y-4 mt-4">
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm">Colors *</CardTitle>
+                      <CardDescription>Select available colors</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <FormField
+                        control={form.control}
+                        name="colors"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="grid grid-cols-2 gap-2 max-h-[200px] overflow-y-auto pr-2">
+                                {colors.map((color) => {
+                                  const isSelected = field.value?.includes(color);
+                                  const hex = colorHexMap[color] || "#888";
                                   return (
-                                    <div className="flex items-center gap-2" key={color}>
-                                      <Checkbox
-                                        id={`color-${color}`}
-                                        checked={field.value?.includes(color)}
-                                        onCheckedChange={(checked) => {
-                                          const currentValues = field.value || [];
-                                          if (checked) {
-                                            field.onChange([...currentValues, color]);
-                                          } else {
-                                            field.onChange(
-                                              currentValues.filter((v) => v !== color)
-                                            );
-                                          }
-                                        }}
-                                      />
-                                      <label htmlFor={`color-${color}`} className="text-xs flex items-center gap-2 cursor-pointer">
-                                        <div
-                                          className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
-                                          style={isGradient ? { background: colorStyle } : { backgroundColor: colorStyle }}
-                                        />
-                                        <span className="font-medium">{color}</span>
-                                      </label>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-
-                            {/* Standard Colors */}
-                            <div>
-                              <p className="text-sm font-medium mb-2 text-muted-foreground">Standard Colors</p>
-                              <div className="grid grid-cols-2 gap-3">
-                                {colors.filter(c => !c.includes('Titanium') && c !== 'Platinum' && c !== 'Sapphire' && !c.includes('/')).map((color) => {
-                                  const colorStyle = getColorStyle(color);
-                                  return (
-                                    <div className="flex items-center gap-2" key={color}>
-                                      <Checkbox
-                                        id={`color-${color}`}
-                                        checked={field.value?.includes(color)}
-                                        onCheckedChange={(checked) => {
-                                          const currentValues = field.value || [];
-                                          if (checked) {
-                                            field.onChange([...currentValues, color]);
-                                          } else {
-                                            field.onChange(
-                                              currentValues.filter((v) => v !== color)
-                                            );
-                                          }
-                                        }}
-                                      />
-                                      <label htmlFor={`color-${color}`} className="text-xs flex items-center gap-2 cursor-pointer">
-                                        <div
-                                          className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
-                                          style={{ backgroundColor: colorStyle }}
-                                        />
-                                        <span className="capitalize">{color}</span>
-                                      </label>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-
-                            {/* Two-tone Colors */}
-                            {colors.some(c => c.includes('/')) && (
-                              <div>
-                                <p className="text-sm font-medium mb-2 text-muted-foreground">Two-Tone Finishes</p>
-                                <div className="grid grid-cols-2 gap-3">
-                                  {colors.filter(c => c.includes('/')).map((color) => {
-                                    const colorStyle = getColorStyle(color);
-                                    return (
-                                      <div className="flex items-center gap-2" key={color}>
-                                        <Checkbox
-                                          id={`color-${color}`}
-                                          checked={field.value?.includes(color)}
-                                          onCheckedChange={(checked) => {
-                                            const currentValues = field.value || [];
-                                            if (checked) {
-                                              field.onChange([...currentValues, color]);
-                                            } else {
-                                              field.onChange(
-                                                currentValues.filter((v) => v !== color)
-                                              );
-                                            }
-                                          }}
-                                        />
-                                        <label htmlFor={`color-${color}`} className="text-xs flex items-center gap-2 cursor-pointer">
-                                          <div
-                                            className="w-4 h-4 rounded-full border border-gray-300 flex-shrink-0"
-                                            style={{ background: colorStyle }}
-                                          />
-                                          <span className="font-medium">{color}</span>
-                                        </label>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          Select available colors and finishes for this tech product.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-                <FormField
-                  control={form.control}
-                  name="images"
-                  render={({ field }) => {
-                    const getColorStyle = (color: string) => {
-                      const colorMap: Record<string, string> = {
-                        'Natural Titanium': '#8B8680',
-                        'Blue Titanium': '#5B7C99',
-                        'White Titanium': '#E8E4E0',
-                        'Black Titanium': '#3A3A3C',
-                        'Titanium Gray': '#71706E',
-                        'Space Black': '#1C1C1E',
-                        'Silver': '#C0C0C0',
-                        'Graphite': '#41424C',
-                        'blue': '#3B82F6',
-                        'green': '#22C55E',
-                        'red': '#EF4444',
-                        'black': '#000000',
-                        'white': '#FFFFFF',
-                      };
-                      return colorMap[color] || color.toLowerCase();
-                    };
-
-                    return (
-                      <FormItem>
-                        <FormLabel>Product Images</FormLabel>
-                        <FormControl>
-                          <div className="space-y-3">
-                            {form.watch("colors")?.length === 0 && (
-                              <p className="text-sm text-muted-foreground italic p-4 bg-muted/50 rounded-md">
-                                Select colors first to upload images for each variant.
-                              </p>
-                            )}
-                            {form.watch("colors")?.map((color) => {
-                              const colorStyle = getColorStyle(color);
-                              return (
-                                <div
-                                  className="p-3 border rounded-lg hover:border-primary/50 transition-colors"
-                                  key={color}
-                                >
-                                  <div className="flex items-center gap-3 mb-2">
                                     <div
-                                      className="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0"
-                                      style={{ backgroundColor: colorStyle }}
-                                    />
-                                    <span className="text-sm font-semibold min-w-[120px]">
-                                      {color}
-                                    </span>
-                                    {field.value?.[color] && (
-                                      <span className="text-xs text-green-600 font-medium flex items-center gap-1">
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                        </svg>
-                                        Uploaded
-                                      </span>
-                                    )}
-                                  </div>
+                                      key={color}
+                                      onClick={() => {
+                                        const current = field.value || [];
+                                        if (isSelected) {
+                                          field.onChange(current.filter((c) => c !== color));
+                                          // Also remove images for this color
+                                          const imgs = form.getValues("images") || {};
+                                          delete imgs[color];
+                                          form.setValue("images", imgs);
+                                        } else {
+                                          field.onChange([...current, color]);
+                                        }
+                                      }}
+                                      className={`flex items-center gap-2 p-2 rounded-md border cursor-pointer transition-all text-sm ${
+                                        isSelected 
+                                          ? "border-primary bg-primary/10" 
+                                          : "border-border hover:border-primary/50"
+                                      }`}
+                                    >
+                                      <div
+                                        className="w-4 h-4 rounded-full border shrink-0"
+                                        style={{ backgroundColor: hex }}
+                                      />
+                                      <span className="truncate flex-1">{color}</span>
+                                      {isSelected && <Check className="h-3 w-3 text-primary shrink-0" />}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {selectedColors.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-3 pt-3 border-t">
+                          {selectedColors.map((c) => (
+                            <Badge key={c} variant="secondary" className="text-xs">
+                              {c}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm">Sizes / Variants *</CardTitle>
+                      <CardDescription>Storage, dimensions, etc.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <FormField
+                        control={form.control}
+                        name="sizes"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <div className="grid grid-cols-4 gap-2 max-h-[150px] overflow-y-auto pr-2">
+                                {sizes.map((size) => {
+                                  const isSelected = field.value?.includes(size);
+                                  return (
+                                    <div
+                                      key={size}
+                                      onClick={() => {
+                                        const current = field.value || [];
+                                        if (isSelected) {
+                                          field.onChange(current.filter((s) => s !== size));
+                                        } else {
+                                          field.onChange([...current, size]);
+                                        }
+                                      }}
+                                      className={`p-2 text-center rounded-md border cursor-pointer transition-all text-xs ${
+                                        isSelected 
+                                          ? "border-primary bg-primary/10 font-medium" 
+                                          : "border-border hover:border-primary/50"
+                                      }`}
+                                    >
+                                      {size}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      {selectedSizes.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-3 pt-3 border-t">
+                          {selectedSizes.map((s) => (
+                            <Badge key={s} variant="outline" className="text-xs">
+                              {s}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <div className="flex gap-2">
+                    <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("basic")}>
+                      ← Back
+                    </Button>
+                    <Button type="button" className="flex-1" onClick={() => setActiveTab("images")}>
+                      Next: Images →
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                {/* IMAGES TAB */}
+                <TabsContent value="images" className="space-y-4 mt-4">
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm">Product Images *</CardTitle>
+                      <CardDescription>
+                        Upload at least one image per color
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      {selectedColors.length === 0 ? (
+                        <div className="text-center py-8 text-muted-foreground">
+                          <ImageIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">Select colors first</p>
+                          <Button 
+                            type="button" 
+                            variant="link" 
+                            size="sm"
+                            onClick={() => setActiveTab("variants")}
+                          >
+                            Go to Variants tab
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {selectedColors.map((color) => {
+                            const hex = colorHexMap[color] || "#888";
+                            const images = currentImages[color];
+                            const imageArray = images 
+                              ? (Array.isArray(images) ? images : [images])
+                              : [];
+
+                            return (
+                              <div key={color} className="p-3 border rounded-lg">
+                                <div className="flex items-center gap-2 mb-3">
+                                  <div
+                                    className="w-4 h-4 rounded-full border"
+                                    style={{ backgroundColor: hex }}
+                                  />
+                                  <span className="text-sm font-medium flex-1">{color}</span>
+                                  {imageArray.length > 0 && (
+                                    <Badge variant="secondary" className="text-xs">
+                                      {imageArray.length} image{imageArray.length > 1 ? 's' : ''}
+                                    </Badge>
+                                  )}
+                                </div>
+
+                                <div className="flex items-center gap-2">
                                   <Input
                                     type="file"
                                     accept="image/*"
-                                    className="text-xs"
-                                    onChange={async (e) => {
+                                    className="text-xs flex-1"
+                                    disabled={uploadingColor === color}
+                                    onChange={(e) => {
                                       const file = e.target.files?.[0];
-                                      if (file) {
-                                        try {
-                                          toast.info(`Uploading ${color} image...`);
-                                          const formData = new FormData();
-                                          formData.append("image", file);
-
-                                          const token = await getToken();
-                                          const res = await fetch(
-                                            `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/upload/upload`,
-                                            {
-                                              method: "POST",
-                                              headers: {
-                                                Authorization: `Bearer ${token}`,
-                                              },
-                                              body: formData,
-                                            }
-                                          );
-
-                                          if (!res.ok) {
-                                            throw new Error('Upload failed');
-                                          }
-
-                                          const data = await res.json();
-
-                                          if (data.url) {
-                                            const currentImages =
-                                              form.getValues("images") || {};
-                                            
-                                            // Store as array to match database structure
-                                            const existingImages = currentImages[color];
-                                            const imageArray = Array.isArray(existingImages) 
-                                              ? [...existingImages, data.url]
-                                              : typeof existingImages === 'string'
-                                              ? [existingImages, data.url]
-                                              : [data.url];
-                                            
-                                            form.setValue("images", {
-                                              ...currentImages,
-                                              [color]: imageArray,
-                                            });
-                                            toast.success(`${color} image uploaded!`);
-                                          }
-                                        } catch (error) {
-                                          console.log(error);
-                                          toast.error(`Failed to upload ${color} image!`);
-                                        }
-                                      }
+                                      if (file) handleImageUpload(color, file);
+                                      e.target.value = '';
                                     }}
                                   />
-                                  {field.value?.[color] && (
-                                    <div className="mt-2 flex flex-wrap gap-2">
-                                      {(Array.isArray(field.value[color]) 
-                                        ? field.value[color] 
-                                        : [field.value[color]]
-                                      ).map((url: string, idx: number) => (
-                                        <div key={idx} className="relative">
-                                          <img 
-                                            src={url} 
-                                            alt={`${color} variant ${idx + 1}`}
-                                            className="w-20 h-20 object-cover rounded border"
-                                          />
-                                          <button
-                                            type="button"
-                                            onClick={() => {
-                                              const currentImages = form.getValues("images") || {};
-                                              const colorImages = Array.isArray(currentImages[color])
-                                                ? currentImages[color] as string[]
-                                                : [currentImages[color] as string];
-                                              const newImages = colorImages.filter((_, i) => i !== idx);
-                                              form.setValue("images", {
-                                                ...currentImages,
-                                                [color]: newImages.length > 0 ? newImages : undefined,
-                                              } as any);
-                                              toast.success(`Image removed`);
-                                            }}
-                                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
-                                          >
-                                            ×
-                                          </button>
-                                        </div>
-                                      ))}
-                                    </div>
+                                  {uploadingColor === color && (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
                                   )}
                                 </div>
-                              );
-                            })}
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          Upload high-quality product images for each color variant (recommended: 1000x1000px).
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
-                />
-                
-                {/* Extended Data Section */}
-                <div className="border-t pt-6 mt-6">
-                  <h3 className="text-lg font-semibold mb-4">Extended Product Data (Optional)</h3>
-                  
-                  {/* Tech Highlights */}
-                  <FormField
-                    control={form.control}
-                    name="techHighlights"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Tech Highlights</FormLabel>
-                        <FormControl>
+
+                                {imageArray.length > 0 && (
+                                  <div className="flex flex-wrap gap-2 mt-3">
+                                    {imageArray.map((url: string, idx: number) => (
+                                      <div key={idx} className="relative group">
+                                        <img
+                                          src={url}
+                                          alt={`${color} ${idx + 1}`}
+                                          className="w-14 h-14 object-cover rounded border"
+                                        />
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            const current = form.getValues("images") || {};
+                                            const filtered = imageArray.filter((_, i) => i !== idx);
+                                            form.setValue("images", {
+                                              ...current,
+                                              [color]: filtered.length > 0 ? filtered : undefined,
+                                            } as any);
+                                          }}
+                                          className="absolute -top-1 -right-1 bg-destructive text-white rounded-full w-4 h-4 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                          <X className="h-3 w-3" />
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  <div className="flex gap-2">
+                    <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("variants")}>
+                      ← Back
+                    </Button>
+                    <Button type="button" className="flex-1" onClick={() => setActiveTab("extras")}>
+                      Next: Extras →
+                    </Button>
+                  </div>
+                </TabsContent>
+
+                {/* EXTRAS TAB */}
+                <TabsContent value="extras" className="space-y-4 mt-4">
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm">Tech Highlights</CardTitle>
+                      <CardDescription>Key features to showcase</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <FormField
+                        control={form.control}
+                        name="techHighlights"
+                        render={({ field }) => (
                           <div className="space-y-2">
-                            {(field.value || []).map((highlight, index) => (
-                              <div key={index} className="flex gap-2">
+                            {(field.value || []).map((item, idx) => (
+                              <div key={idx} className="flex gap-2">
                                 <Input
-                                  placeholder="Label (e.g., Processor)"
-                                  value={highlight.label}
+                                  placeholder="Label"
+                                  value={item.label}
                                   onChange={(e) => {
-                                    const newHighlights = [...(field.value || [])];
-                                    if (newHighlights[index]) {
-                                      newHighlights[index].label = e.target.value;
-                                      field.onChange(newHighlights);
-                                    }
+                                    const arr = [...(field.value || [])];
+                                    arr[idx] = { label: e.target.value, icon: arr[idx]?.icon || "" };
+                                    field.onChange(arr);
                                   }}
+                                  className="flex-1"
                                 />
                                 <Input
-                                  placeholder="Icon (e.g., Cpu)"
-                                  value={highlight.icon}
+                                  placeholder="Icon"
+                                  value={item.icon}
                                   onChange={(e) => {
-                                    const newHighlights = [...(field.value || [])];
-                                    if (newHighlights[index]) {
-                                      newHighlights[index].icon = e.target.value;
-                                      field.onChange(newHighlights);
-                                    }
+                                    const arr = [...(field.value || [])];
+                                    arr[idx] = { label: arr[idx]?.label || "", icon: e.target.value };
+                                    field.onChange(arr);
                                   }}
+                                  className="w-20"
                                 />
                                 <Button
                                   type="button"
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => {
-                                    const newHighlights = (field.value || []).filter((_, i) => i !== index);
-                                    field.onChange(newHighlights);
-                                  }}
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => field.onChange((field.value || []).filter((_, i) => i !== idx))}
                                 >
-                                  Remove
+                                  <X className="h-4 w-4" />
                                 </Button>
                               </div>
                             ))}
@@ -801,52 +760,45 @@ const AddProduct = () => {
                               type="button"
                               variant="outline"
                               size="sm"
-                              onClick={() => {
-                                field.onChange([...(field.value || []), { label: "", icon: "" }]);
-                              }}
+                              onClick={() => field.onChange([...(field.value || []), { label: "", icon: "" }])}
                             >
-                              Add Tech Highlight
+                              <Plus className="h-3 w-3 mr-1" /> Add
                             </Button>
                           </div>
-                        </FormControl>
-                        <FormDescription>
-                          Add key tech specs badges (e.g., "Intel Core i7", "16GB RAM").
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                        )}
+                      />
+                    </CardContent>
+                  </Card>
 
-                  {/* Box Contents */}
-                  <FormField
-                    control={form.control}
-                    name="boxContents"
-                    render={({ field }) => (
-                      <FormItem className="mt-4">
-                        <FormLabel>What's in the Box</FormLabel>
-                        <FormControl>
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm">Box Contents</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <FormField
+                        control={form.control}
+                        name="boxContents"
+                        render={({ field }) => (
                           <div className="space-y-2">
-                            {(field.value || []).map((item, index) => (
-                              <div key={index} className="flex gap-2">
+                            {(field.value || []).map((item, idx) => (
+                              <div key={idx} className="flex gap-2">
                                 <Input
-                                  placeholder="Item (e.g., Laptop, Charger, USB Cable)"
+                                  placeholder="Item name"
                                   value={item}
                                   onChange={(e) => {
-                                    const newItems = [...(field.value || [])];
-                                    newItems[index] = e.target.value;
-                                    field.onChange(newItems);
+                                    const arr = [...(field.value || [])];
+                                    arr[idx] = e.target.value;
+                                    field.onChange(arr);
                                   }}
+                                  className="flex-1"
                                 />
                                 <Button
                                   type="button"
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => {
-                                    const newItems = (field.value || []).filter((_, i) => i !== index);
-                                    field.onChange(newItems);
-                                  }}
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => field.onChange((field.value || []).filter((_, i) => i !== idx))}
                                 >
-                                  Remove
+                                  <X className="h-4 w-4" />
                                 </Button>
                               </div>
                             ))}
@@ -854,65 +806,55 @@ const AddProduct = () => {
                               type="button"
                               variant="outline"
                               size="sm"
-                              onClick={() => {
-                                field.onChange([...(field.value || []), ""]);
-                              }}
+                              onClick={() => field.onChange([...(field.value || []), ""])}
                             >
-                              Add Box Item
+                              <Plus className="h-3 w-3 mr-1" /> Add
                             </Button>
                           </div>
-                        </FormControl>
-                        <FormDescription>
-                          List all items included in the package.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                        )}
+                      />
+                    </CardContent>
+                  </Card>
 
-                  {/* Product Features */}
-                  <FormField
-                    control={form.control}
-                    name="productFeatures"
-                    render={({ field }) => (
-                      <FormItem className="mt-4">
-                        <FormLabel>Product Features</FormLabel>
-                        <FormControl>
+                  <Card>
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-sm">Product Features</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <FormField
+                        control={form.control}
+                        name="productFeatures"
+                        render={({ field }) => (
                           <div className="space-y-2">
-                            {(field.value || []).map((feature, index) => (
-                              <div key={index} className="space-y-2 p-3 border rounded">
+                            {(field.value || []).map((item, idx) => (
+                              <div key={idx} className="flex gap-2">
                                 <Input
-                                  placeholder="Title (e.g., Ultra-Fast Performance)"
-                                  value={feature.title}
+                                  placeholder="Title"
+                                  value={item.title}
                                   onChange={(e) => {
-                                    const newFeatures = [...(field.value || [])];
-                                    if (newFeatures[index]) {
-                                      newFeatures[index].title = e.target.value;
-                                      field.onChange(newFeatures);
-                                    }
+                                    const arr = [...(field.value || [])];
+                                    arr[idx] = { title: e.target.value, description: arr[idx]?.description || "" };
+                                    field.onChange(arr);
                                   }}
+                                  className="w-1/3"
                                 />
-                                <Textarea
+                                <Input
                                   placeholder="Description"
-                                  value={feature.description}
+                                  value={item.description}
                                   onChange={(e) => {
-                                    const newFeatures = [...(field.value || [])];
-                                    if (newFeatures[index]) {
-                                      newFeatures[index].description = e.target.value;
-                                      field.onChange(newFeatures);
-                                    }
+                                    const arr = [...(field.value || [])];
+                                    arr[idx] = { title: arr[idx]?.title || "", description: e.target.value };
+                                    field.onChange(arr);
                                   }}
+                                  className="flex-1"
                                 />
                                 <Button
                                   type="button"
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => {
-                                    const newFeatures = (field.value || []).filter((_, i) => i !== index);
-                                    field.onChange(newFeatures);
-                                  }}
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => field.onChange((field.value || []).filter((_, i) => i !== idx))}
                                 >
-                                  Remove Feature
+                                  <X className="h-4 w-4" />
                                 </Button>
                               </div>
                             ))}
@@ -920,216 +862,104 @@ const AddProduct = () => {
                               type="button"
                               variant="outline"
                               size="sm"
-                              onClick={() => {
-                                field.onChange([...(field.value || []), { title: "", description: "" }]);
-                              }}
+                              onClick={() => field.onChange([...(field.value || []), { title: "", description: "" }])}
                             >
-                              Add Product Feature
+                              <Plus className="h-3 w-3 mr-1" /> Add
                             </Button>
                           </div>
-                        </FormControl>
-                        <FormDescription>
-                          Describe key product features and benefits.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                        )}
+                      />
+                    </CardContent>
+                  </Card>
 
-                  {/* Technical Specifications */}
-                  <FormField
-                    control={form.control}
-                    name="technicalSpecs"
-                    render={({ field }) => (
-                      <FormItem className="mt-4">
-                        <FormLabel>Technical Specifications</FormLabel>
-                        <FormControl>
-                          <div className="space-y-4">
-                            {Object.entries(field.value || {}).map(([category, specs]) => (
-                              <div key={category} className="p-3 border rounded">
-                                <div className="flex justify-between items-center mb-2">
-                                  <h4 className="font-medium">{category}</h4>
-                                  <Button
-                                    type="button"
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={() => {
-                                      const newSpecs = { ...(field.value || {}) };
-                                      delete newSpecs[category];
-                                      field.onChange(newSpecs);
-                                    }}
-                                  >
-                                    Remove Category
-                                  </Button>
-                                </div>
-                                {specs.map((spec, index) => (
-                                  <div key={index} className="flex gap-2 mb-2">
-                                    <Input
-                                      placeholder="Label"
-                                      value={spec.label}
-                                      onChange={(e) => {
-                                        const newSpecs = { ...(field.value || {}) };
-                                        if (newSpecs[category] && newSpecs[category][index]) {
-                                          newSpecs[category][index].label = e.target.value;
-                                          field.onChange(newSpecs);
-                                        }
-                                      }}
-                                    />
-                                    <Input
-                                      placeholder="Value"
-                                      value={spec.value}
-                                      onChange={(e) => {
-                                        const newSpecs = { ...(field.value || {}) };
-                                        if (newSpecs[category] && newSpecs[category][index]) {
-                                          newSpecs[category][index].value = e.target.value;
-                                          field.onChange(newSpecs);
-                                        }
-                                      }}
-                                    />
-                                    <Button
-                                      type="button"
-                                      variant="outline"
-                                      size="sm"
-                                      onClick={() => {
-                                        const newSpecs = { ...(field.value || {}) };
-                                        if (newSpecs[category]) {
-                                          newSpecs[category] = newSpecs[category].filter((_, i) => i !== index);
-                                          field.onChange(newSpecs);
-                                        }
-                                      }}
-                                    >
-                                      Remove
-                                    </Button>
-                                  </div>
-                                ))}
-                                <Button
-                                  type="button"
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    const newSpecs = { ...(field.value || {}) };
-                                    if (newSpecs[category]) {
-                                      newSpecs[category] = [...newSpecs[category], { label: "", value: "" }];
-                                    } else {
-                                      newSpecs[category] = [{ label: "", value: "" }];
-                                    }
-                                    field.onChange(newSpecs);
-                                  }}
-                                >
-                                  Add Spec to {category}
-                                </Button>
-                              </div>
-                            ))}
-                            <div className="flex gap-2">
-                              <Input
-                                id="newCategory"
-                                placeholder="New category (e.g., Display, Performance)"
-                              />
-                              <Button
-                                type="button"
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  const input = document.getElementById("newCategory") as HTMLInputElement;
-                                  const category = input.value.trim();
-                                  if (category && !(field.value || {})[category]) {
-                                    field.onChange({ ...(field.value || {}), [category]: [] });
-                                    input.value = "";
-                                  }
-                                }}
-                              >
-                                Add Category
-                              </Button>
-                            </div>
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          Group technical specs by categories (Display, Performance, etc.).
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  <div className="flex gap-2">
+                    <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("images")}>
+                      ← Back
+                    </Button>
+                    <Button type="submit" className="flex-1" disabled={mutation.isPending}>
+                      {mutation.isPending ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          {isEditMode ? "Updating..." : "Creating..."}
+                        </>
+                      ) : (
+                        isEditMode ? "Update Product" : "Create Product"
+                      )}
+                    </Button>
+                  </div>
+                </TabsContent>
 
-                  {/* Certifications */}
-                  <FormField
-                    control={form.control}
-                    name="certifications"
-                    render={({ field }) => (
-                      <FormItem className="mt-4">
-                        <FormLabel>Certifications</FormLabel>
-                        <FormControl>
-                          <div className="space-y-2">
-                            {(field.value || []).map((cert, index) => (
-                              <div key={index} className="flex gap-2">
-                                <Input
-                                  placeholder="Label (e.g., CE Certified)"
-                                  value={cert.label}
-                                  onChange={(e) => {
-                                    const newCerts = [...(field.value || [])];
-                                    if (newCerts[index]) {
-                                      newCerts[index].label = e.target.value;
-                                      field.onChange(newCerts);
-                                    }
-                                  }}
-                                />
-                                <Input
-                                  placeholder="Icon (e.g., ShieldCheck)"
-                                  value={cert.icon}
-                                  onChange={(e) => {
-                                    const newCerts = [...(field.value || [])];
-                                    if (newCerts[index]) {
-                                      newCerts[index].icon = e.target.value;
-                                      field.onChange(newCerts);
-                                    }
-                                  }}
-                                />
-                                <Button
-                                  type="button"
-                                  variant="destructive"
-                                  size="sm"
-                                  onClick={() => {
-                                    const newCerts = (field.value || []).filter((_, i) => i !== index);
-                                    field.onChange(newCerts);
-                                  }}
-                                >
-                                  Remove
-                                </Button>
-                              </div>
-                            ))}
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => {
-                                field.onChange([...(field.value || []), { label: "", icon: "" }]);
-                              }}
-                            >
-                              Add Certification
-                            </Button>
-                          </div>
-                        </FormControl>
-                        <FormDescription>
-                          Add certifications and compliance badges.
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                {/* IMPORT TAB */}
+                <TabsContent value="import" className="space-y-4 mt-4">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm flex items-center gap-2">
+                        <FileJson className="h-4 w-4" />
+                        Quick Import
+                      </CardTitle>
+                      <CardDescription>
+                        Paste JSON to auto-fill the form
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <Textarea
+                        placeholder={`{
+  "name": "Product Name",
+  "shortDescription": "Brief tagline",
+  "description": "Full description",
+  "price": 1000000,
+  "categorySlug": "smartphones",
+  "colors": ["black", "white"],
+  "sizes": ["128GB", "256GB"],
+  "stockQuantity": 50
+}`}
+                        className="min-h-[180px] font-mono text-xs"
+                        value={jsonInput}
+                        onChange={(e) => setJsonInput(e.target.value)}
+                      />
+                      <Button 
+                        type="button" 
+                        onClick={handleJsonImport}
+                        disabled={!jsonInput.trim()}
+                        className="w-full"
+                      >
+                        <Upload className="h-4 w-4 mr-2" />
+                        Import & Review
+                      </Button>
+                    </CardContent>
+                  </Card>
 
-                <Button
-                  type="submit"
-                  disabled={mutation.isPending}
-                  className="disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {mutation.isPending ? "Submitting..." : "Submit"}
-                </Button>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-sm">Template</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <pre className="text-xs bg-muted p-3 rounded-md overflow-x-auto whitespace-pre-wrap">
+{`{
+  "name": "iPhone 15 Pro",
+  "shortDescription": "A17 Pro chip",
+  "description": "Full description here",
+  "price": 2500000,
+  "categorySlug": "smartphones",
+  "colors": ["Natural Titanium", "Blue Titanium"],
+  "sizes": ["128GB", "256GB", "512GB"],
+  "stockQuantity": 100,
+  "stockStatus": "in_stock",
+  "techHighlights": [
+    { "label": "A17 Pro", "icon": "Cpu" }
+  ],
+  "boxContents": ["iPhone", "USB-C Cable"]
+}`}
+                      </pre>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
               </form>
             </Form>
-          </SheetDescription>
-        </SheetHeader>
-      </ScrollArea>
+          </ScrollArea>
+        </Tabs>
+      </div>
     </SheetContent>
   );
 };

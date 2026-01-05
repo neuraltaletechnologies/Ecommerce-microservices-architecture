@@ -12,7 +12,7 @@ Modern e-commerce platform built with TypeScript microservices in a Turborepo mo
 - **email-service** (port 8004) - Email notifications via HTTP endpoints
 
 ### Frontend Applications
-- **client** (port 3002) - Customer-facing Next.js 15 app with Stripe checkout
+- **client** (port 3002) - User-facing Next.js 15 app with Stripe checkout
 - **admin** (port 3003) - Admin dashboard for order/product management
 
 ### Tech Stack

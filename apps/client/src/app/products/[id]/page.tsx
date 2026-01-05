@@ -23,7 +23,7 @@ import {
 import ImageGallery from "@/components/ImageGallery";
 import ExpandableSection from "@/components/ExpandableSection";
 import SimilarProducts from "@/components/SimilarProducts";
-import CustomerReviews from "@/components/CustomerReviews";
+import UserReviews from "@/components/UserReviews";
 import { auth } from "@clerk/nextjs/server";
 
 
@@ -520,7 +520,7 @@ const ProductPage = async ({
                     </li>
                     <li className="flex items-start gap-2 text-gray-700">
                       <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
-                      <span>24/7 customer support via email and chat</span>
+                      <span>24/7 user support via email and chat</span>
                     </li>
                     <li className="flex items-start gap-2 text-gray-700">
                       <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
@@ -783,9 +783,9 @@ const ProductPage = async ({
           </div>
         </div>
 
-        {/* Customer Reviews Section */}
+        {/* User Reviews Section */}
         <div id="reviews" className="mt-16 border-t border-gray-200 pt-12">
-          <CustomerReviews productId={product.id} />
+          <UserReviews productId={product.id} />
         </div>
 
         {/* Q&A Section */}

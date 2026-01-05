@@ -28,7 +28,7 @@ const WhyChooseSection = () => {
             Why Choose Neurashop?
           </h2>
           <p className="text-lg text-[#001E3C]/70 max-w-2xl mx-auto">
-            Experience the Neuraltale difference with our commitment to quality, service, and customer satisfaction.
+            Experience the Neuraltale difference with our commitment to quality, service, and user satisfaction.
           </p>
         </div>
 
@@ -47,7 +47,7 @@ const WhyChooseSection = () => {
             <div className="flex items-center gap-6 text-white">
               <div className="text-center">
                 <p className="text-2xl font-black text-[#FDB913]">50K+</p>
-                <p className="text-xs text-white/70">Happy Customers</p>
+                <p className="text-xs text-white/70">Happy Users</p>
               </div>
               <div className="w-px h-12 bg-white/20" />
               <div className="text-center">

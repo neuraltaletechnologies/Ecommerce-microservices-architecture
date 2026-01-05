@@ -51,6 +51,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ROLE_CONFIGS, UserRole } from "@repo/types";
 import Link from "next/link";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import AddUserSheet from "@/components/AddUserSheet";
 
 interface EnhancedDataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -324,12 +326,15 @@ export function EnhancedDataTable<TData, TValue>({
           </DropdownMenu>
         </div>
 
-        <Button asChild>
-          <Link href="/users/new">
-            <UserPlus className="mr-2 h-4 w-4" />
-            Add User
-          </Link>
-        </Button>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button>
+              <UserPlus className="mr-2 h-4 w-4" />
+              Add User
+            </Button>
+          </SheetTrigger>
+          <AddUserSheet />
+        </Sheet>
       </div>
 
       {/* Bulk Actions */}

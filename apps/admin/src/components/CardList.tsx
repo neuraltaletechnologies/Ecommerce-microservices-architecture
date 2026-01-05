@@ -53,30 +53,48 @@ const CardList = async ({ title }: { title: string }) => {
       <h1 className="text-lg font-medium mb-6">{title}</h1>
       <div className="flex flex-col gap-2">
         {title === "Popular Products"
-          ? products.map((item) => (
-              <Card
-                key={item.id}
-                className="flex-row items-center justify-between gap-4 p-4"
-              >
-                <div className="w-12 h-12 rounded-sm relative overflow-hidden">
-                  <Image
-                    src={
-                      Object.values(item.images as Record<string, string>)[0] ||
-                      ""
-                    }
-                    alt={item.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <CardContent className="flex-1 p-0">
-                  <CardTitle className="text-sm font-medium">
-                    {item.name}
-                  </CardTitle>
-                </CardContent>
-                <CardFooter className="p-0">{formatTZSCompact(item.price)}</CardFooter>
-              </Card>
-            ))
+          ? products.map((item) => {
+              // Images structure: { "Color Name": ["url1", "url2"] } or { "Color Name": "url" }
+              let imageUrl: string | null = null;
+              if (item.images && typeof item.images === 'object') {
+                const firstColorImages = Object.values(item.images as Record<string, unknown>)[0];
+                if (Array.isArray(firstColorImages) && typeof firstColorImages[0] === 'string') {
+                  imageUrl = firstColorImages[0];
+                } else if (typeof firstColorImages === 'string') {
+                  imageUrl = firstColorImages;
+                }
+              }
+              
+              return (
+                <Card
+                  key={item.id}
+                  className="flex-row items-center justify-between gap-4 p-4"
+                >
+                  <div className="w-12 h-12 rounded-sm relative overflow-hidden bg-gray-100">
+                    {imageUrl ? (
+                      <Image
+                        src={imageUrl}
+                        alt={item.name}
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  <CardContent className="flex-1 p-0">
+                    <CardTitle className="text-sm font-medium">
+                      {item.name}
+                    </CardTitle>
+                  </CardContent>
+                  <CardFooter className="p-0">{formatTZSCompact(item.price)}</CardFooter>
+                </Card>
+              );
+            })
           : orders.map((item) => (
               <Card
                 key={item._id}

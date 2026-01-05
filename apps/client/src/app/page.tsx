@@ -74,7 +74,7 @@ const Homepage = async ({
         <ShopByCategory />
       </section>
       
-      {/* Customer Testimonials - White background */}
+      {/* User Testimonials - White background */}
       <TestimonialsSection />
       
       {/* Newsletter & Community - Teal to Navy gradient */}

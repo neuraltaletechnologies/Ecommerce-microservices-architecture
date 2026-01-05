@@ -26,14 +26,15 @@ sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
     })
   );
 
+  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3002";
+
   try {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       client_reference_id: userId,
       mode: "payment",
       ui_mode: "custom",
-      return_url:
-        "http://localhost:3002/return?session_id={CHECKOUT_SESSION_ID}",
+      return_url: `${frontendUrl}/return?session_id={CHECKOUT_SESSION_ID}`,
     });
 
     // console.log(session);

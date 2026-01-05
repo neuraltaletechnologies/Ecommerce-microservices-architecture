@@ -87,7 +87,7 @@ const Page = () => {
           >
             <Link href="https://neurashop.neuraltale.com">
               <Home className="w-4 h-4 mr-2" />
-              Go to Customer Store
+              Go to User Store
             </Link>
           </Button>
 

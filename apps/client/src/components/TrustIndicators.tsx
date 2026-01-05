@@ -132,7 +132,7 @@ const TrustIndicators = () => {
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-600">
             <Star className="w-4 h-4 text-[#FDB913] fill-current" />
-            <span>50K+ Happy Customers</span>
+            <span>50K+ Happy Users</span>
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-600">
             <Shield className="w-4 h-4 text-green-600" />

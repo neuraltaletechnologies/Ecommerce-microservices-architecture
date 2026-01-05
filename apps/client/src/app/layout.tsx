@@ -57,13 +57,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo.svg', sizes: '32x32', type: 'image/png' },
       { url: '/logo.svg', sizes: 'any', type: 'image/svg+xml' },
     ],
     apple: [
       { url: '/logo.svg', sizes: 'any', type: 'image/svg+xml' },
     ],
-    shortcut: '/favicon.png',
+    shortcut: '/logo.svg',
   },
   robots: {
     index: true,
@@ -147,7 +147,7 @@ export default function RootLayout({
                 },
                 contactPoint: {
                   '@type': 'ContactPoint',
-                  contactType: 'Customer Service',
+                  contactType: 'User Service',
                   availableLanguage: ['English'],
                 },
                 sameAs: [

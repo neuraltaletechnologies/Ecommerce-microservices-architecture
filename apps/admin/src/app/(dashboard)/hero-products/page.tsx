@@ -645,7 +645,7 @@ export default function HeroProductsPage() {
           </div>
           <div className="flex items-start gap-2">
             <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />
-            <p>Mix different product categories to appeal to diverse customers</p>
+            <p>Mix different product categories to appeal to diverse users</p>
           </div>
           <div className="flex items-start gap-2">
             <CheckCircle2 className="w-4 h-4 mt-0.5 flex-shrink-0" />

@@ -14,12 +14,12 @@ interface StatItem {
 const LiveStatsCounter = () => {
   const [stats, setStats] = useState<{
     ordersToday: number;
-    customersServed: number;
+    usersServed: number;
     productsSold: number;
     averageRating: number;
   }>({
     ordersToday: 0,
-    customersServed: 0,
+    usersServed: 0,
     productsSold: 0,
     averageRating: 0
   });
@@ -32,7 +32,7 @@ const LiveStatsCounter = () => {
     
     const finalValues = {
       ordersToday: 247,
-      customersServed: 50000,
+      usersServed: 50000,
       productsSold: 15000,
       averageRating: 4.9
     };
@@ -50,7 +50,7 @@ const LiveStatsCounter = () => {
       
       setStats({
         ordersToday: Math.round(finalValues.ordersToday * easeOut),
-        customersServed: Math.round(finalValues.customersServed * easeOut),
+        usersServed: Math.round(finalValues.usersServed * easeOut),
         productsSold: Math.round(finalValues.productsSold * easeOut),
         averageRating: Math.round(finalValues.averageRating * easeOut * 10) / 10
       });
@@ -86,9 +86,9 @@ const LiveStatsCounter = () => {
     },
     {
       icon: <Users className="w-6 h-6" />,
-      value: stats.customersServed,
+      value: stats.usersServed,
       suffix: "+",
-      label: "Happy Customers",
+      label: "Happy Users",
       color: "from-[#0A7EA4] to-[#001E3C]"
     },
     {
@@ -102,7 +102,7 @@ const LiveStatsCounter = () => {
       icon: <Star className="w-6 h-6" />,
       value: stats.averageRating,
       suffix: "/5",
-      label: "Customer Rating",
+      label: "User Rating",
       color: "from-[#FDB913] to-[#e5a811]"
     }
   ];

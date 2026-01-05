@@ -1,10 +1,11 @@
 "use client";
 
 import ShippingForm from "@/components/ShippingForm";
+import StripePaymentForm from "@/components/StripePaymentForm";
 import useCartStore from "@/stores/cartStore";
 import { formatTzs } from "@/utils/currency";
 import { ShippingFormInputs, CartItemType } from "@repo/types";
-import { ArrowRight, Trash2, ShoppingBag, Package, CreditCard, Minus, Plus, Edit2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, Trash2, ShoppingBag, Package, CreditCard, Minus, Plus, Edit2, Lock, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
@@ -104,15 +105,29 @@ const CartPageContent = () => {
         
         {/* STEPS */}
         <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 mb-12">
-          {steps.map((step, index) => (
+          {steps.map((step, index) => {
+            // Determine if step is clickable (completed or current)
+            const canNavigate = step.id < activeStep || (step.id === 2 && !isEmpty) || (step.id === 3 && shippingForm);
+            const isClickable = step.id <= activeStep || (step.id === activeStep + 1 && 
+              ((activeStep === 1 && !isEmpty) || (activeStep === 2 && shippingForm)));
+            
+            return (
             <div key={step.id} className="flex items-center gap-4">
-              <div
+              <button
+                type="button"
+                onClick={() => {
+                  if (step.id < activeStep) {
+                    // Can always go back to previous steps
+                    router.push(`/cart?step=${step.id}`, { scroll: false });
+                  }
+                }}
+                disabled={step.id >= activeStep}
                 className={`flex items-center gap-3 px-6 py-3 rounded-xl transition-all duration-300 ${
                   step.id === activeStep 
                     ? "bg-gradient-to-r from-[#001E3C] to-[#0A7EA4] shadow-lg shadow-[#001E3C]/20" 
                     : step.id < activeStep
-                    ? "bg-green-50 border border-green-200"
-                    : "bg-gray-100 border border-gray-200"
+                    ? "bg-green-50 border border-green-200 cursor-pointer hover:bg-green-100 hover:border-green-300"
+                    : "bg-gray-100 border border-gray-200 cursor-not-allowed opacity-60"
                 }`}
               >
                 <div
@@ -137,12 +152,13 @@ const CartPageContent = () => {
                 >
                   {step.title}
                 </p>
-              </div>
+              </button>
               {index < steps.length - 1 && (
                 <div className={`hidden lg:block w-12 h-0.5 ${step.id < activeStep ? "bg-green-400" : "bg-gray-200"}`} />
               )}
             </div>
-          ))}
+            );
+          })}
         </div>
         {/* STEPS & DETAILS */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
@@ -345,18 +361,48 @@ const CartPageContent = () => {
                       <span className="font-medium text-sm">Shipping Information</span>
                     </div>
                   </div>
-                  <ShippingForm setShippingForm={setShippingForm} />
+                  <ShippingForm setShippingForm={setShippingForm} initialData={shippingForm} />
                 </div>
               ) : activeStep === 3 && shippingForm ? (
                 // Confirm Order Section
                 <div className="p-6 lg:p-8 space-y-8">
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/20">
-                      <CreditCard className="w-6 h-6 text-white" />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/20">
+                        <CreditCard className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="text-2xl font-bold text-gray-900">Confirm Your Order</h3>
+                        <p className="text-sm text-gray-600">Review and complete your purchase</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-gray-900">Confirm Your Order</h3>
-                      <p className="text-sm text-gray-600">Review and complete your purchase</p>
+                    <button
+                      type="button"
+                      onClick={() => router.push("/cart?step=2", { scroll: false })}
+                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all"
+                    >
+                      <ArrowLeft className="w-4 h-4" />
+                      Edit Shipping
+                    </button>
+                  </div>
+
+                  {/* Shipping Address Summary */}
+                  <div className="bg-gradient-to-r from-[#001E3C]/5 to-[#0A7EA4]/5 border border-[#0A7EA4]/20 rounded-xl p-4">
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-5 h-5 text-[#0A7EA4] mt-0.5" />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900 mb-1">Shipping to:</h4>
+                        <p className="text-sm text-gray-700">{shippingForm.name}</p>
+                        <p className="text-sm text-gray-600">{shippingForm.address}, {shippingForm.city}</p>
+                        <p className="text-sm text-gray-500">{shippingForm.phone} • {shippingForm.email}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => router.push("/cart?step=2", { scroll: false })}
+                        className="text-xs text-[#0A7EA4] hover:text-[#001E3C] font-medium"
+                      >
+                        Change
+                      </button>
                     </div>
                   </div>
                   
@@ -386,67 +432,35 @@ const CartPageContent = () => {
                     </div>
                   </div>
 
-                  {/* Payment Methods */}
+                  {/* Stripe Payment */}
                   <div className="space-y-5">
                     <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                       <CreditCard className="w-5 h-5 text-gray-700" />
-                      Pay by Card or Mobile Money
+                      Payment Details
                     </h4>
                     
                     {/* Payment Icons */}
                     <div className="flex flex-wrap gap-3">
-                      <div className="flex items-center gap-2 bg-gradient-to-br from-blue-50 to-blue-100 px-4 py-2.5 rounded-lg border border-blue-200 shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-2 bg-gradient-to-br from-blue-50 to-blue-100 px-4 py-2.5 rounded-lg border border-blue-200 shadow-sm">
                         <span className="text-sm font-semibold text-blue-900">Visa</span>
                       </div>
-                      <div className="flex items-center gap-2 bg-gradient-to-br from-red-50 to-red-100 px-4 py-2.5 rounded-lg border border-red-200 shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-2 bg-gradient-to-br from-red-50 to-red-100 px-4 py-2.5 rounded-lg border border-red-200 shadow-sm">
                         <span className="text-sm font-semibold text-red-900">MasterCard</span>
                       </div>
-                      <div className="flex items-center gap-2 bg-gradient-to-br from-indigo-50 to-indigo-100 px-4 py-2.5 rounded-lg border border-indigo-200 shadow-sm hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-2 bg-gradient-to-br from-indigo-50 to-indigo-100 px-4 py-2.5 rounded-lg border border-indigo-200 shadow-sm">
                         <span className="text-sm font-semibold text-indigo-900">Amex</span>
                       </div>
-                      <div className="flex items-center gap-2 bg-gradient-to-br from-yellow-50 to-yellow-100 px-4 py-2.5 rounded-lg border border-yellow-200 shadow-sm hover:shadow-md transition-shadow">
-                        <span className="text-sm font-semibold text-yellow-900">M-Pesa TZ</span>
-                      </div>
-                      <div className="flex items-center gap-2 bg-gradient-to-br from-blue-50 to-blue-100 px-4 py-2.5 rounded-lg border border-blue-200 shadow-sm hover:shadow-md transition-shadow">
-                        <span className="text-sm font-semibold text-blue-900">TigoPesa TZ</span>
-                      </div>
-                      <div className="flex items-center gap-2 bg-gradient-to-br from-green-50 to-green-100 px-4 py-2.5 rounded-lg border border-green-200 shadow-sm hover:shadow-md transition-shadow">
-                        <span className="text-sm font-semibold text-green-900">Pesapal E-wallet</span>
-                      </div>
                     </div>
 
-                    {/* Pesapal Logo */}
+                    {/* Stripe Payment Form */}
                     <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
-                      <div className="text-center">
-                        <div className="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-3 rounded-lg font-bold inline-block shadow-lg shadow-green-600/20 text-lg tracking-wide">
-                          pesapal
-                        </div>
-                        <p className="text-xs text-gray-600 mt-3">Secure Payment Gateway</p>
-                      </div>
+                      <StripePaymentForm shippingForm={shippingForm} />
                     </div>
 
-                    {/* Payment Instructions */}
-                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-5 rounded-xl border border-blue-200 space-y-3 shadow-sm">
-                      <p className="text-sm text-gray-800 leading-relaxed">
-                        <strong className="text-blue-900">Swahili:</strong> Lipia kwa Tigopesa au Card za bank zote zinakubalika. 
-                        Payment via Pesapal Gateway for credit/debit card or mobile money via Tigopesa.
-                      </p>
-                      <div className="h-px bg-blue-200" />
-                      <p className="text-sm text-gray-800 leading-relaxed">
-                        <strong className="text-blue-900">English:</strong> Pay with Tigopesa or all bank cards are accepted. 
-                        Payment via Pesapal Gateway for credit/debit card or mobile money via Tigopesa.
-                      </p>
-                    </div>
-
-                    {/* Contact Instructions */}
-                    <div className="bg-gradient-to-br from-amber-50 to-amber-100 border-2 border-amber-300 p-5 rounded-xl space-y-3 shadow-sm">
-                      <p className="text-sm text-amber-900 leading-relaxed">
-                        <strong>Swahili:</strong> Asante kwa oda yako, Ukimaliza malipo tafadhali tupigie kuconfirm payment yako.
-                      </p>
-                      <div className="h-px bg-amber-200" />
-                      <p className="text-sm text-amber-900 leading-relaxed">
-                        <strong>English:</strong> Thanks for your order! Please call <strong className="text-amber-950">0653520829</strong> or WhatsApp us to confirm your order once you are done with the payment.
-                      </p>
+                    {/* Security Badge */}
+                    <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
+                      <Lock className="w-4 h-4" />
+                      <span>Secured by Stripe</span>
                     </div>
 
                     {/* Terms and Conditions */}
@@ -456,19 +470,6 @@ const CartPageContent = () => {
                         I have read and agree to the website <a href="/terms" className="text-[#0A7EA4] hover:text-[#001E3C] font-semibold underline decoration-2 underline-offset-2">terms and conditions</a> *
                       </label>
                     </div>
-
-                    {/* Place Order Button */}
-                    <button
-                      className="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 active:from-green-800 active:to-green-900 text-white font-bold py-5 px-6 rounded-xl transition-all duration-300 text-lg shadow-xl shadow-green-600/30 hover:shadow-2xl hover:shadow-green-600/40 hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-3 group"
-                      onClick={() => {
-                        // Handle order placement
-                        alert("Order placed! Please proceed with payment via Pesapal.");
-                      }}
-                    >
-                      <CreditCard className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                      Place Order & Pay
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                    </button>
                   </div>
                 </div>
               ) : (

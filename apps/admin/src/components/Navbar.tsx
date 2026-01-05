@@ -1,7 +1,6 @@
 "use client";
 
-import { LogOut, Moon, Settings, Sun, User } from "lucide-react";
-import Link from "next/link";
+import { Moon, Settings, Sun } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,17 +11,22 @@ import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { SidebarTrigger } from "./ui/sidebar";
 import { UserButton } from "@clerk/nextjs";
+import NavbarSearch from "./NavbarSearch";
 
 const Navbar = () => {
-  const { theme, setTheme } = useTheme();
+  const { setTheme } = useTheme();
 
   return (
-    <nav className="p-4 flex items-center justify-between sticky top-0 bg-background z-10">
+    <nav className="p-4 flex items-center justify-between sticky top-0 bg-background z-10 gap-4">
       {/* LEFT */}
       <SidebarTrigger />
+      
+      {/* CENTER - Search */}
+      <NavbarSearch />
+      
       {/* RIGHT */}
       <div className="flex items-center gap-4">
-        <Link href="/">Dashboard</Link>
+    
         {/* THEME MENU */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

@@ -9,7 +9,7 @@ import CheckoutForm from "./CheckoutForm";
 import useCartStore from "@/stores/cartStore";
 
 const stripe = loadStripe(
-  "pk_test_51MdCLkDhkeDdZct5FkM9qMlMvAzsJpObS6eUy44jYLuVMhUFjYjzr4VLodA0GiUj0WBaOSzm38QJ8ju3SAYhdNkF00myyAyh6M"
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
 const fetchClientSecret = async (cart: CartItemsType, token: string) => {
@@ -41,10 +41,17 @@ const StripePaymentForm = ({
 
   useEffect(() => {
     getToken().then((token) => setToken(token));
-  }, []);
+  }, [getToken]);
 
   if (!token) {
-    return <div className="">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="flex items-center gap-3 text-gray-600">
+          <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+          <span>Loading payment form...</span>
+        </div>
+      </div>
+    );
   }
 
   return (

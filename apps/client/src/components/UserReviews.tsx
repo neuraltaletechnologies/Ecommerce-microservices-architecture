@@ -3,11 +3,11 @@
 import { Star } from "lucide-react";
 import { useState } from "react";
 
-interface CustomerReviewsProps {
+interface UserReviewsProps {
   productId: number;
 }
 
-export default function CustomerReviews({ productId }: CustomerReviewsProps) {
+export default function UserReviews({ productId }: UserReviewsProps) {
   const [sortBy, setSortBy] = useState("helpful");
 
   // Mock review data - in production, fetch based on productId
@@ -59,7 +59,7 @@ export default function CustomerReviews({ productId }: CustomerReviewsProps) {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-bold text-gray-900">Customer Reviews</h2>
+        <h2 className="text-2xl font-bold text-gray-900">User Reviews</h2>
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}

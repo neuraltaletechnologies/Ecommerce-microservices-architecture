@@ -33,6 +33,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Shield, CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import type { User } from "@clerk/nextjs/server";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Make password optional for edit
 const EditUserSchema = UserRoleFormSchema.extend({
@@ -187,9 +188,76 @@ export default function EditUserPage() {
   if (isLoading) {
     return (
       <div className="container mx-auto py-6 max-w-4xl">
-        <div className="flex items-center justify-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
+        {/* Back Button Skeleton */}
+        <div className="mb-6">
+          <Skeleton className="h-9 w-28" />
         </div>
+
+        {/* Header Skeleton */}
+        <div className="mb-8">
+          <Skeleton className="h-8 w-48 mb-2" />
+          <Skeleton className="h-4 w-80" />
+        </div>
+
+        {/* Form Skeleton */}
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-6 w-36" />
+            <Skeleton className="h-4 w-64 mt-1" />
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Name Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+
+            {/* Email & Password */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-24" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-32" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+
+            {/* Role Selection */}
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+
+            {/* Role Preview Card */}
+            <div className="rounded-lg border p-4">
+              <div className="flex items-center justify-between mb-4">
+                <Skeleton className="h-6 w-32" />
+                <Skeleton className="h-6 w-20 rounded-full" />
+              </div>
+              <div className="space-y-3">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <Skeleton className="h-4 w-4" />
+                    <Skeleton className="h-4 w-48" />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Submit Button */}
+            <div className="flex justify-end">
+              <Skeleton className="h-10 w-32" />
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }

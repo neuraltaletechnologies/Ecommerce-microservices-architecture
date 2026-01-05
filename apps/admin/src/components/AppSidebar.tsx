@@ -3,8 +3,6 @@
 import {
   Home,
   Inbox,
-  Calendar,
-  Search,
   Settings,
   Plus,
   Laptop,
@@ -12,6 +10,7 @@ import {
   Package,
   Boxes,
   Star,
+  CreditCard,
 } from "lucide-react";
 import {
   Sidebar,
@@ -45,23 +44,18 @@ const items = [
     icon: Home,
   },
   {
+    title: "Payments",
+    url: "/payments",
+    icon: CreditCard,
+  },
+  {
     title: "Inbox",
-    url: "#",
+    url: "/inbox",
     icon: Inbox,
   },
   {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-  },
-  {
     title: "Settings",
-    url: "#",
+    url: "/settings",
     icon: Settings,
   },
 ];
@@ -175,9 +169,9 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Customers</SidebarGroupLabel>
+          <SidebarGroupLabel>Users</SidebarGroupLabel>
           <SidebarGroupAction>
-            <Plus /> <span className="sr-only">Add Customer</span>
+            <Plus /> <span className="sr-only">Add User</span>
           </SidebarGroupAction>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -185,7 +179,7 @@ const AppSidebar = () => {
                 <SidebarMenuButton asChild>
                   <Link href="/users">
                     <User />
-                    All Customers
+                    All Users
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -195,7 +189,7 @@ const AppSidebar = () => {
                     <SidebarMenuButton asChild>
                       <Link href="#">
                         <Plus />
-                        Add Customer
+                        Add User
                       </Link>
                     </SidebarMenuButton>
                   </SheetTrigger>

@@ -6,9 +6,9 @@ import { Suspense } from "react";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
 export const metadata: Metadata = {
-  title: "Users Management - Customer Database",
-  description: "Manage registered users and customers. View user details, activity, orders, and account information for Neurashop Tanzania.",
-  keywords: "user management, customer database, user accounts, customer management, admin users",
+  title: "Users Management - User Database",
+  description: "Manage registered users and users. View user details, activity, orders, and account information for Neurashop Tanzania.",
+  keywords: "user management, user database, user accounts, user management, admin users",
 };
 
 const getData = async (): Promise<{ data: User[]; totalCount: number }> => {
