@@ -23,6 +23,7 @@ app.use("*", cors({ origin: allowedOrigins }));
 app.get("/health", (c) => {
   return c.json({
     status: "ok",
+    service: "payment-service",
     uptime: process.uptime(),
     timestamp: Date.now(),
   });
