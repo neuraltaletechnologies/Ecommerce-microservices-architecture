@@ -13,14 +13,13 @@ export const metadata: Metadata = {
   description: "Admin dashboard overview with sales analytics, order statistics, and performance metrics for Neuraltale Tanzania tech store.",
 };
 
-// Initialize Stripe on the server
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-08-27.basil",
-});
-
 // Fetch Stripe balance
 async function getStripeBalance() {
   try {
+    // Initialize Stripe inside function to avoid build-time errors
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2025-08-27.basil",
+    });
     const balance = await stripe.balance.retrieve();
     // Sum available and pending amounts (convert from cents to dollars/TZS)
     const availableTotal = balance.available.reduce((sum, b) => sum + b.amount, 0) / 100;

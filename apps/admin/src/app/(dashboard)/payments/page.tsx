@@ -9,13 +9,12 @@ export const metadata: Metadata = {
   description: "View and manage Stripe payments, balances, and transactions",
 };
 
-// Initialize Stripe on the server
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-08-27.basil",
-});
-
 async function getStripeData() {
   try {
+    // Initialize Stripe inside function to avoid build-time errors
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2025-08-27.basil",
+    });
     const [balance, charges, paymentIntents, checkoutSessions] = await Promise.all([
       // Get account balance
       stripe.balance.retrieve(),
