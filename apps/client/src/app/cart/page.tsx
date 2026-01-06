@@ -364,112 +364,117 @@ const CartPageContent = () => {
                   <ShippingForm setShippingForm={setShippingForm} initialData={shippingForm} />
                 </div>
               ) : activeStep === 3 && shippingForm ? (
-                // Confirm Order Section
-                <div className="p-6 lg:p-8 space-y-8">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/20">
-                        <CreditCard className="w-6 h-6 text-white" />
+                // Confirm Order Section - Redesigned
+                <div className="p-6 lg:p-8">
+                  {/* Header */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-gray-200">
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 bg-gradient-to-br from-[#001E3C] to-[#0A7EA4] rounded-2xl flex items-center justify-center shadow-lg shadow-[#001E3C]/20">
+                        <CreditCard className="w-7 h-7 text-white" />
                       </div>
                       <div>
-                        <h3 className="text-2xl font-bold text-gray-900">Confirm Your Order</h3>
-                        <p className="text-sm text-gray-600">Review and complete your purchase</p>
+                        <h3 className="text-2xl font-bold text-gray-900">Complete Your Order</h3>
+                        <p className="text-sm text-gray-500">Review details and pay securely</p>
                       </div>
                     </div>
                     <button
                       type="button"
-                      onClick={() => router.push("/cart?step=2", { scroll: false })}
-                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all"
+                      onClick={() => router.push("/cart?step=1", { scroll: false })}
+                      className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-900 bg-gray-100 hover:bg-gray-200 rounded-xl transition-all"
                     >
                       <ArrowLeft className="w-4 h-4" />
-                      Edit Shipping
+                      Back to Cart
                     </button>
                   </div>
 
-                  {/* Shipping Address Summary */}
-                  <div className="bg-gradient-to-r from-[#001E3C]/5 to-[#0A7EA4]/5 border border-[#0A7EA4]/20 rounded-xl p-4">
-                    <div className="flex items-start gap-3">
-                      <MapPin className="w-5 h-5 text-[#0A7EA4] mt-0.5" />
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 mb-1">Shipping to:</h4>
-                        <p className="text-sm text-gray-700">{shippingForm.name}</p>
-                        <p className="text-sm text-gray-600">{shippingForm.address}, {shippingForm.city}</p>
-                        <p className="text-sm text-gray-500">{shippingForm.phone} • {shippingForm.email}</p>
+                  <div className="space-y-6">
+                    {/* Shipping Address */}
+                    <div className="bg-gradient-to-r from-[#001E3C]/5 to-[#0A7EA4]/5 border border-[#0A7EA4]/20 rounded-2xl p-5">
+                      <div className="flex items-start justify-between mb-3">
+                        <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide flex items-center gap-2">
+                          <MapPin className="w-4 h-4 text-[#0A7EA4]" />
+                          Shipping Address
+                        </h4>
+                        <button
+                          type="button"
+                          onClick={() => router.push("/cart?step=2", { scroll: false })}
+                          className="text-xs text-[#0A7EA4] hover:text-[#001E3C] font-semibold transition-colors"
+                        >
+                          Edit
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => router.push("/cart?step=2", { scroll: false })}
-                        className="text-xs text-[#0A7EA4] hover:text-[#001E3C] font-medium"
-                      >
-                        Change
-                      </button>
-                    </div>
-                  </div>
-                  
-                  {/* Delivery Options */}
-                  <div className="space-y-4">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                      <Package className="w-5 h-5 text-gray-700" />
-                      Choose Delivery Method
-                    </h4>
-                    <div className="grid gap-3">
-                      <label className="relative flex items-center gap-4 p-4 border-2 border-gray-200 rounded-xl hover:border-gray-300 hover:bg-gray-50 cursor-pointer transition-all duration-300 group">
-                        <input type="radio" name="delivery" value="pickup" className="w-5 h-5 text-[#FDB913] focus:ring-2 focus:ring-[#FDB913]" />
-                        <div className="flex-1">
-                          <span className="font-semibold text-gray-900 block">In-Store Pickup and Pay</span>
-                          <span className="text-sm text-gray-600">Pick up from our store location</span>
+                      <div className="bg-white rounded-xl p-4 shadow-sm">
+                        <p className="font-semibold text-gray-900">{shippingForm.name}</p>
+                        <p className="text-sm text-gray-600 mt-1">{shippingForm.address}</p>
+                        <p className="text-sm text-gray-600">{shippingForm.city}</p>
+                        <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 pt-3 border-t border-gray-100">
+                          <p className="text-sm text-gray-500">
+                            <span className="font-medium text-gray-700">Phone:</span> {shippingForm.phone}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            <span className="font-medium text-gray-700">Email:</span> {shippingForm.email}
+                          </p>
                         </div>
-                        <div className="absolute top-4 right-4 w-2 h-2 bg-[#FDB913] rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </label>
-                      <label className="relative flex items-center gap-4 p-4 border-2 border-[#FDB913] bg-[#FDB913]/10 rounded-xl cursor-pointer transition-all duration-300 shadow-sm">
-                        <input type="radio" name="delivery" value="delivery" className="w-5 h-5 text-[#FDB913] focus:ring-2 focus:ring-[#FDB913]" defaultChecked />
-                        <div className="flex-1">
-                          <span className="font-semibold text-gray-900 block">Pay and Deliver</span>
-                          <span className="text-sm text-gray-600">Home delivery service</span>
+                      </div>
+                    </div>
+
+                    {/* Delivery Method */}
+                    <div className="bg-gray-50 rounded-2xl p-5">
+                      <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4 flex items-center gap-2">
+                        <Package className="w-4 h-4" />
+                        Delivery Method
+                      </h4>
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        <label className="relative flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-gray-300 cursor-pointer transition-all group has-[:checked]:border-[#FDB913] has-[:checked]:bg-[#FDB913]/5">
+                          <input type="radio" name="delivery" value="pickup" className="w-4 h-4 text-[#FDB913] focus:ring-[#FDB913]" />
+                          <div>
+                            <span className="font-semibold text-gray-900 text-sm block">Store Pickup</span>
+                            <span className="text-xs text-gray-500">Pick up & pay at store</span>
+                          </div>
+                        </label>
+                        <label className="relative flex items-center gap-3 p-4 border-2 border-[#FDB913] bg-[#FDB913]/10 rounded-xl cursor-pointer transition-all">
+                          <input type="radio" name="delivery" value="delivery" className="w-4 h-4 text-[#FDB913] focus:ring-[#FDB913]" defaultChecked />
+                          <div>
+                            <span className="font-semibold text-gray-900 text-sm block">Home Delivery</span>
+                            <span className="text-xs text-gray-500">Pay now, deliver to you</span>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+
+                    {/* Payment Section */}
+                    <div className="bg-white border-2 border-gray-200 rounded-2xl p-5">
+                      <div className="flex items-center justify-between mb-5">
+                        <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide flex items-center gap-2">
+                          <CreditCard className="w-4 h-4" />
+                          Payment
+                        </h4>
+                        <div className="flex items-center gap-2">
+                          <div className="px-2 py-1 bg-blue-50 rounded text-xs font-bold text-blue-700">VISA</div>
+                          <div className="px-2 py-1 bg-red-50 rounded text-xs font-bold text-red-700">MC</div>
+                          <div className="px-2 py-1 bg-indigo-50 rounded text-xs font-bold text-indigo-700">AMEX</div>
                         </div>
-                        <div className="w-2 h-2 bg-[#FDB913] rounded-full animate-pulse" />
-                      </label>
-                    </div>
-                  </div>
+                      </div>
+                      
+                      {/* Stripe Form */}
+                      <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-4 border border-gray-100">
+                        <StripePaymentForm shippingForm={shippingForm} />
+                      </div>
 
-                  {/* Stripe Payment */}
-                  <div className="space-y-5">
-                    <h4 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                      <CreditCard className="w-5 h-5 text-gray-700" />
-                      Payment Details
-                    </h4>
-                    
-                    {/* Payment Icons */}
-                    <div className="flex flex-wrap gap-3">
-                      <div className="flex items-center gap-2 bg-gradient-to-br from-blue-50 to-blue-100 px-4 py-2.5 rounded-lg border border-blue-200 shadow-sm">
-                        <span className="text-sm font-semibold text-blue-900">Visa</span>
-                      </div>
-                      <div className="flex items-center gap-2 bg-gradient-to-br from-red-50 to-red-100 px-4 py-2.5 rounded-lg border border-red-200 shadow-sm">
-                        <span className="text-sm font-semibold text-red-900">MasterCard</span>
-                      </div>
-                      <div className="flex items-center gap-2 bg-gradient-to-br from-indigo-50 to-indigo-100 px-4 py-2.5 rounded-lg border border-indigo-200 shadow-sm">
-                        <span className="text-sm font-semibold text-indigo-900">Amex</span>
+                      {/* Security Badge */}
+                      <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-gray-100">
+                        <Lock className="w-3.5 h-3.5 text-green-600" />
+                        <span className="text-xs text-gray-500">256-bit SSL Encrypted • Powered by Stripe</span>
                       </div>
                     </div>
 
-                    {/* Stripe Payment Form */}
-                    <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-6 rounded-xl border border-gray-200">
-                      <StripePaymentForm shippingForm={shippingForm} />
-                    </div>
-
-                    {/* Security Badge */}
-                    <div className="flex items-center justify-center gap-2 text-sm text-gray-600">
-                      <Lock className="w-4 h-4" />
-                      <span>Secured by Stripe</span>
-                    </div>
-
-                    {/* Terms and Conditions */}
-                    <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl border border-gray-200">
-                      <input type="checkbox" id="terms" className="w-5 h-5 text-[#FDB913] mt-0.5 rounded focus:ring-2 focus:ring-[#FDB913]" required />
-                      <label htmlFor="terms" className="text-sm text-gray-700 leading-relaxed flex-1">
-                        I have read and agree to the website <a href="/terms" className="text-[#0A7EA4] hover:text-[#001E3C] font-semibold underline decoration-2 underline-offset-2">terms and conditions</a> *
-                      </label>
-                    </div>
+                    {/* Terms */}
+                    <label className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl cursor-pointer">
+                      <input type="checkbox" id="terms" className="w-5 h-5 text-[#FDB913] mt-0.5 rounded focus:ring-[#FDB913]" required />
+                      <span className="text-sm text-gray-700 leading-relaxed">
+                        I agree to the <a href="/terms" className="text-[#0A7EA4] hover:text-[#001E3C] font-semibold underline">Terms & Conditions</a> and <a href="/privacy" className="text-[#0A7EA4] hover:text-[#001E3C] font-semibold underline">Privacy Policy</a>
+                      </span>
+                    </label>
                   </div>
                 </div>
               ) : (

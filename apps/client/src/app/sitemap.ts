@@ -22,7 +22,7 @@ async function fetchAllProducts(): Promise<ProductType[]> {
   }
 }
 
-async function fetchAllCategories(): Promise<{ slug: string }[]> {
+async function fetchAllCategories(): Promise<{ slug: string; name: string }[]> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`,
@@ -47,50 +47,61 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://neurashop.neuraltale.com';
   const products = await fetchAllProducts();
   const categories = await fetchAllCategories();
+  const currentDate = new Date();
 
-  // Static pages
+  // Static pages - highest priority for main pages
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
-      lastModified: new Date(),
+      lastModified: currentDate,
       changeFrequency: 'daily',
       priority: 1.0,
     },
     {
       url: `${baseUrl}/products`,
-      lastModified: new Date(),
+      lastModified: currentDate,
       changeFrequency: 'daily',
+      priority: 0.95,
+    },
+    {
+      url: `${baseUrl}/landing`,
+      lastModified: currentDate,
+      changeFrequency: 'weekly',
       priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/about`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
     },
   ];
 
-  // Category pages - fetch from database
+  // Category pages - high priority for product discovery
   const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
     url: `${baseUrl}/products?category=${category.slug}`,
-    lastModified: new Date(),
+    lastModified: currentDate,
     changeFrequency: 'daily',
-    priority: 0.8,
+    priority: 0.85,
   }));
 
-  // Product pages
+  // Product pages - medium-high priority
   const productPages: MetadataRoute.Sitemap = products.map((product) => ({
     url: `${baseUrl}/products/${product.id}`,
     lastModified: new Date(product.updatedAt),
     changeFrequency: 'weekly',
+    priority: 0.8,
+  }));
+
+  // Search intent pages for better SEO (buy X in Tanzania)
+  const searchIntentPages: MetadataRoute.Sitemap = [
+    'laptops',
+    'smartphones', 
+    'tablets',
+    'gaming',
+    'audio',
+    'smartwatches',
+    'accessories',
+  ].map((term) => ({
+    url: `${baseUrl}/products?search=${term}`,
+    lastModified: currentDate,
+    changeFrequency: 'weekly',
     priority: 0.7,
   }));
 
-  return [...staticPages, ...categoryPages, ...productPages];
+  return [...staticPages, ...categoryPages, ...productPages, ...searchIntentPages];
 }

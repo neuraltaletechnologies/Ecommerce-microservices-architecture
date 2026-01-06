@@ -11,15 +11,22 @@ import BackToTopButton from "@/components/homepage/BackToTopButton";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Home - Shop Premium Tech & Electronics Online in Tanzania",
-  description: "Discover cutting-edge technology at Neurashop by Neuraltale Tanzania. Shop gaming laptops, smartphones, wireless earbuds, smartwatches & more. Fast delivery across Tanzania. Best prices guaranteed.",
+  title: "Neurashop by Neuraltale - #1 Tech Store Tanzania | Buy Laptops, Phones & Electronics",
+  description: "Welcome to Neurashop by Neuraltale - Tanzania's leading online tech store! Buy laptops, smartphones, tablets, gaming PCs, wireless earbuds, smartwatches & electronics at best prices. Free delivery in Dar es Salaam. Shop now for premium tech!",
+  keywords: "neurashop, neuraltale, buy laptop Tanzania, buy phone Tanzania, tech store Tanzania, electronics Tanzania, IT devices Tanzania, computer shop Dar es Salaam, gaming laptop Tanzania, smartphone Tanzania",
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "Neurashop by Neuraltale Tanzania - Premium Tech Store | Home",
-    description: "Shop premium laptops, smartphones, gaming gear & electronics in Tanzania. Fast delivery across all regions.",
+    title: "Neurashop by Neuraltale - Tanzania's #1 Online Tech Store",
+    description: "Buy laptops, smartphones, gaming gear & electronics at best prices in Tanzania. Powered by Neuraltale. Free delivery in Dar es Salaam!",
     url: "https://neurashop.neuraltale.com",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Neurashop by Neuraltale - Buy Tech in Tanzania",
+    description: "Tanzania's #1 tech store. Laptops, phones, gaming gear & electronics. Best prices guaranteed!",
   },
 };
 
