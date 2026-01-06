@@ -73,7 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Category pages - high priority for product discovery
   const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
-    url: `${baseUrl}/products?category=${category.slug}`,
+    url: `${baseUrl}/products?category=${encodeURIComponent(category.slug)}`,
     lastModified: currentDate,
     changeFrequency: 'daily',
     priority: 0.85,
@@ -81,7 +81,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Product pages - medium-high priority
   const productPages: MetadataRoute.Sitemap = products.map((product) => ({
-    url: `${baseUrl}/products/${product.id}`,
+    url: `${baseUrl}/products/${encodeURIComponent(product.id)}`,
     lastModified: new Date(product.updatedAt),
     changeFrequency: 'weekly',
     priority: 0.8,
@@ -97,7 +97,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     'smartwatches',
     'accessories',
   ].map((term) => ({
-    url: `${baseUrl}/products?search=${term}`,
+    url: `${baseUrl}/products?search=${encodeURIComponent(term)}`,
     lastModified: currentDate,
     changeFrequency: 'weekly',
     priority: 0.7,
