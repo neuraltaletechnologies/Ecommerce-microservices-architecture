@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -37,30 +37,56 @@ import {
 } from "@/components/ui/sheet";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { User } from "@clerk/nextjs/server";
 
 type FormData = z.infer<typeof UserRoleFormSchema>;
 
-export default function AddUserSheet() {
+interface AddUserSheetProps {
+  user?: User;
+  onSuccess?: () => void;
+}
+
+export default function AddUserSheet({ user, onSuccess }: AddUserSheetProps) {
   const router = useRouter();
   const { getToken } = useAuth();
+  const queryClient = useQueryClient();
+  const isEditMode = !!user;
   const [showPassword, setShowPassword] = useState(false);
   const [checkingUsername, setCheckingUsername] = useState(false);
   const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(null);
   const [passwordStrength, setPasswordStrength] = useState(0);
 
+  const userRole = (user?.publicMetadata?.role as UserRole) || "user";
+
   const form = useForm<FormData>({
     resolver: zodResolver(UserRoleFormSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      username: "",
-      emailAddress: "",
-      phoneNumber: "",
-      role: "user",
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      username: user?.username || "",
+      emailAddress: user?.emailAddresses[0]?.emailAddress || "",
+      phoneNumber: user?.phoneNumbers?.[0]?.phoneNumber || "",
+      role: userRole,
       status: "active",
       password: "",
     },
   });
+
+  // Reset form when user changes (for edit mode)
+  useEffect(() => {
+    if (user) {
+      form.reset({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        username: user.username || "",
+        emailAddress: user.emailAddresses[0]?.emailAddress || "",
+        phoneNumber: user.phoneNumbers?.[0]?.phoneNumber || "",
+        role: userRole,
+        status: "active",
+        password: "",
+      });
+    }
+  }, [user, form, userRole]);
 
   const selectedRole = form.watch("role") as UserRole;
   const watchedUsername = form.watch("username");
@@ -125,52 +151,94 @@ export default function AddUserSheet() {
     setPasswordStrength(calculatePasswordStrength(password));
   };
 
-  // Create user mutation
-  const createUserMutation = useMutation({
+  // Create/Update user mutation
+  const userMutation = useMutation({
     mutationFn: async (data: FormData) => {
       const token = await getToken();
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_URL}/users`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            firstName: data.firstName,
-            lastName: data.lastName,
-            username: data.username || undefined,
-            emailAddress: [data.emailAddress],
-            password: data.password,
-            phoneNumber: data.phoneNumber || undefined,
-            publicMetadata: {
-              role: data.role,
-              status: data.status,
+      
+      if (isEditMode && user) {
+        // Update existing user
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_AUTH_SERVICE_URL}/users/${user.id}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
             },
-          }),
+            body: JSON.stringify({
+              firstName: data.firstName,
+              lastName: data.lastName,
+              phoneNumber: data.phoneNumber || undefined,
+              publicMetadata: {
+                role: data.role,
+                status: data.status,
+              },
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || "Failed to update user");
         }
-      );
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to create user");
+        return response.json();
+      } else {
+        // Create new user
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_AUTH_SERVICE_URL}/users`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              firstName: data.firstName,
+              lastName: data.lastName,
+              username: data.username || undefined,
+              emailAddress: [data.emailAddress],
+              password: data.password,
+              phoneNumber: data.phoneNumber || undefined,
+              publicMetadata: {
+                role: data.role,
+                status: data.status,
+              },
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || "Failed to create user");
+        }
+
+        return response.json();
       }
-
-      return response.json();
     },
     onSuccess: () => {
-      toast.success("User created successfully");
-      form.reset();
+      if (isEditMode) {
+        toast.success("User updated successfully");
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+        if (user?.id) {
+          queryClient.invalidateQueries({ queryKey: ["user", user.id] });
+        }
+      } else {
+        toast.success("User created successfully");
+        form.reset();
+        queryClient.invalidateQueries({ queryKey: ["users"] });
+      }
+      onSuccess?.();
       router.refresh();
     },
     onError: (error: Error) => {
-      toast.error(error.message || "Failed to create user");
+      toast.error(error.message || `Failed to ${isEditMode ? "update" : "create"} user`);
     },
   });
 
   const onSubmit = (data: FormData) => {
-    createUserMutation.mutate(data);
+    userMutation.mutate(data);
   };
 
   const roleConfig = ROLE_CONFIGS[selectedRole];
@@ -192,9 +260,12 @@ export default function AddUserSheet() {
   return (
     <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
       <SheetHeader className="px-6 pt-6">
-        <SheetTitle>Add New User</SheetTitle>
+        <SheetTitle>{isEditMode ? "Edit User" : "Add New User"}</SheetTitle>
         <SheetDescription>
-          Create a new user account with specific role and permissions
+          {isEditMode 
+            ? "Update user information and role permissions"
+            : "Create a new user account with specific role and permissions"
+          }
         </SheetDescription>
       </SheetHeader>
 
@@ -248,11 +319,12 @@ export default function AddUserSheet() {
                       <Input
                         type="email"
                         placeholder="john.doe@example.com"
+                        disabled={isEditMode}
                         {...field}
                       />
                     </FormControl>
                     <FormDescription>
-                      Must be a valid email address
+                      {isEditMode ? "Email cannot be changed" : "Must be a valid email address"}
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -261,46 +333,48 @@ export default function AddUserSheet() {
               </div>
 
               <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Input
-                            placeholder="johndoe"
-                            {...field}
-                            onBlur={() => {
-                              if (watchedUsername) {
-                                checkUsernameAvailability(watchedUsername);
-                              }
-                            }}
-                          />
-                          {checkingUsername && (
-                            <RefreshCw className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-gray-400" />
-                          )}
-                          {!checkingUsername && usernameAvailable !== null && (
-                            <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                              {usernameAvailable ? (
-                                <CheckCircle2 className="h-4 w-4 text-green-500" />
-                              ) : (
-                                <Badge variant="destructive" className="text-xs">
-                                  Taken
-                                </Badge>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </FormControl>
-                      <FormDescription className="text-xs">
-                        Optional unique username
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {!isEditMode && (
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Input
+                              placeholder="johndoe"
+                              {...field}
+                              onBlur={() => {
+                                if (watchedUsername) {
+                                  checkUsernameAvailability(watchedUsername);
+                                }
+                              }}
+                            />
+                            {checkingUsername && (
+                              <RefreshCw className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 animate-spin text-gray-400" />
+                            )}
+                            {!checkingUsername && usernameAvailable !== null && (
+                              <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                {usernameAvailable ? (
+                                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                                ) : (
+                                  <Badge variant="destructive" className="text-xs">
+                                    Taken
+                                  </Badge>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </FormControl>
+                        <FormDescription className="text-xs">
+                          Optional unique username
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
               </div>
 
               <div className="space-y-4">
@@ -432,59 +506,61 @@ export default function AddUserSheet() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password *</FormLabel>
-                    <FormControl>
-                      <div className="space-y-2">
-                        <div className="relative">
-                          <Input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter password"
-                            {...field}
-                            onChange={(e) => {
-                              field.onChange(e);
-                              setPasswordStrength(
-                                calculatePasswordStrength(e.target.value)
-                              );
-                            }}
-                          />
+              {!isEditMode && (
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password *</FormLabel>
+                      <FormControl>
+                        <div className="space-y-2">
+                          <div className="relative">
+                            <Input
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Enter password"
+                              {...field}
+                              onChange={(e) => {
+                                field.onChange(e);
+                                setPasswordStrength(
+                                  calculatePasswordStrength(e.target.value)
+                                );
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0"
+                              onClick={() => setShowPassword(!showPassword)}
+                            >
+                              {showPassword ? (
+                                <EyeOff className="h-4 w-4" />
+                              ) : (
+                                <Eye className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
                           <Button
                             type="button"
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
-                            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-7 w-7 p-0"
-                            onClick={() => setShowPassword(!showPassword)}
+                            onClick={generatePassword}
+                            className="w-full"
                           >
-                            {showPassword ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
+                            <RefreshCw className="mr-2 h-4 w-4" />
+                            Generate Random Password
                           </Button>
                         </div>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={generatePassword}
-                          className="w-full"
-                        >
-                          <RefreshCw className="mr-2 h-4 w-4" />
-                          Generate Random Password
-                        </Button>
-                      </div>
-                    </FormControl>
-                    <FormDescription className="text-xs">
-                      Minimum 8 characters required
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      </FormControl>
+                      <FormDescription className="text-xs">
+                        Minimum 8 characters required
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               {/* Password Strength Indicator */}
               {watchedPassword && (
@@ -507,16 +583,16 @@ export default function AddUserSheet() {
             <div className="flex items-center gap-2 pt-6 pb-2">
               <Button
                 type="submit"
-                disabled={createUserMutation.isPending}
+                disabled={userMutation.isPending}
                 className="flex-1"
               >
-                {createUserMutation.isPending ? (
+                {userMutation.isPending ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
+                    {isEditMode ? "Updating..." : "Creating..."}
                   </>
                 ) : (
-                  "Create User"
+                  isEditMode ? "Update User" : "Create User"
                 )}
               </Button>
             </div>

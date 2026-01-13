@@ -14,33 +14,49 @@ const stripe = loadStripe(
 );
 
 const fetchClientSecret = async (cart: CartItemsType, token: string): Promise<string> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_PAYMENT_SERVICE_URL}/sessions/create-checkout-session`,
-    {
-      method: "POST",
-      body: JSON.stringify({ cart }),
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_PAYMENT_SERVICE_URL}/sessions/create-checkout-session`,
+      {
+        method: "POST",
+        body: JSON.stringify({ cart }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Payment service error response:", response.status, errorText);
+      throw new Error(`Payment service error: ${response.status} - ${errorText}`);
     }
-  );
-  
-  if (!response.ok) {
-    throw new Error(`Payment service error: ${response.status}`);
+    
+    const json = await response.json();
+    console.log("Payment service response:", json);
+    
+    if (json.error) {
+      throw new Error(json.error.message || "Failed to create checkout session");
+    }
+    
+    // Check for various possible property names
+    const clientSecret = 
+      json.checkoutSessionClientSecret || 
+      json.client_secret || 
+      json.clientSecret ||
+      json.sessionClientSecret;
+    
+    if (!clientSecret) {
+      console.error("Response object keys:", Object.keys(json));
+      throw new Error(`No client secret in response. Response: ${JSON.stringify(json)}`);
+    }
+    
+    return clientSecret;
+  } catch (error) {
+    console.error("fetchClientSecret error:", error);
+    throw error;
   }
-  
-  const json = await response.json();
-  
-  if (json.error) {
-    throw new Error(json.error.message || "Failed to create checkout session");
-  }
-  
-  if (!json.checkoutSessionClientSecret) {
-    throw new Error("No client secret returned from payment service");
-  }
-  
-  return json.checkoutSessionClientSecret;
 };
 
 const StripePaymentForm = ({
@@ -52,24 +68,53 @@ const StripePaymentForm = ({
   const [token, setToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isRetrying, setIsRetrying] = useState(false);
-  const { getToken } = useAuth();
+  const { getToken, isLoaded } = useAuth();
 
   useEffect(() => {
-    getToken().then((token) => setToken(token));
-  }, [getToken]);
+    if (!isLoaded) return;
+    
+    getToken()
+      .then((token) => {
+        if (token) {
+          setToken(token);
+        } else {
+          setError("Failed to authenticate. Please sign in again.");
+        }
+      })
+      .catch((err) => {
+        console.error("Error getting token:", err);
+        setError("Failed to authenticate. Please sign in again.");
+      });
+  }, [getToken, isLoaded]);
 
   const handleRetry = async () => {
     setIsRetrying(true);
     setError(null);
     try {
       const newToken = await getToken();
-      setToken(newToken);
+      if (newToken) {
+        setToken(newToken);
+      } else {
+        setError("Failed to authenticate. Please sign in again.");
+      }
     } catch (err) {
+      console.error("Error refreshing token:", err);
       setError("Failed to refresh session. Please try again.");
     } finally {
       setIsRetrying(false);
     }
   };
+
+  if (!isLoaded) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="flex items-center gap-3 text-gray-600">
+          <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+          <span>Initializing...</span>
+        </div>
+      </div>
+    );
+  }
 
   if (!token) {
     return (
@@ -97,6 +142,17 @@ const StripePaymentForm = ({
           <RefreshCw className={`w-4 h-4 ${isRetrying ? "animate-spin" : ""}`} />
           {isRetrying ? "Retrying..." : "Try Again"}
         </button>
+      </div>
+    );
+  }
+
+  if (!cart || cart.length === 0) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-center">
+          <p className="text-gray-600 text-sm">Your cart is empty</p>
+          <p className="text-gray-500 text-xs mt-1">Add items to proceed with payment</p>
+        </div>
       </div>
     );
   }

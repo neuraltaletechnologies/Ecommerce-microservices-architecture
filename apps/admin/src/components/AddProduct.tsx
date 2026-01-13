@@ -253,47 +253,46 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
   };
 
   return (
-    <SheetContent className="w-full sm:max-w-xl p-0">
-      <div className="flex flex-col h-full">
-        <SheetHeader className="px-6 py-4 border-b">
-          <SheetTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5 text-primary" />
-            {isEditMode ? "Edit Product" : "Add New Product"}
-          </SheetTitle>
-          <SheetDescription>
-            {isEditMode ? "Update product details" : "Fill in the details or import from JSON"}
-          </SheetDescription>
-        </SheetHeader>
+    <SheetContent className="w-full sm:max-w-xl p-0 max-h-[100dvh] overflow-hidden flex flex-col">
+      <SheetHeader className="px-6 py-4 border-b flex-shrink-0">
+        <SheetTitle className="flex items-center gap-2">
+          <Package className="h-5 w-5 text-primary" />
+          {isEditMode ? "Edit Product" : "Add New Product"}
+        </SheetTitle>
+        <SheetDescription>
+          {isEditMode ? "Update product details" : "Fill in the details or import from JSON"}
+        </SheetDescription>
+      </SheetHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-          <div className="px-6 pt-4">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="basic" className="text-xs gap-1">
-                <Package className="h-3 w-3" />
-                <span className="hidden sm:inline">Basic</span>
-              </TabsTrigger>
-              <TabsTrigger value="variants" className="text-xs gap-1">
-                <Palette className="h-3 w-3" />
-                <span className="hidden sm:inline">Variants</span>
-              </TabsTrigger>
-              <TabsTrigger value="images" className="text-xs gap-1">
-                <ImageIcon className="h-3 w-3" />
-                <span className="hidden sm:inline">Images</span>
-              </TabsTrigger>
-              <TabsTrigger value="extras" className="text-xs gap-1">
-                <Sparkles className="h-3 w-3" />
-                <span className="hidden sm:inline">Extras</span>
-              </TabsTrigger>
-              <TabsTrigger value="import" className="text-xs gap-1">
-                <FileJson className="h-3 w-3" />
-                <span className="hidden sm:inline">Import</span>
-              </TabsTrigger>
-            </TabsList>
-          </div>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
+        <div className="px-6 pt-4 flex-shrink-0">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="basic" className="text-xs gap-1">
+              <Package className="h-3 w-3" />
+              <span className="hidden sm:inline">Basic</span>
+            </TabsTrigger>
+            <TabsTrigger value="variants" className="text-xs gap-1">
+              <Palette className="h-3 w-3" />
+              <span className="hidden sm:inline">Variants</span>
+            </TabsTrigger>
+            <TabsTrigger value="images" className="text-xs gap-1">
+              <ImageIcon className="h-3 w-3" />
+              <span className="hidden sm:inline">Images</span>
+            </TabsTrigger>
+            <TabsTrigger value="extras" className="text-xs gap-1">
+              <Sparkles className="h-3 w-3" />
+              <span className="hidden sm:inline">Extras</span>
+            </TabsTrigger>
+            <TabsTrigger value="import" className="text-xs gap-1">
+              <FileJson className="h-3 w-3" />
+              <span className="hidden sm:inline">Import</span>
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
-          <ScrollArea className="flex-1 px-6">
+        <ScrollArea className="flex-1 px-6 min-h-0">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="pb-6">
+              <form id="product-form" onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="pb-6">
                 
                 {/* BASIC INFO TAB */}
                 <TabsContent value="basic" className="space-y-4 mt-4">
@@ -466,10 +465,6 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                       </div>
                     </CardContent>
                   </Card>
-
-                  <Button type="button" className="w-full" onClick={() => setActiveTab("variants")}>
-                    Next: Select Variants →
-                  </Button>
                 </TabsContent>
 
                 {/* VARIANTS TAB */}
@@ -591,15 +586,6 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                       )}
                     </CardContent>
                   </Card>
-
-                  <div className="flex gap-2">
-                    <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("basic")}>
-                      ← Back
-                    </Button>
-                    <Button type="button" className="flex-1" onClick={() => setActiveTab("images")}>
-                      Next: Images →
-                    </Button>
-                  </div>
                 </TabsContent>
 
                 {/* IMAGES TAB */}
@@ -701,14 +687,6 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                     </CardContent>
                   </Card>
 
-                  <div className="flex gap-2">
-                    <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("variants")}>
-                      ← Back
-                    </Button>
-                    <Button type="button" className="flex-1" onClick={() => setActiveTab("extras")}>
-                      Next: Extras →
-                    </Button>
-                  </div>
                 </TabsContent>
 
                 {/* EXTRAS TAB */}
@@ -876,16 +854,6 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
                     <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("images")}>
                       ← Back
                     </Button>
-                    <Button type="submit" className="flex-1" disabled={mutation.isPending}>
-                      {mutation.isPending ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          {isEditMode ? "Updating..." : "Creating..."}
-                        </>
-                      ) : (
-                        isEditMode ? "Update Product" : "Create Product"
-                      )}
-                    </Button>
                   </div>
                 </TabsContent>
 
@@ -957,11 +925,62 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
               </form>
             </Form>
-          </ScrollArea>
-        </Tabs>
-      </div>
-    </SheetContent>
-  );
-};
+            </ScrollArea>
+            
+            {/* Fixed footer with navigation and submit button - outside ScrollArea */}
+            <div className="border-t px-6 py-4 flex-shrink-0 bg-background space-y-3">
+              {/* Tab navigation rows */}
+              {activeTab === "basic" && (
+                <Button type="button" className="w-full" onClick={() => setActiveTab("variants")}>
+                  Next: Select Variants →
+                </Button>
+              )}
+              {activeTab === "variants" && (
+                <div className="flex gap-2">
+                  <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("basic")}>
+                    ← Back
+                  </Button>
+                  <Button type="button" className="flex-1" onClick={() => setActiveTab("images")}>
+                    Next: Images →
+                  </Button>
+                </div>
+              )}
+              {activeTab === "images" && (
+                <div className="flex gap-2">
+                  <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("variants")}>
+                    ← Back
+                  </Button>
+                  <Button type="button" className="flex-1" onClick={() => setActiveTab("extras")}>
+                    Next: Extras →
+                  </Button>
+                </div>
+              )}
+              {activeTab === "extras" && (
+                <div className="flex gap-2">
+                  <Button type="button" variant="outline" className="flex-1" onClick={() => setActiveTab("images")}>
+                    ← Back
+                  </Button>
+                  <Button type="submit" form="product-form" className="flex-1" disabled={mutation.isPending}>
+                    {mutation.isPending ? (
+                      <>
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        {isEditMode ? "Updating..." : "Creating..."}
+                      </>
+                    ) : (
+                      isEditMode ? "Update Product" : "Create Product"
+                    )}
+                  </Button>
+                </div>
+              )}
+              {activeTab === "import" && (
+                <Button type="button" variant="outline" className="w-full" onClick={() => setActiveTab("basic")}>
+                  Done Reviewing
+                </Button>
+              )}
+            </div>
+          </Tabs>
+        </SheetContent>
+      );
+    };
 
-export default AddProduct;
+    export default AddProduct;

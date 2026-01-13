@@ -7,28 +7,36 @@ import { getStripeProductPrice } from "../utils/stripeProduct";
 const sessionRoute = new Hono();
 
 sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
-  const { cart }: { cart: CartItemsType } = await c.req.json();
-  const userId = c.get("userId");
-
-  const lineItems = await Promise.all(
-    cart.map(async (item) => {
-      const unitAmount = await getStripeProductPrice(item.id);
-      return {
-        price_data: {
-          currency: "tzs", // Tanzanian Shilling
-          product_data: {
-            name: item.name,
-          },
-          unit_amount: unitAmount as number,
-        },
-        quantity: item.quantity,
-      };
-    })
-  );
-
-  const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3002";
-
   try {
+    const body = await c.req.json();
+    const { cart } = body as { cart: CartItemsType };
+    const userId = c.get("userId");
+
+    if (!cart || !Array.isArray(cart) || cart.length === 0) {
+      return c.json(
+        { error: "Cart is empty or invalid" },
+        { status: 400 }
+      );
+    }
+
+    const lineItems = await Promise.all(
+      cart.map(async (item) => {
+        const unitAmount = await getStripeProductPrice(item.id);
+        return {
+          price_data: {
+            currency: "tzs", // Tanzanian Shilling
+            product_data: {
+              name: item.name,
+            },
+            unit_amount: unitAmount as number,
+          },
+          quantity: item.quantity,
+        };
+      })
+    );
+
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3002";
+
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       client_reference_id: userId,
@@ -37,12 +45,14 @@ sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
       return_url: `${frontendUrl}/return?session_id={CHECKOUT_SESSION_ID}`,
     });
 
-    // console.log(session);
-
     return c.json({ checkoutSessionClientSecret: session.client_secret });
   } catch (error) {
-    console.log(error);
-    return c.json({ error });
+    console.error("Error creating checkout session:", error);
+    const errorMessage = error instanceof Error ? error.message : "Failed to create checkout session";
+    return c.json(
+      { error: { message: errorMessage } },
+      { status: 500 }
+    );
   }
 });
 

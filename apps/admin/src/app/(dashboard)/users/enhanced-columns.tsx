@@ -15,11 +15,13 @@ import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import type { User } from "@clerk/nextjs/server";
 import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Edit, Trash2, UserCog } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal, Edit, Trash2 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { ROLE_CONFIGS, UserRole } from "@repo/types";
 import { formatDistanceToNow } from "date-fns";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import AddUserSheet from "@/components/AddUserSheet";
+import { useState } from "react";
 
 // Helper function to get role from user metadata
 const getUserRole = (user: User): UserRole => {
@@ -32,6 +34,62 @@ const getRoleBadgeColor = (role: UserRole) => {
   const config = ROLE_CONFIGS[role];
   return config?.color || "bg-gray-500";
 };
+
+// Actions Cell Component
+function ActionCell({ user }: { user: User }) {
+  const [editSheetOpen, setEditSheetOpen] = useState(false);
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-48">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuItem
+          onClick={() => navigator.clipboard.writeText(user.id)}
+        >
+          Copy user ID
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => navigator.clipboard.writeText(user.emailAddresses[0]?.emailAddress || "")}
+        >
+          Copy email
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <Sheet open={editSheetOpen} onOpenChange={setEditSheetOpen}>
+          <SheetTrigger asChild>
+            <DropdownMenuItem
+              onSelect={(e) => e.preventDefault()}
+              className="flex items-center cursor-pointer"
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              Edit user
+            </DropdownMenuItem>
+          </SheetTrigger>
+          <AddUserSheet
+            user={user}
+            onSuccess={() => setEditSheetOpen(false)}
+          />
+        </Sheet>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="text-red-600 focus:text-red-600"
+          onClick={() => {
+            // This will be handled by the parent component
+            console.log("Delete user:", user.id);
+          }}
+        >
+          <Trash2 className="mr-2 h-4 w-4" />
+          Delete user
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export const enhancedColumns: ColumnDef<User>[] = [
   {
@@ -256,54 +314,7 @@ export const enhancedColumns: ColumnDef<User>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const user = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.id)}
-            >
-              Copy user ID
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(user.emailAddresses[0]?.emailAddress || "")}
-            >
-              Copy email
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href={`/users/${user.id}/edit`} className="flex items-center">
-                <Edit className="mr-2 h-4 w-4" />
-                Edit user
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link href={`/users/${user.id}`} className="flex items-center">
-                <UserCog className="mr-2 h-4 w-4" />
-                View details
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-red-600 focus:text-red-600"
-              onClick={() => {
-                // This will be handled by the parent component
-                console.log("Delete user:", user.id);
-              }}
-            >
-              <Trash2 className="mr-2 h-4 w-4" />
-              Delete user
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <ActionCell user={user} />;
     },
   },
 ];
