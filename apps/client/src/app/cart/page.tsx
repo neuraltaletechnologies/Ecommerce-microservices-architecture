@@ -1,14 +1,15 @@
 "use client";
 
-import ShippingForm from "@/components/ShippingForm";
+import DeliveryForm from "@/components/DeliveryForm";
 import StripePaymentForm from "@/components/StripePaymentForm";
 import useCartStore from "@/stores/cartStore";
+import useDeliveryStore from "@/stores/deliveryStore";
 import { formatTzs } from "@/utils/currency";
-import { ShippingFormInputs, CartItemType } from "@repo/types";
+import { DeliveryFormInputs } from "@repo/types";
 import { ArrowRight, ArrowLeft, Trash2, ShoppingBag, Package, CreditCard, Minus, Plus, Edit2, Lock, MapPin } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 
 const steps = [
   {
@@ -17,7 +18,7 @@ const steps = [
   },
   {
     id: 2,
-    title: "Shipping Address",
+    title: "Delivery Address",
   },
   {
     id: 3,
@@ -85,12 +86,60 @@ const steps = [
 const CartPageContent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [shippingForm, setShippingForm] = useState<ShippingFormInputs>();
   const [editingItem, setEditingItem] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  
+  const { cart, removeFromCart, updateCartItem, hasHydrated: cartHydrated } = useCartStore();
+  const { 
+    currentDeliveryData, 
+    setCurrentDeliveryData,
+    setDeliveryMethod,
+    hasHydrated: deliveryHydrated 
+  } = useDeliveryStore();
+  
+  // Use persisted delivery data or undefined
+  const [deliveryForm, setDeliveryFormState] = useState<DeliveryFormInputs | undefined>(undefined);
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState<"pickup" | "delivery">("delivery");
+  const [shippingFee, setShippingFee] = useState(15000); // Default to delivery cost
+  
+  // Mark component as mounted to prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  // Sync with persisted data after hydration
+  useEffect(() => {
+    if (deliveryHydrated && currentDeliveryData) {
+      setDeliveryFormState(currentDeliveryData);
+    }
+  }, [deliveryHydrated, currentDeliveryData]);
+  
+  // Update delivery form and persist it
+  const setDeliveryForm = (data: DeliveryFormInputs) => {
+    setDeliveryFormState(data);
+    setCurrentDeliveryData(data);
+  };
+
+  // Handle delivery method change
+  const handleDeliveryMethodChange = (method: "pickup" | "delivery") => {
+    setSelectedDeliveryMethod(method);
+    setDeliveryMethod(method);
+    setShippingFee(method === "pickup" ? 0 : 15000);
+  };
 
   const activeStep = parseInt(searchParams.get("step") || "1");
-
-  const { cart, removeFromCart, updateCartItem } = useCartStore();
+  
+  // Wait for hydration before showing cart data
+  if (!mounted || !cartHydrated) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex items-center justify-center">
+        <div className="flex items-center gap-3 text-gray-600">
+          <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+          <span>Loading cart...</span>
+        </div>
+      </div>
+    );
+  }
   
   const isEmpty = cart.length === 0;
   
@@ -106,11 +155,6 @@ const CartPageContent = () => {
         {/* STEPS */}
         <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 mb-12">
           {steps.map((step, index) => {
-            // Determine if step is clickable (completed or current)
-            const canNavigate = step.id < activeStep || (step.id === 2 && !isEmpty) || (step.id === 3 && shippingForm);
-            const isClickable = step.id <= activeStep || (step.id === activeStep + 1 && 
-              ((activeStep === 1 && !isEmpty) || (activeStep === 2 && shippingForm)));
-            
             return (
             <div key={step.id} className="flex items-center gap-4">
               <button
@@ -358,12 +402,12 @@ const CartPageContent = () => {
                   <div className="mb-6">
                     <div className="inline-flex items-center gap-2 bg-[#FDB913]/20 text-[#001E3C] px-4 py-2 rounded-lg mb-4">
                       <Package className="w-5 h-5" />
-                      <span className="font-medium text-sm">Shipping Information</span>
+                      <span className="font-medium text-sm">Delivery Information</span>
                     </div>
                   </div>
-                  <ShippingForm setShippingForm={setShippingForm} initialData={shippingForm} />
+                  <DeliveryForm setDeliveryForm={setDeliveryForm} initialData={deliveryForm} />
                 </div>
-              ) : activeStep === 3 && shippingForm ? (
+              ) : activeStep === 3 && deliveryForm ? (
                 // Confirm Order Section - Redesigned
                 <div className="p-6 lg:p-8">
                   {/* Header */}
@@ -388,12 +432,12 @@ const CartPageContent = () => {
                   </div>
 
                   <div className="space-y-6">
-                    {/* Shipping Address */}
+                    {/* Delivery Address */}
                     <div className="bg-gradient-to-r from-[#001E3C]/5 to-[#0A7EA4]/5 border border-[#0A7EA4]/20 rounded-2xl p-5">
                       <div className="flex items-start justify-between mb-3">
                         <h4 className="text-sm font-semibold text-gray-700 uppercase tracking-wide flex items-center gap-2">
                           <MapPin className="w-4 h-4 text-[#0A7EA4]" />
-                          Shipping Address
+                          Delivery Address
                         </h4>
                         <button
                           type="button"
@@ -404,15 +448,15 @@ const CartPageContent = () => {
                         </button>
                       </div>
                       <div className="bg-white rounded-xl p-4 shadow-sm">
-                        <p className="font-semibold text-gray-900">{shippingForm.name}</p>
-                        <p className="text-sm text-gray-600 mt-1">{shippingForm.address}</p>
-                        <p className="text-sm text-gray-600">{shippingForm.city}</p>
+                        <p className="font-semibold text-gray-900">{deliveryForm.name}</p>
+                        <p className="text-sm text-gray-600 mt-1">{deliveryForm.address}</p>
+                        <p className="text-sm text-gray-600">{deliveryForm.city}</p>
                         <div className="flex flex-wrap gap-x-4 gap-y-1 mt-3 pt-3 border-t border-gray-100">
                           <p className="text-sm text-gray-500">
-                            <span className="font-medium text-gray-700">Phone:</span> {shippingForm.phone}
+                            <span className="font-medium text-gray-700">Phone:</span> {deliveryForm.phone}
                           </p>
                           <p className="text-sm text-gray-500">
-                            <span className="font-medium text-gray-700">Email:</span> {shippingForm.email}
+                            <span className="font-medium text-gray-700">Email:</span> {deliveryForm.email}
                           </p>
                         </div>
                       </div>
@@ -425,18 +469,42 @@ const CartPageContent = () => {
                         Delivery Method
                       </h4>
                       <div className="grid sm:grid-cols-2 gap-3">
-                        <label className="relative flex items-center gap-3 p-4 bg-white border-2 border-gray-200 rounded-xl hover:border-gray-300 cursor-pointer transition-all group has-[:checked]:border-[#FDB913] has-[:checked]:bg-[#FDB913]/5">
-                          <input type="radio" name="delivery" value="pickup" className="w-4 h-4 text-[#FDB913] focus:ring-[#FDB913]" />
+                        <label className={`relative flex items-center gap-3 p-4 bg-white border-2 rounded-xl hover:border-gray-300 cursor-pointer transition-all ${
+                          selectedDeliveryMethod === "pickup" 
+                            ? "border-[#FDB913] bg-[#FDB913]/10" 
+                            : "border-gray-200"
+                        }`}>
+                          <input 
+                            type="radio" 
+                            name="delivery" 
+                            value="pickup" 
+                            checked={selectedDeliveryMethod === "pickup"}
+                            onChange={() => handleDeliveryMethodChange("pickup")}
+                            className="w-4 h-4 text-[#FDB913] focus:ring-[#FDB913]" 
+                          />
                           <div>
                             <span className="font-semibold text-gray-900 text-sm block">Store Pickup</span>
                             <span className="text-xs text-gray-500">Pick up & pay at store</span>
+                            <span className="text-xs font-semibold text-green-600 block mt-1">Free</span>
                           </div>
                         </label>
-                        <label className="relative flex items-center gap-3 p-4 border-2 border-[#FDB913] bg-[#FDB913]/10 rounded-xl cursor-pointer transition-all">
-                          <input type="radio" name="delivery" value="delivery" className="w-4 h-4 text-[#FDB913] focus:ring-[#FDB913]" defaultChecked />
+                        <label className={`relative flex items-center gap-3 p-4 border-2 rounded-xl cursor-pointer transition-all ${
+                          selectedDeliveryMethod === "delivery" 
+                            ? "border-[#FDB913] bg-[#FDB913]/10" 
+                            : "bg-white border-gray-200 hover:border-gray-300"
+                        }`}>
+                          <input 
+                            type="radio" 
+                            name="delivery" 
+                            value="delivery"
+                            checked={selectedDeliveryMethod === "delivery"}
+                            onChange={() => handleDeliveryMethodChange("delivery")}
+                            className="w-4 h-4 text-[#FDB913] focus:ring-[#FDB913]" 
+                          />
                           <div>
                             <span className="font-semibold text-gray-900 text-sm block">Home Delivery</span>
                             <span className="text-xs text-gray-500">Pay now, deliver to you</span>
+                            <span className="text-xs font-semibold text-[#0A7EA4] block mt-1">15,000 TZS</span>
                           </div>
                         </label>
                       </div>
@@ -458,7 +526,7 @@ const CartPageContent = () => {
                       
                       {/* Stripe Form */}
                       <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-xl p-4 border border-gray-100">
-                        <StripePaymentForm shippingForm={shippingForm} />
+                        <StripePaymentForm deliveryForm={deliveryForm} />
                       </div>
 
                       {/* Security Badge */}
@@ -472,7 +540,7 @@ const CartPageContent = () => {
                     <label className="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-xl cursor-pointer">
                       <input type="checkbox" id="terms" className="w-5 h-5 text-[#FDB913] mt-0.5 rounded focus:ring-[#FDB913]" required />
                       <span className="text-sm text-gray-700 leading-relaxed">
-                        I agree to the <a href="/terms" className="text-[#0A7EA4] hover:text-[#001E3C] font-semibold underline">Terms & Conditions</a> and <a href="/privacy" className="text-[#0A7EA4] hover:text-[#001E3C] font-semibold underline">Privacy Policy</a>
+                        I agree to the <a href="https://neuraltale.com/terms/" target="_blank" rel="noopener noreferrer" className="text-[#0A7EA4] hover:text-[#001E3C] font-semibold underline">Terms & Conditions</a> and <a href="/privacy" className="text-[#0A7EA4] hover:text-[#001E3C] font-semibold underline">Privacy Policy</a>
                       </span>
                     </label>
                   </div>
@@ -483,7 +551,7 @@ const CartPageContent = () => {
                     <Package className="w-8 h-8 text-amber-600" />
                   </div>
                   <p className="text-sm text-gray-600 max-w-md mx-auto leading-relaxed">
-                    Please fill in the shipping form to continue with your order.
+                    Please fill in the delivery form to continue with your order.
                   </p>
                 </div>
               )}
@@ -503,8 +571,10 @@ const CartPageContent = () => {
                     </p>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <p className="text-gray-600">Shipping</p>
-                    <p className="font-semibold text-green-600">Free</p>
+                    <p className="text-gray-600">Delivery</p>
+                    <p className={`font-semibold ${shippingFee === 0 ? "text-green-600" : "text-gray-900"}`}>
+                      {shippingFee === 0 ? "Free" : formatTzs(shippingFee)}
+                    </p>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <p className="text-gray-600">Surcharge Fee</p>
@@ -514,7 +584,7 @@ const CartPageContent = () => {
                   <div className="flex justify-between items-center pt-2">
                     <p className="text-base font-bold text-gray-900">Total</p>
                     <p className="text-xl font-bold text-gray-900">
-                      {formatTzs(cart.reduce((acc, item) => acc + item.price * item.quantity, 0))}
+                      {formatTzs(cart.reduce((acc, item) => acc + item.price * item.quantity, 0) + shippingFee)}
                     </p>
                   </div>
                   <p className="text-xs text-gray-500 pt-2">Includes TZS TRA Tax</p>
@@ -524,13 +594,13 @@ const CartPageContent = () => {
                     onClick={() => router.push("/cart?step=2", { scroll: false })}
                     className="w-full bg-gradient-to-r from-[#001E3C] to-[#0A7EA4] hover:from-[#0A7EA4] hover:to-[#001E3C] active:from-[#001E3C] active:to-[#0A7EA4] text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-3 shadow-xl shadow-[#001E3C]/20 hover:shadow-2xl hover:shadow-[#001E3C]/30 hover:scale-[1.02] active:scale-[0.98] group"
                   >
-                    Continue to Shipping
+                    Continue to Delivery
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                   </button>
                 )}
                 {activeStep === 2 && (
                   <div className="bg-[#FDB913]/10 border border-[#FDB913]/30 rounded-xl p-4 text-center">
-                    <p className="text-sm text-[#001E3C] font-medium">Complete shipping form to continue</p>
+                    <p className="text-sm text-[#001E3C] font-medium">Complete delivery form to continue</p>
                   </div>
                 )}
               </div>

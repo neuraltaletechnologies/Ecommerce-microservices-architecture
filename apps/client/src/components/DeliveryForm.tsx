@@ -1,18 +1,18 @@
-import { ShippingFormInputs, shippingFormSchema } from "@repo/types";
+import { DeliveryFormInputs, deliveryFormSchema } from "@repo/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, ArrowLeft, Save, MapPin, Trash2, Star, ChevronDown, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useUser } from "@clerk/nextjs";
-import useShippingStore, { SavedShippingAddress } from "@/stores/shippingStore";
+import useDeliveryStore, { SavedDeliveryAddress } from "@/stores/deliveryStore";
 import { useState, useEffect } from "react";
 
-const ShippingForm = ({
-  setShippingForm,
+const DeliveryForm = ({
+  setDeliveryForm,
   initialData,
 }: {
-  setShippingForm: (data: ShippingFormInputs) => void;
-  initialData?: ShippingFormInputs;
+  setDeliveryForm: (data: DeliveryFormInputs) => void;
+  initialData?: DeliveryFormInputs;
 }) => {
   const { user, isSignedIn } = useUser();
   const router = useRouter();
@@ -29,7 +29,7 @@ const ShippingForm = ({
     setDefaultAddress,
     getDefaultAddress,
     hasHydrated,
-  } = useShippingStore();
+  } = useDeliveryStore();
 
   const userId = user?.id || "";
   const userAddresses = hasHydrated ? getSavedAddresses(userId) : [];
@@ -39,8 +39,8 @@ const ShippingForm = ({
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<ShippingFormInputs>({
-    resolver: zodResolver(shippingFormSchema as any),
+  } = useForm<DeliveryFormInputs>({
+    resolver: zodResolver(deliveryFormSchema as any),
     defaultValues: initialData,
   });
 
@@ -61,7 +61,7 @@ const ShippingForm = ({
     }
   }, [hasHydrated, isSignedIn, userId, getDefaultAddress, reset, initialData]);
 
-  const handleShippingForm: SubmitHandler<ShippingFormInputs> = (data) => {
+  const handleDeliveryForm: SubmitHandler<DeliveryFormInputs> = (data) => {
     // Save address if user opted to
     if (showSaveOption && addressLabel && isSignedIn && userId) {
       addSavedAddress(userId, {
@@ -71,11 +71,11 @@ const ShippingForm = ({
       });
     }
     
-    setShippingForm(data);
+    setDeliveryForm(data);
     router.push("/cart?step=3", { scroll: false });
   };
 
-  const handleSelectPreset = (preset: SavedShippingAddress) => {
+  const handleSelectPreset = (preset: SavedDeliveryAddress) => {
     reset({
       name: preset.name,
       email: preset.email,
@@ -193,10 +193,10 @@ const ShippingForm = ({
         </div>
       )}
 
-      {/* Shipping Form */}
+      {/* Delivery Form */}
       <form
         className="flex flex-col gap-4"
-        onSubmit={handleSubmit(handleShippingForm)}
+        onSubmit={handleSubmit(handleDeliveryForm)}
       >
         <div className="flex flex-col gap-1">
           <label htmlFor="name" className="text-xs text-gray-500 font-medium">
@@ -345,4 +345,4 @@ const ShippingForm = ({
   );
 };
 
-export default ShippingForm;
+export default DeliveryForm;

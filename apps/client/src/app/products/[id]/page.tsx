@@ -535,7 +535,7 @@ const ProductPage = async ({
               </ExpandableSection>
 
               <ExpandableSection 
-                title="Shipping & Returns"
+                title="Delivery & Returns"
                 icon={<Truck className="w-5 h-5" />}
               >
                 <div className="space-y-4">
@@ -546,9 +546,9 @@ const ProductPage = async ({
                     </p>
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 mb-2">Express Shipping</h4>
+                    <h4 className="font-semibold text-gray-900 mb-2">Express Delivery</h4>
                     <p className="text-sm text-gray-700">
-                      Need it faster? Choose express shipping for 1-2 day delivery (additional charges apply).
+                      Need it faster? Choose express delivery for 1-2 day delivery (additional charges apply).
                     </p>
                   </div>
                   <div>
@@ -639,7 +639,7 @@ const ProductPage = async ({
                 <span className="text-gray-400">•</span>
                 <span className="text-sm text-gray-600 font-mono">SKU: #{product.id}</span>
               </div>
-              <p className="text-xs text-gray-600">Price includes VAT • Free shipping on orders over TZS 50,000</p>
+              <p className="text-xs text-gray-600">Price includes VAT • Free delivery on orders over TZS 50,000</p>
             </div>
 
             {/* Tech Highlights Badges */}
@@ -746,7 +746,7 @@ const ProductPage = async ({
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-700">
                 <Truck className="w-5 h-5 text-[#0A7EA4]" />
-                <span>Free Shipping</span>
+                <span>Free Delivery</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-700">
                 <RotateCcw className="w-5 h-5 text-[#0A7EA4]" />

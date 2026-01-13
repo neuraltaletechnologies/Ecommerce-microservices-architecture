@@ -57,74 +57,24 @@ const ProductInteractionContent = ({
       selectedSize,
     });
     toast.success("Proceeding to checkout...");
-    // Navigate to cart with shipping step
+    // Navigate to cart with delivery step
     router.push("/cart?step=2");
   };
   return (
-    <div className="flex flex-col gap-4 mt-4">
-      {/* SIZE */}
-      <div className="flex flex-col gap-2 text-xs">
-        <span className="text-gray-500">Size</span>
-        <div className="flex items-center gap-2">
-          {product.sizes?.length > 0 ? (
-            product.sizes.map((size: string) => (
-              <div
-                className={`cursor-pointer border-1 p-[2px] ${
-                  selectedSize === size ? "border-gray-600" : "border-gray-300"
-                }`}
-                key={size}
-                onClick={() => handleTypeChange("size", size)}
-              >
-                <div
-                  className={`w-6 h-6 text-center flex items-center justify-center ${
-                    selectedSize === size
-                      ? "bg-black text-white"
-                      : "bg-white text-black"
-                  }`}
-                >
-                  {size.toUpperCase()}
-                </div>
-              </div>
-            ))
-          ) : (
-            <span className="text-gray-400">No sizes available</span>
-          )}
-        </div>
-      </div>
-      {/* COLOR */}
-      <div className="flex flex-col gap-2 text-sm">
-        <span className="text-gray-500">Color</span>
-        <div className="flex items-center gap-2">
-          {product.colors?.length > 0 ? (
-            product.colors.map((color: string) => (
-              <div
-                className={`cursor-pointer border-1 p-[2px] ${
-                  selectedColor === color ? "border-gray-300" : "border-white"
-                }`}
-                key={color}
-                onClick={() => handleTypeChange("color", color)}
-              >
-                <div className={`w-6 h-6`} style={{ backgroundColor: color }} />
-              </div>
-            ))
-          ) : (
-            <span className="text-gray-400">No colors available</span>
-          )}
-        </div>
-      </div>
+    <div className="flex flex-col gap-4">
       {/* QUANTITY */}
-      <div className="flex flex-col gap-2 text-sm">
-        <span className="text-gray-500">Quantity</span>
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-3">
+        <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Quantity</label>
+        <div className="flex items-center gap-3">
           <button
-            className="cursor-pointer border-1 border-gray-300 p-1"
+            className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-lg hover:border-[#FDB913] hover:bg-[#FDB913]/10 transition-all"
             onClick={() => handleQuantityChange("decrement")}
           >
             <Minus className="w-4 h-4" />
           </button>
-          <span>{quantity}</span>
+          <span className="text-lg font-semibold text-gray-900 min-w-[3rem] text-center">{quantity}</span>
           <button
-            className="cursor-pointer border-1 border-gray-300 p-1"
+            className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-lg hover:border-[#FDB913] hover:bg-[#FDB913]/10 transition-all"
             onClick={() => handleQuantityChange("increment")}
           >
             <Plus className="w-4 h-4" />
@@ -134,17 +84,17 @@ const ProductInteractionContent = ({
       {/* BUTTONS */}
       <button
         onClick={handleAddToCart}
-        className="bg-[#FDB913] text-[#001E3C] px-4 py-2 rounded-md shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-semibold hover:bg-[#e5a811] transition-all"
+        className="bg-[#FDB913] text-[#001E3C] px-6 py-3 rounded-lg shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-semibold hover:bg-[#e5a811] hover:shadow-xl transition-all"
       >
-        <Plus className="w-4 h-4" />
+        <Plus className="w-5 h-5" />
         Add to Cart
       </button>
       <button 
         onClick={handleBuyNow}
-        className="ring-1 ring-[#001E3C] shadow-lg text-[#001E3C] px-4 py-2 rounded-md flex items-center justify-center cursor-pointer gap-2 text-sm font-semibold hover:ring-[#0A7EA4] hover:bg-[#001E3C]/5 transition-all"
+        className="border-2 border-[#001E3C] shadow-lg text-[#001E3C] px-6 py-3 rounded-lg flex items-center justify-center cursor-pointer gap-2 text-sm font-semibold hover:bg-[#001E3C] hover:text-white transition-all"
       >
-        <ShoppingCart className="w-4 h-4" />
-        Buy this Item
+        <ShoppingCart className="w-5 h-5" />
+        Buy Now
       </button>
     </div>
   );

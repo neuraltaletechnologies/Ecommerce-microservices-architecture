@@ -4,7 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { CheckoutProvider } from "@stripe/react-stripe-js";
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
-import { CartItemsType, ShippingFormInputs } from "@repo/types";
+import { CartItemsType, DeliveryFormInputs } from "@repo/types";
 import CheckoutForm from "./CheckoutForm";
 import useCartStore from "@/stores/cartStore";
 import { AlertCircle, RefreshCw } from "lucide-react";
@@ -44,9 +44,9 @@ const fetchClientSecret = async (cart: CartItemsType, token: string): Promise<st
 };
 
 const StripePaymentForm = ({
-  shippingForm,
+  deliveryForm,
 }: {
-  shippingForm: ShippingFormInputs;
+  deliveryForm: DeliveryFormInputs;
 }) => {
   const { cart } = useCartStore();
   const [token, setToken] = useState<string | null>(null);
@@ -115,7 +115,7 @@ const StripePaymentForm = ({
         },
       }}
     >
-      <CheckoutForm shippingForm={shippingForm} />
+      <CheckoutForm deliveryForm={deliveryForm} />
     </CheckoutProvider>
   );
 };

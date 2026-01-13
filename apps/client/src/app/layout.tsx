@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import BackToTopButton from "@/components/homepage/BackToTopButton";
 import { ToastContainer } from "react-toastify";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
@@ -371,6 +372,7 @@ export default function RootLayout({
             </main>
             <Footer />
           </div>
+          <BackToTopButton />
           <ToastContainer 
             position="bottom-right" 
             toastClassName="!bg-white !text-gray-900 !shadow-lg !border !border-gray-200"

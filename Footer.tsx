@@ -92,7 +92,7 @@ const Footer = () => {
             <ul className="space-y-3">
               <li><Link href="/help" className="text-gray-400 hover:text-white transition-colors">Help Center</Link></li>
               <li><Link href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact Us</Link></li>
-              <li><Link href="/shipping" className="text-gray-400 hover:text-white transition-colors">Shipping Info</Link></li>
+              <li><Link href="/delivery" className="text-gray-400 hover:text-white transition-colors">Delivery Info</Link></li>
               <li><Link href="/returns" className="text-gray-400 hover:text-white transition-colors">Returns</Link></li>
               <li><Link href="/warranty" className="text-gray-400 hover:text-white transition-colors">Warranty</Link></li>
               <li><Link href="/track-order" className="text-gray-400 hover:text-white transition-colors">Track Order</Link></li>
@@ -103,9 +103,9 @@ const Footer = () => {
           <div>
             <h4 className="text-white font-bold mb-5 text-sm uppercase tracking-wider">Contact</h4>
             <div className="space-y-4">
-              <a href="mailto:hello@neuraltale.com" className="flex items-center text-gray-400 hover:text-white transition-colors">
+              <a href="mailto:helpdesk@neuraltale.com" className="flex items-center text-gray-400 hover:text-white transition-colors">
                 <Mail className="w-4 h-4 mr-3 text-blue-400" />
-                <span>hello@neuraltale.com</span>
+                <span>helpdesk@neuraltale.com</span>
               </a>
               <a href="tel:+255653520829" className="flex items-center text-gray-400 hover:text-white transition-colors">
                 <Phone className="w-4 h-4 mr-3 text-green-400" />

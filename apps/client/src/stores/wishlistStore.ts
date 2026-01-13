@@ -4,16 +4,21 @@ import { ProductType } from '@repo/types';
 
 interface WishlistStoreState {
   wishlist: ProductType[];
+  hasHydrated: boolean;
   addToWishlist: (product: ProductType) => void;
   removeFromWishlist: (productId: number) => void;
   isInWishlist: (productId: number) => boolean;
   clearWishlist: () => void;
+  setHasHydrated: (state: boolean) => void;
 }
 
 const useWishlistStore = create<WishlistStoreState>()(
   persist(
     (set, get) => ({
       wishlist: [],
+      hasHydrated: false,
+      
+      setHasHydrated: (state) => set({ hasHydrated: state }),
       
       addToWishlist: (product: ProductType) => {
         set((state) => {
@@ -44,6 +49,9 @@ const useWishlistStore = create<WishlistStoreState>()(
     {
       name: 'wishlist-storage',
       skipHydration: false,
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     }
   )
 );

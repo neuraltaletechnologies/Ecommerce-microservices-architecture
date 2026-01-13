@@ -118,7 +118,7 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li><Link href="/help" className="text-gray-300 hover:text-[#FDB913] transition-colors">Help Center</Link></li>
               <li><Link href="/contact" className="text-gray-300 hover:text-[#FDB913] transition-colors">Contact Us</Link></li>
-              <li><Link href="/shipping" className="text-gray-300 hover:text-[#FDB913] transition-colors">Shipping Info</Link></li>
+              <li><Link href="/delivery" className="text-gray-300 hover:text-[#FDB913] transition-colors">Delivery Info</Link></li>
               <li><Link href="/returns" className="text-gray-300 hover:text-[#FDB913] transition-colors">Returns</Link></li>
               <li><Link href="/warranty" className="text-gray-300 hover:text-[#FDB913] transition-colors">Warranty</Link></li>
               <li><Link href="/track-order" className="text-gray-300 hover:text-[#FDB913] transition-colors">Track Order</Link></li>
@@ -142,7 +142,7 @@ const Footer = () => {
             <div className="space-y-2">
               <div className="flex items-center text-gray-300">
                 <Mail className="w-4 h-4 mr-2 text-[#0A7EA4]" />
-                <span className="text-sm">hello@neuraltale.com</span>
+                <span className="text-sm">helpdesk@neuraltale.com</span>
               </div>
               <div className="flex items-center text-gray-300">
                 <Phone className="w-4 h-4 mr-2 text-[#0A7EA4]" />
@@ -150,7 +150,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center text-gray-300">
                 <MapPin className="w-4 h-4 mr-2 text-[#0A7EA4]" />
-                <span className="text-sm">San Francisco, CA</span>
+                <span className="text-sm">Dar-Es-Salaam, TZ</span>
               </div>
               <div className="mt-3">
                 <a 

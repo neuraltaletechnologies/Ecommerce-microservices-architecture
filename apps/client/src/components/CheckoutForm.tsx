@@ -1,21 +1,23 @@
 "use client";
 
-import { ShippingFormInputs } from "@repo/types";
+import { DeliveryFormInputs } from "@repo/types";
 import { PaymentElement, useCheckout } from "@stripe/react-stripe-js";
 import { ConfirmError } from "@stripe/stripe-js";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useCartStore from "@/stores/cartStore";
+import useDeliveryStore from "@/stores/deliveryStore";
 import { CreditCard, ArrowRight, Loader2 } from "lucide-react";
 
 const CheckoutForm = ({
-  shippingForm,
+  deliveryForm,
 }: {
-  shippingForm: ShippingFormInputs;
+  deliveryForm: DeliveryFormInputs;
 }) => {
   const checkout = useCheckout();
   const router = useRouter();
   const { clearCart } = useCartStore();
+  const { clearCurrentDeliveryData } = useDeliveryStore();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<ConfirmError | null>(null);
 
@@ -25,13 +27,13 @@ const CheckoutForm = ({
     setError(null);
     
     try {
-      await checkout.updateEmail(shippingForm.email);
+      await checkout.updateEmail(deliveryForm.email);
       await checkout.updateShippingAddress({
         name: "shipping_address",
         address: {
-          line1: shippingForm.address,
-          city: shippingForm.city,
-          country: "US",
+          line1: deliveryForm.address,
+          city: deliveryForm.city,
+          country: "TZ",
         },
       });
 
@@ -40,8 +42,9 @@ const CheckoutForm = ({
         setError(res.error);
         setLoading(false);
       } else {
-        // Payment successful - clear cart and redirect to return page
+        // Payment successful - clear cart, delivery data and redirect to return page
         clearCart();
+        clearCurrentDeliveryData();
         // The session ID is available from the confirm result
         const sessionId = res.session?.id || "";
         router.push("/return?session_id=" + sessionId);

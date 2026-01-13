@@ -5,6 +5,7 @@ import Image from "next/image";
 import SearchBar from "./SearchBar";
 import { User, Menu, X, ChevronDown } from "lucide-react";
 import ShoppingCartIcon from "./ShoppingCartIcon";
+import WishlistIcon from "./WishlistIcon";
 
 import {
   SignedIn,
@@ -124,36 +125,35 @@ const Navbar = () => {
     { name: "All Products", href: "/products" },
     { name: "Deals", href: "/products?sort=price-asc" },
     { name: "Services", href: "https://www.neuraltale.com/services", external: true },
-    { name: "About", href: "https://www.neuraltale.com/about", external: true },
   ];
 
   return (
     <>
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
+          <div className="flex items-center justify-between h-14 sm:h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center group">
-              <div className="flex items-center space-x-2">
+            <Link href="/" className="flex items-center group flex-shrink-0">
+              <div className="flex items-center space-x-1.5 sm:space-x-2">
                 <Image 
                   src="/logo.svg" 
                   alt="Neurashop Logo" 
-                  width={36} 
-                  height={36}
-                  className="object-contain"
+                  width={32} 
+                  height={32}
+                  className="object-contain sm:w-9 sm:h-9"
                 />
-                <span className="text-xl font-bold bg-gradient-to-r from-[#001E3C] to-[#0A7EA4] bg-clip-text text-transparent group-hover:from-[#FDB913] group-hover:to-[#0A7EA4] transition-all duration-200">
+                <span className="text-base sm:text-xl font-bold bg-gradient-to-r from-[#001E3C] to-[#0A7EA4] bg-clip-text text-transparent group-hover:from-[#FDB913] group-hover:to-[#0A7EA4] transition-all duration-200">
                   Neurashop
                 </span>
               </div>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
               {/* Categories Dropdown */}
               <div className="relative group">
                 <button 
-                  className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 group"
+                  className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 group text-sm xl:text-base"
                 >
                   <span>Categories</span>
                   <ChevronDown className="w-4 h-4 group-hover:rotate-180 transition-transform duration-200" />
@@ -162,23 +162,23 @@ const Navbar = () => {
                 
                 {/* Mega Menu Dropdown */}
                 <div 
-                  className="absolute top-full left-0 w-screen max-w-6xl bg-white shadow-xl border border-gray-200 rounded-lg mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
+                  className="absolute top-full left-0 w-screen max-w-5xl xl:max-w-6xl bg-white shadow-xl border border-gray-200 rounded-lg mt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50"
                 >
-                  <div className="grid grid-cols-5 gap-6 p-6">
+                  <div className="grid grid-cols-4 xl:grid-cols-5 gap-4 xl:gap-6 p-4 xl:p-6">
                     {categories.map((category) => (
-                      <div key={category.name} className="space-y-3">
+                      <div key={category.name} className="space-y-2 xl:space-y-3">
                         <Link
                           href={category.href}
-                          className="font-semibold text-gray-900 hover:text-[#0A7EA4] transition-colors duration-200 block"
+                          className="font-semibold text-sm xl:text-base text-gray-900 hover:text-[#0A7EA4] transition-colors duration-200 block"
                         >
                           {category.name}
                         </Link>
-                        <ul className="space-y-2">
+                        <ul className="space-y-1.5 xl:space-y-2">
                           {category.subcategories.map((subcategory) => (
                             <li key={subcategory.name}>
                               <Link
                                 href={subcategory.href}
-                                className="text-sm text-gray-600 hover:text-[#0A7EA4] transition-colors duration-200"
+                                className="text-xs xl:text-sm text-gray-600 hover:text-[#0A7EA4] transition-colors duration-200"
                               >
                                 {subcategory.name}
                               </Link>
@@ -190,21 +190,21 @@ const Navbar = () => {
                   </div>
                   
                   {/* Featured Categories Footer */}
-                  <div className="bg-gray-50 px-6 py-4 border-t border-gray-200 rounded-b-lg">
+                  <div className="bg-gray-50 px-4 xl:px-6 py-3 xl:py-4 border-t border-gray-200 rounded-b-lg">
                     <div className="flex items-center justify-between">
-                      <div className="flex space-x-6">
-                        <Link href="/products?featured=true" className="text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
+                      <div className="flex space-x-4 xl:space-x-6">
+                        <Link href="/products?featured=true" className="text-xs xl:text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
                           Featured Products
                         </Link>
-                        <Link href="/products?new=true" className="text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
+                        <Link href="/products?new=true" className="text-xs xl:text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
                           New Arrivals
                         </Link>
-                        <Link href="/products?sale=true" className="text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
+                        <Link href="/products?sale=true" className="text-xs xl:text-sm font-medium text-[#0A7EA4] hover:text-[#001E3C]">
                           On Sale
                         </Link>
                       </div>
-                      <Link href="/products" className="text-sm font-medium text-gray-600 hover:text-gray-900">
-                        View All Products →
+                      <Link href="/products" className="text-xs xl:text-sm font-medium text-gray-600 hover:text-gray-900">
+                        View All →
                       </Link>
                     </div>
                   </div>
@@ -219,7 +219,7 @@ const Navbar = () => {
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 relative group"
+                    className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 relative group text-sm xl:text-base"
                   >
                     {item.name}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FDB913] group-hover:w-full transition-all duration-200"></span>
@@ -228,7 +228,7 @@ const Navbar = () => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 relative group"
+                    className="text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 relative group text-sm xl:text-base"
                   >
                     {item.name}
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#FDB913] group-hover:w-full transition-all duration-200"></span>
@@ -238,15 +238,20 @@ const Navbar = () => {
             </div>
 
             {/* Desktop Search & Actions */}
-            <div className="hidden md:flex items-center space-x-4">
-              <div className="relative">
+            <div className="hidden lg:flex items-center gap-3 xl:gap-4">
+              <div className="relative w-40 xl:w-52 flex-shrink-0">
                 <SearchBar />
               </div>
-              <ShoppingCartIcon />
+              <div className="flex-shrink-0">
+                <WishlistIcon />
+              </div>
+              <div className="flex-shrink-0">
+                <ShoppingCartIcon />
+              </div>
               <div className="flex items-center">
                 <SignedOut>
                   <SignInButton>
-                    <button className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
+                    <button className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200 text-sm xl:text-base">
                       <User className="w-4 h-4" />
                       <span>Sign In</span>
                     </button>
@@ -273,14 +278,15 @@ const Navbar = () => {
             </div>
 
             {/* Mobile Menu Button & Auth */}
-            <div className="md:hidden flex items-center space-x-3">
+            <div className="lg:hidden flex items-center space-x-2 sm:space-x-3">
+              <WishlistIcon />
               <ShoppingCartIcon />
               {/* Mobile Auth - Direct in Navbar */}
               <div className="flex items-center">
                 <SignedOut>
                   <SignInButton>
                     <button 
-                      className="flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200"
+                      className="flex items-center text-gray-600 hover:text-gray-900 transition-colors duration-200 p-1"
                       aria-label="Sign in"
                     >
                       <User className="w-5 h-5" />
@@ -291,7 +297,7 @@ const Navbar = () => {
                   <UserButton 
                     appearance={{
                       elements: {
-                        avatarBox: "w-8 h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200"
+                        avatarBox: "w-7 h-7 sm:w-8 sm:h-8 ring-2 ring-gray-200 hover:ring-[#FDB913] transition-all duration-200"
                       }
                     }}
                   >
@@ -307,13 +313,13 @@ const Navbar = () => {
               </div>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                className="p-1.5 sm:p-2 text-gray-600 hover:text-gray-900 transition-colors"
                 aria-label="Toggle menu"
               >
                 {isMobileMenuOpen ? (
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5 sm:w-6 sm:h-6" />
                 ) : (
-                  <Menu className="w-5 h-5" />
+                  <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
                 )}
               </button>
             </div>
@@ -321,26 +327,39 @@ const Navbar = () => {
 
           {/* Mobile Menu */}
           {isMobileMenuOpen && (
-            <div className="md:hidden border-t border-gray-100 bg-white max-h-96 overflow-y-auto">
+            <div className="lg:hidden border-t border-gray-100 bg-white max-h-[calc(100vh-3.5rem)] sm:max-h-[calc(100vh-4rem)] overflow-y-auto">
               <div className="px-2 pt-2 pb-3 space-y-1">
                 {/* Mobile Search */}
-                <div className="px-3 py-2">
+                <div className="px-2 sm:px-3 py-2">
                   <SearchBar />
                 </div>
                 
                 {/* Mobile Categories */}
                 <div className="border-t border-gray-100 mt-2 pt-2">
-                  <h3 className="px-3 py-2 text-sm font-semibold text-gray-900 uppercase tracking-wider">Categories</h3>
-                  <div className="grid grid-cols-2 gap-1">
+                  <h3 className="px-2 sm:px-3 py-2 text-xs sm:text-sm font-semibold text-gray-900 uppercase tracking-wider">Categories</h3>
+                  <div className="space-y-1">
                     {categories.map((category) => (
-                      <Link
-                        key={category.name}
-                        href={category.href}
-                        className="block px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md font-medium transition-colors duration-200"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {category.name}
-                      </Link>
+                      <div key={category.name} className="space-y-1">
+                        <Link
+                          href={category.href}
+                          className="block px-2 sm:px-3 py-2 text-sm font-semibold text-gray-900 hover:text-[#0A7EA4] hover:bg-gray-50 rounded-md transition-colors duration-200"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          {category.name}
+                        </Link>
+                        <div className="pl-4 space-y-1">
+                          {category.subcategories.map((subcategory) => (
+                            <Link
+                              key={subcategory.name}
+                              href={subcategory.href}
+                              className="block px-2 py-1.5 text-xs text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors duration-200"
+                              onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                              {subcategory.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -354,7 +373,7 @@ const Navbar = () => {
                         href={item.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md font-medium transition-colors duration-200"
+                        className="block px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md font-medium transition-colors duration-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {item.name}
@@ -363,7 +382,7 @@ const Navbar = () => {
                       <Link
                         key={item.name}
                         href={item.href}
-                        className="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md font-medium transition-colors duration-200"
+                        className="block px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md font-medium transition-colors duration-200"
                         onClick={() => setIsMobileMenuOpen(false)}
                       >
                         {item.name}
@@ -373,12 +392,12 @@ const Navbar = () => {
                 </div>
                 
                 {/* Additional Company Links */}
-                <div className="border-t border-gray-100 mt-2 pt-2">
+                <div className="border-t border-gray-100 mt-2 pt-2 pb-2">
                   <a
                     href="https://www.neuraltale.com/blog"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md font-medium transition-colors duration-200"
+                    className="block px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md font-medium transition-colors duration-200"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Blog
@@ -387,7 +406,7 @@ const Navbar = () => {
                     href="https://www.neuraltale.com/contact"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block px-3 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md font-medium transition-colors duration-200"
+                    className="block px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md font-medium transition-colors duration-200"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Contact

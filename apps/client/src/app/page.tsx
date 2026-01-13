@@ -7,7 +7,6 @@ import WhyChooseSection from "@/components/homepage/WhyChooseSection";
 import TestimonialsSection from "@/components/homepage/TestimonialsSection";
 import NewsletterSection from "@/components/homepage/NewsletterSection";
 import LiveStatsCounter from "@/components/homepage/LiveStatsCounter";
-import BackToTopButton from "@/components/homepage/BackToTopButton";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -86,9 +85,6 @@ const Homepage = async ({
       
       {/* Newsletter & Community - Teal to Navy gradient */}
       <NewsletterSection />
-      
-      {/* Back to Top Button */}
-      <BackToTopButton />
     </div>
   );
 };
