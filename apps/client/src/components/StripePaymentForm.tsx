@@ -28,16 +28,29 @@ const fetchClientSecret = async (cart: CartItemsType, token: string): Promise<st
     );
     
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Payment service error response:", response.status, errorText);
-      throw new Error(`Payment service error: ${response.status} - ${errorText}`);
+      let errorMessage = "Failed to create checkout session";
+      try {
+        const errorJson = await response.json();
+        console.error("Payment service error response:", response.status, errorJson);
+        errorMessage = errorJson.error?.message || errorJson.error || errorMessage;
+      } catch {
+        const errorText = await response.text();
+        console.error("Payment service error text:", response.status, errorText);
+        errorMessage = errorText || errorMessage;
+      }
+      throw new Error(errorMessage);
     }
     
     const json = await response.json();
     console.log("Payment service response:", json);
     
     if (json.error) {
-      throw new Error(json.error.message || "Failed to create checkout session");
+      const errorMessage = typeof json.error === 'object' 
+        ? json.error.message || JSON.stringify(json.error)
+        : String(json.error);
+      console.error("Payment service returned error object:", json.error);
+      console.error("Parsed error message:", errorMessage);
+      throw new Error(errorMessage);
     }
     
     // Check for various possible property names
@@ -48,13 +61,17 @@ const fetchClientSecret = async (cart: CartItemsType, token: string): Promise<st
       json.sessionClientSecret;
     
     if (!clientSecret) {
+      console.error("No client secret found. Full response:", JSON.stringify(json));
       console.error("Response object keys:", Object.keys(json));
-      throw new Error(`No client secret in response. Response: ${JSON.stringify(json)}`);
+      throw new Error(`No client secret in response. Available keys: ${Object.keys(json).join(', ')}`);
     }
     
+    console.log("Successfully obtained client secret");
     return clientSecret;
   } catch (error) {
-    console.error("fetchClientSecret error:", error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error("fetchClientSecret error:", errorMsg);
+    console.error("Full error object:", error);
     throw error;
   }
 };

@@ -31,10 +31,16 @@ export const getStripeProductPrice = async (productId: number) => {
     const res = await stripe.prices.list({
       product: productId.toString(),
     });
-    return res.data[0]?.unit_amount;
+    const unitAmount = res.data[0]?.unit_amount;
+    
+    if (!unitAmount) {
+      throw new Error(`No price found for product ${productId} in Stripe. Make sure the product exists in Stripe.`);
+    }
+    
+    return unitAmount;
   } catch (error) {
-    console.log(error);
-    return error;
+    console.error(`Error getting price for product ${productId}:`, error);
+    throw error;
   }
 };
 

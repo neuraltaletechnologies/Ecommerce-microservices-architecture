@@ -21,17 +21,22 @@ sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
 
     const lineItems = await Promise.all(
       cart.map(async (item) => {
-        const unitAmount = await getStripeProductPrice(item.id);
-        return {
-          price_data: {
-            currency: "tzs", // Tanzanian Shilling
-            product_data: {
-              name: item.name,
+        try {
+          const unitAmount = await getStripeProductPrice(item.id);
+          return {
+            price_data: {
+              currency: "tzs", // Tanzanian Shilling
+              product_data: {
+                name: item.name,
+              },
+              unit_amount: unitAmount,
             },
-            unit_amount: unitAmount as number,
-          },
-          quantity: item.quantity,
-        };
+            quantity: item.quantity,
+          };
+        } catch (error) {
+          console.error(`Failed to get price for product ${item.id} (${item.name}):`, error);
+          throw new Error(`Product "${item.name}" (ID: ${item.id}) is not set up in Stripe. Please contact support.`);
+        }
       })
     );
 
