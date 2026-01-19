@@ -6,6 +6,8 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Orders Management - Payments & Transactions",
   description: "Manage user orders and payments for Neurashop Tanzania. Track order status, payment details, and transaction history.",

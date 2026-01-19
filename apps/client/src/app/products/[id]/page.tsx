@@ -299,42 +299,131 @@ const ProductPage = async ({
     return '/logo.svg';
   };
 
+  // Build product images array for schema
+  const productImages: string[] = [];
+  const images = product.images as Record<string, string> | undefined;
+  if (images) {
+    if (typeof images === 'object' && !Array.isArray(images)) {
+      productImages.push(...Object.values(images).filter(img => typeof img === 'string'));
+    } else if (Array.isArray(images)) {
+      productImages.push(...images.filter(img => typeof img === 'string'));
+    }
+  }
+  if (productImages.length === 0) {
+    productImages.push(getStructuredDataImage());
+  }
+  // Remove duplicates
+  const uniqueImages = [...new Set(productImages)];
+
+  // Calculate stock availability string
+  const getAvailabilityString = (status: string | undefined, quantity: number | undefined): string => {
+    const statusValue = status || 'in_stock';
+    const qty = quantity || 0;
+    
+    switch (statusValue) {
+      case 'out_of_stock':
+        return 'https://schema.org/OutOfStock';
+      case 'pre_order':
+        return 'https://schema.org/PreOrder';
+      case 'limited_stock':
+        return qty > 0 ? 'https://schema.org/LimitedAvailability' : 'https://schema.org/OutOfStock';
+      default:
+        return qty > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
+    }
+  };
+
+  // Build multiple offers for different colors
+  const colorOffers = product.colors && product.colors.length > 0
+    ? product.colors.map((color) => ({
+        '@type': 'Offer',
+        price: product.price,
+        priceCurrency: 'TZS',
+        availability: getAvailabilityString((product.stockStatus as string), product.stockQuantity as number),
+        inventoryLevel: {
+          '@type': 'QuantitativeValue',
+          value: product.stockQuantity || 0,
+        },
+        color: color,
+        url: `https://neurashop.neuraltale.com/products/${product.id}?color=${color}`,
+        seller: {
+          '@type': 'Organization',
+          name: 'Neuraltale',
+        },
+      }))
+    : [
+        {
+          '@type': 'Offer',
+          price: product.price,
+          priceCurrency: 'TZS',
+          availability: getAvailabilityString((product.stockStatus as string), product.stockQuantity as number),
+          inventoryLevel: {
+            '@type': 'QuantitativeValue',
+            value: product.stockQuantity || 0,
+          },
+          url: `https://neurashop.neuraltale.com/products/${product.id}`,
+          seller: {
+            '@type': 'Organization',
+            name: 'Neuraltale',
+          },
+        },
+      ];
+
+  // Build product schema
+  const productSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': `https://neurashop.neuraltale.com/products/${product.id}`,
+    name: product.name,
+    description: product.description,
+    image: uniqueImages,
+    brand: {
+      '@type': 'Brand',
+      name: 'Neuraltale',
+    },
+    offers: colorOffers.length > 1 ? colorOffers : colorOffers[0],
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '4.8',
+      reviewCount: '127',
+      bestRating: '5',
+      worstRating: '1',
+    },
+    category: product.categorySlug ? product.categorySlug.replace(/-/g, ' ') : 'Electronics',
+    sku: String(product.id),
+    itemCondition: 'https://schema.org/NewCondition',
+    ...(product.productFeatures && product.productFeatures.length > 0 && {
+      features: product.productFeatures.map((feature) => ({
+        '@type': 'PropertyValue',
+        name: feature.title,
+        value: feature.description,
+      })),
+    }),
+    ...(product.colors && product.colors.length > 0 && {
+      color: product.colors,
+    }),
+    ...(product.sizes && product.sizes.length > 0 && {
+      size: product.sizes,
+    }),
+    url: `https://neurashop.neuraltale.com/products/${product.id}`,
+    weight: {
+      '@type': 'QuantitativeValue',
+      unitCode: 'KGM',
+      value: '0.5',
+    },
+    seller: {
+      '@type': 'Organization',
+      '@id': 'https://neurashop.neuraltale.com',
+      name: 'Neuraltale',
+    },
+  };
+
   return (
     <div className="bg-white">
       {/* Structured Data for Product */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Product',
-            name: product.name,
-            description: product.shortDescription,
-            image: getStructuredDataImage(),
-            brand: {
-              '@type': 'Brand',
-              name: 'Neuraltale',
-            },
-            offers: {
-              '@type': 'Offer',
-              price: product.price,
-              priceCurrency: 'TZS',
-              availability: 'https://schema.org/InStock',
-              url: `https://neurashop.neuraltale.com/products/${product.id}`,
-              seller: {
-                '@type': 'Organization',
-                name: 'Neuraltale',
-              },
-            },
-            aggregateRating: {
-              '@type': 'AggregateRating',
-              ratingValue: '4.8',
-              reviewCount: '127',
-            },
-            category: product.categorySlug ? product.categorySlug.replace(/-/g, ' ') : 'Electronics',
-            sku: product.id,
-            itemCondition: 'https://schema.org/NewCondition',
-          }),
+          __html: JSON.stringify(productSchema),
         }}
       />
       

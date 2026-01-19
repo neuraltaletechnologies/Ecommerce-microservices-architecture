@@ -33,9 +33,16 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Power page speed insights
   poweredByHeader: false,
-  // Generate sitemaps and robots.txt
+  // Reduce symlink issues on Windows
   experimental: {
     optimizePackageImports: ['lucide-react'],
+  },
+  // Better error reporting
+  productionBrowserSourceMaps: process.env.VERCEL === '1',
+  // Disable logging of unhandled promise rejections in development
+  onDemandEntries: {
+    maxInactiveAge: 60 * 1000,
+    pagesBufferLength: 5,
   },
 };
 

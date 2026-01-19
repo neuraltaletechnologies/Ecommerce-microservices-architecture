@@ -5,6 +5,8 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Products Management - All Tech Products",
   description: "Manage your tech product catalog: smartphones, laptops, gaming gear, audio equipment, wearables, and accessories. Add, edit, and delete products.",

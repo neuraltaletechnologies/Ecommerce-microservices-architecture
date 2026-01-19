@@ -5,6 +5,8 @@ import { DataTable } from "./data-table";
 import { Suspense } from "react";
 import TableSkeleton from "@/components/skeletons/TableSkeleton";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: "Categories Management - Product Categories",
   description: "Manage product categories for your tech store. Add, edit, and organize categories.",

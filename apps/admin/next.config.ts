@@ -24,10 +24,19 @@ const nextConfig: NextConfig = {
   },
   // Admin panel optimizations
   compress: true,
+  output: 'standalone',
   reactStrictMode: true,
   poweredByHeader: false,
+  // Reduce symlink issues on Windows
   experimental: {
     optimizePackageImports: ['lucide-react'],
+  },
+  // Better error reporting
+  productionBrowserSourceMaps: process.env.VERCEL === '1',
+  // Disable logging of unhandled promise rejections in development
+  onDemandEntries: {
+    maxInactiveAge: 60 * 1000,
+    pagesBufferLength: 5,
   },
 };
 

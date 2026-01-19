@@ -1,6 +1,8 @@
 import { auth } from "@clerk/nextjs/server";
 import { OrderType } from "@repo/types";
 
+export const dynamic = 'force-dynamic';
+
 /**
  * Format TZS amount from Stripe (which stores in cents)
  * Stripe amounts are in smallest currency unit, so we divide by 100
