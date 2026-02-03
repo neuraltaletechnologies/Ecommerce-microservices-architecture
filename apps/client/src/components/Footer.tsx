@@ -24,7 +24,7 @@ const Footer = () => {
           <div className="md:col-span-1">
             <Link href="/" className="flex items-center group mb-4">
               <Image
-                src="/logo.svg"
+                src="/logo.png"
                 alt="Neurashop Logo"
                 width={40}
                 height={40}

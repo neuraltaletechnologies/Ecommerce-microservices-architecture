@@ -8,7 +8,7 @@ export default function Page() {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <Image 
-              src="/logo.svg" 
+              src="/logo.png" 
               alt="Neurashop Logo" 
               width={64} 
               height={64}

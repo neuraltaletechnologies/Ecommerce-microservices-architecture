@@ -93,13 +93,13 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: '/logo.svg', sizes: '32x32', type: 'image/png' },
-      { url: '/logo.svg', sizes: 'any', type: 'image/svg+xml' },
+      { url: '/logo.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo.png', sizes: 'any', type: 'image/svg+xml' },
     ],
     apple: [
-      { url: '/logo.svg', sizes: 'any', type: 'image/svg+xml' },
+      { url: '/logo.png', sizes: 'any', type: 'image/svg+xml' },
     ],
-    shortcut: '/logo.svg',
+    shortcut: '/logo.png',
   },
   robots: {
     index: true,
@@ -127,7 +127,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "/logo.svg",
+        url: "/logo.png",
         width: 611,
         height: 611,
         alt: "Neurashop by Neuraltale - Tanzania Tech Store Logo",
@@ -140,7 +140,7 @@ export const metadata: Metadata = {
     description: "Buy laptops, smartphones, gaming gear & electronics online in Tanzania. Best prices, free delivery in Dar es Salaam. Shop now!",
     site: "@neuraltale",
     creator: "@neuraltale",
-    images: ["/logo.svg"],
+    images: ["/logo.png"],
   },
   other: {
     'geo.region': 'TZ',
@@ -183,11 +183,11 @@ export default function RootLayout({
     url: 'https://neuraltale.com',
     logo: {
       '@type': 'ImageObject',
-      url: `${baseUrl}/logo.svg`,
+      url: `${baseUrl}/logo.png`,
       width: 611,
       height: 611,
     },
-    image: `${baseUrl}/logo.svg`,
+    image: `${baseUrl}/logo.png`,
     description: 'Neuraltale is a leading technology company in Tanzania, operating Neurashop - the premier online electronics and tech store serving East Africa.',
     foundingDate: '2024',
     foundingLocation: 'Dar es Salaam, Tanzania',
@@ -238,8 +238,8 @@ export default function RootLayout({
     alternateName: ['Neurashop', 'Neurashop Tanzania', 'Neuraltale Shop'],
     description: 'Neurashop is Tanzania\'s #1 online tech store. Buy laptops, smartphones, tablets, gaming PCs, wireless earbuds, smartwatches and electronics at best prices. Free delivery in Dar es Salaam.',
     url: baseUrl,
-    logo: `${baseUrl}/logo.svg`,
-    image: `${baseUrl}/logo.svg`,
+    logo: `${baseUrl}/logo.png`,
+    image: `${baseUrl}/logo.png`,
     telephone: '+255',
     priceRange: 'TZS 50,000 - TZS 10,000,000',
     currenciesAccepted: 'TZS',

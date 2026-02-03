@@ -78,7 +78,7 @@ const AppSidebar = () => {
           <SidebarMenuItem>
             <SidebarMenuButton asChild>
               <Link href="/">
-                <Image src="/logo.svg" alt="Neurashop Logo" width={24} height={24} className="object-contain" />
+                <Image src="/logo.png" alt="Neurashop Logo" width={24} height={24} className="object-contain" />
                 <span>Neurashop</span>
               </Link>
             </SidebarMenuButton>

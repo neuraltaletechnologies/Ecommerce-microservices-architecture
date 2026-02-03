@@ -3,8 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:neurashop_mobile/screens/home/home_screen.dart';
 import 'package:neurashop_mobile/screens/splash_screen.dart';
 
-final goRouterProvider = Provider<GoRouter>((ref) {
-  return GoRouter(
+final goRouterProvider = Provider<GoRouter>((ref) => GoRouter(
     initialLocation: '/',
     routes: [
       GoRoute(
@@ -19,5 +18,4 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       // Add more routes here
     ],
-  );
-});
+  ));

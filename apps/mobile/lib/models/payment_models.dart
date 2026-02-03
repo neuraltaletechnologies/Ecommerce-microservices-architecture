@@ -4,11 +4,6 @@ part 'payment_models.g.dart';
 
 @JsonSerializable()
 class PaymentIntent {
-  final String id;
-  final double amount;
-  final String currency;
-  final String status;
-  final String? clientSecret;
 
   PaymentIntent({
     required this.id,
@@ -20,15 +15,17 @@ class PaymentIntent {
 
   factory PaymentIntent.fromJson(Map<String, dynamic> json) =>
       _$PaymentIntentFromJson(json);
+  final String id;
+  final double amount;
+  final String currency;
+  final String status;
+  final String? clientSecret;
 
   Map<String, dynamic> toJson() => _$PaymentIntentToJson(this);
 }
 
 @JsonSerializable()
 class StripeCheckoutSession {
-  final String sessionId;
-  final String publishableKey;
-  final String? url;
 
   StripeCheckoutSession({
     required this.sessionId,
@@ -38,16 +35,15 @@ class StripeCheckoutSession {
 
   factory StripeCheckoutSession.fromJson(Map<String, dynamic> json) =>
       _$StripeCheckoutSessionFromJson(json);
+  final String sessionId;
+  final String publishableKey;
+  final String? url;
 
   Map<String, dynamic> toJson() => _$StripeCheckoutSessionToJson(this);
 }
 
 @JsonSerializable()
 class CreateCheckoutSessionRequest {
-  final List<CheckoutItem> items;
-  final double totalPrice;
-  final String? successUrl;
-  final String? cancelUrl;
 
   CreateCheckoutSessionRequest({
     required this.items,
@@ -58,16 +54,16 @@ class CreateCheckoutSessionRequest {
 
   factory CreateCheckoutSessionRequest.fromJson(Map<String, dynamic> json) =>
       _$CreateCheckoutSessionRequestFromJson(json);
+  final List<CheckoutItem> items;
+  final double totalPrice;
+  final String? successUrl;
+  final String? cancelUrl;
 
   Map<String, dynamic> toJson() => _$CreateCheckoutSessionRequestToJson(this);
 }
 
 @JsonSerializable()
 class CheckoutItem {
-  final String productId;
-  final String productName;
-  final int quantity;
-  final double price;
 
   CheckoutItem({
     required this.productId,
@@ -78,6 +74,10 @@ class CheckoutItem {
 
   factory CheckoutItem.fromJson(Map<String, dynamic> json) =>
       _$CheckoutItemFromJson(json);
+  final String productId;
+  final String productName;
+  final int quantity;
+  final double price;
 
   Map<String, dynamic> toJson() => _$CheckoutItemToJson(this);
 }

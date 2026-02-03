@@ -136,7 +136,7 @@ const Navbar = () => {
             <Link href="/" className="flex items-center group flex-shrink-0">
               <div className="flex items-center space-x-1.5 sm:space-x-2">
                 <Image 
-                  src="/logo.svg" 
+                  src="/logo.png" 
                   alt="Neurashop Logo" 
                   width={32} 
                   height={32}

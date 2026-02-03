@@ -3,9 +3,7 @@ import 'package:neurashop_mobile/models/cart_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final cartProvider =
-    StateNotifierProvider<CartNotifier, CartState>((ref) {
-  return CartNotifier();
-});
+    StateNotifierProvider<CartNotifier, CartState>((ref) => CartNotifier());
 
 class CartNotifier extends StateNotifier<CartState> {
   CartNotifier() : super(CartState());

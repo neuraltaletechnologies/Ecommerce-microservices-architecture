@@ -20,11 +20,6 @@ final currentUserProvider = FutureProvider<AuthUser?>((ref) async {
 });
 
 class AuthState {
-  final AuthUser? user;
-  final AuthToken? token;
-  final bool isLoading;
-  final String? error;
-  final bool isAuthenticated;
 
   AuthState({
     this.user,
@@ -33,6 +28,11 @@ class AuthState {
     this.error,
     this.isAuthenticated = false,
   });
+  final AuthUser? user;
+  final AuthToken? token;
+  final bool isLoading;
+  final String? error;
+  final bool isAuthenticated;
 
   AuthState copyWith({
     AuthUser? user,
@@ -40,24 +40,22 @@ class AuthState {
     bool? isLoading,
     String? error,
     bool? isAuthenticated,
-  }) {
-    return AuthState(
+  }) => AuthState(
       user: user ?? this.user,
       token: token ?? this.token,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
     );
-  }
 }
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  final AuthService _authService;
 
   AuthNotifier(this._authService)
       : super(
           const AuthState(),
         );
+  final AuthService _authService;
 
   Future<void> login(String email, String password) async {
     state = state.copyWith(isLoading: true, error: null);

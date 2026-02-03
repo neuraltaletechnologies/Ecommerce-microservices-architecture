@@ -22,13 +22,13 @@ export const metadata: Metadata = {
   keywords: "admin dashboard, e-commerce management, product management, inventory system, order management, user management, sales analytics, neuraltale admin",
   icons: {
     icon: [
-      { url: '/logo.svg', sizes: '32x32', type: 'image/png' },
-      { url: '/logo.svg', sizes: 'any', type: 'image/svg+xml' },
+      { url: '/logo.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo.png', sizes: 'any', type: 'image/svg+xml' },
     ],
     apple: [
-      { url: '/logo.svg', sizes: 'any', type: 'image/svg+xml' },
+      { url: '/logo.png', sizes: 'any', type: 'image/svg+xml' },
     ],
-    shortcut: '/logo.svg',
+    shortcut: '/logo.png',
   },
   robots: {
     index: false,

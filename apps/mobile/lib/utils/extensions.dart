@@ -20,7 +20,5 @@ extension StringExtension on String {
 }
 
 extension DoubleExtension on double {
-  String toCurrency({String symbol = '\$'}) {
-    return '$symbol${toStringAsFixed(2)}';
-  }
+  String toCurrency({String symbol = '\$'}) => '$symbol${toStringAsFixed(2)}';
 }

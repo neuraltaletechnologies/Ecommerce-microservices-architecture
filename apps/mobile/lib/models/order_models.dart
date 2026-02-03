@@ -4,6 +4,19 @@ part 'order_models.g.dart';
 
 @JsonSerializable()
 class Order {
+
+  Order({
+    required this.id,
+    required this.userId,
+    required this.items,
+    required this.totalPrice,
+    required this.status,
+    required this.createdAt, required this.updatedAt, this.paymentStatus,
+    this.paymentMethod,
+    this.trackingNumber,
+  });
+
+  factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
   final String id;
   final String userId;
   final List<OrderItem> items;
@@ -15,31 +28,11 @@ class Order {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Order({
-    required this.id,
-    required this.userId,
-    required this.items,
-    required this.totalPrice,
-    required this.status,
-    this.paymentStatus,
-    this.paymentMethod,
-    this.trackingNumber,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
-
   Map<String, dynamic> toJson() => _$OrderToJson(this);
 }
 
 @JsonSerializable()
 class OrderItem {
-  final String productId;
-  final String productName;
-  final int quantity;
-  final double price;
-  final double? subtotal;
 
   OrderItem({
     required this.productId,
@@ -51,16 +44,17 @@ class OrderItem {
 
   factory OrderItem.fromJson(Map<String, dynamic> json) =>
       _$OrderItemFromJson(json);
+  final String productId;
+  final String productName;
+  final int quantity;
+  final double price;
+  final double? subtotal;
 
   Map<String, dynamic> toJson() => _$OrderItemToJson(this);
 }
 
 @JsonSerializable()
 class CreateOrderRequest {
-  final List<CartItemData> items;
-  final double totalPrice;
-  final String? paymentMethod;
-  final String? shippingAddress;
 
   CreateOrderRequest({
     required this.items,
@@ -71,16 +65,16 @@ class CreateOrderRequest {
 
   factory CreateOrderRequest.fromJson(Map<String, dynamic> json) =>
       _$CreateOrderRequestFromJson(json);
+  final List<CartItemData> items;
+  final double totalPrice;
+  final String? paymentMethod;
+  final String? shippingAddress;
 
   Map<String, dynamic> toJson() => _$CreateOrderRequestToJson(this);
 }
 
 @JsonSerializable()
 class CartItemData {
-  final String productId;
-  final String productName;
-  final int quantity;
-  final double price;
 
   CartItemData({
     required this.productId,
@@ -91,14 +85,16 @@ class CartItemData {
 
   factory CartItemData.fromJson(Map<String, dynamic> json) =>
       _$CartItemDataFromJson(json);
+  final String productId;
+  final String productName;
+  final int quantity;
+  final double price;
 
   Map<String, dynamic> toJson() => _$CartItemDataToJson(this);
 }
 
 @JsonSerializable()
 class OrdersResponse {
-  final List<Order> data;
-  final int total;
 
   OrdersResponse({
     required this.data,
@@ -107,6 +103,8 @@ class OrdersResponse {
 
   factory OrdersResponse.fromJson(Map<String, dynamic> json) =>
       _$OrdersResponseFromJson(json);
+  final List<Order> data;
+  final int total;
 
   Map<String, dynamic> toJson() => _$OrdersResponseToJson(this);
 }

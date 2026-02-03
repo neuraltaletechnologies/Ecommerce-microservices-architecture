@@ -1,13 +1,13 @@
 class AppException implements Exception {
-  final String message;
-  final String? code;
-  final dynamic originalException;
 
   AppException({
     required this.message,
     this.code,
     this.originalException,
   });
+  final String message;
+  final String? code;
+  final dynamic originalException;
 
   @override
   String toString() => message;
@@ -25,7 +25,6 @@ class NetworkException extends AppException {
 }
 
 class ServerException extends AppException {
-  final int? statusCode;
 
   ServerException({
     String? message,
@@ -36,6 +35,7 @@ class ServerException extends AppException {
     code: 'SERVER_ERROR',
     originalException: originalException,
   );
+  final int? statusCode;
 }
 
 class UnauthorizedException extends AppException {

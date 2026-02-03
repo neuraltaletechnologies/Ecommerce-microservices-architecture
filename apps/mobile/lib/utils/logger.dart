@@ -1,13 +1,8 @@
 import 'package:logger/logger.dart';
 
 class AppLogger {
-  static final AppLogger _instance = AppLogger._internal();
 
-  late Logger _logger;
-
-  factory AppLogger() {
-    return _instance;
-  }
+  factory AppLogger() => _instance;
 
   AppLogger._internal() {
     _logger = Logger(
@@ -20,6 +15,9 @@ class AppLogger {
       ),
     );
   }
+  static final AppLogger _instance = AppLogger._internal();
+
+  late Logger _logger;
 
   void debug(String message, [dynamic error, StackTrace? stackTrace]) {
     _logger.d(message, error: error, stackTrace: stackTrace);

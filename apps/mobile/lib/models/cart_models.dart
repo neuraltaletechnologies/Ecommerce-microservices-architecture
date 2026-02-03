@@ -4,12 +4,6 @@ part 'cart_models.g.dart';
 
 @JsonSerializable()
 class CartItem {
-  final String id;
-  final String productId;
-  final String productName;
-  final double price;
-  final int quantity;
-  final String? imageUrl;
 
   CartItem({
     required this.id,
@@ -22,6 +16,12 @@ class CartItem {
 
   factory CartItem.fromJson(Map<String, dynamic> json) =>
       _$CartItemFromJson(json);
+  final String id;
+  final String productId;
+  final String productName;
+  final double price;
+  final int quantity;
+  final String? imageUrl;
 
   Map<String, dynamic> toJson() => _$CartItemToJson(this);
 
@@ -29,15 +29,15 @@ class CartItem {
 }
 
 class CartState {
-  final List<CartItem> items;
-  final bool isLoading;
-  final String? error;
 
   CartState({
     this.items = const [],
     this.isLoading = false,
     this.error,
   });
+  final List<CartItem> items;
+  final bool isLoading;
+  final String? error;
 
   double get total => items.fold(0, (sum, item) => sum + item.subtotal);
 
@@ -47,11 +47,9 @@ class CartState {
     List<CartItem>? items,
     bool? isLoading,
     String? error,
-  }) {
-    return CartState(
+  }) => CartState(
       items: items ?? this.items,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
     );
-  }
 }

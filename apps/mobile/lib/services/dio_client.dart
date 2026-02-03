@@ -2,13 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:neurashop_mobile/config/constants.dart';
 
 class DioClient {
-  static final DioClient _instance = DioClient._internal();
 
-  late Dio _dio;
-
-  factory DioClient() {
-    return _instance;
-  }
+  factory DioClient() => _instance;
 
   DioClient._internal() {
     _dio = Dio(
@@ -41,6 +36,9 @@ class DioClient {
       ),
     );
   }
+  static final DioClient _instance = DioClient._internal();
+
+  late Dio _dio;
 
   Dio get client => _dio;
 

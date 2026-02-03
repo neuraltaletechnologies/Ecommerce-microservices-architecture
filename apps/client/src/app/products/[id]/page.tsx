@@ -92,7 +92,7 @@ export const generateMetadata = async ({
     const getImageUrl = (): string => {
       const images = product.images as any;
       
-      if (!images) return '/logo.svg';
+      if (!images) return '/logo.png';
       
       // Old structure: {main, gallery}
       if (images.main) return String(images.main);
@@ -108,7 +108,7 @@ export const generateMetadata = async ({
         return String(images[0]);
       }
       
-      return '/logo.svg';
+      return '/logo.png';
     };
     
     const imageUrl = getImageUrl();
@@ -280,7 +280,7 @@ const ProductPage = async ({
   const getStructuredDataImage = (): string => {
     const images = product.images as any;
     
-    if (!images) return '/logo.svg';
+    if (!images) return '/logo.png';
     
     // Old structure: {main, gallery}
     if (images.main) return String(images.main);
@@ -296,7 +296,7 @@ const ProductPage = async ({
       return String(images[0]);
     }
     
-    return '/logo.svg';
+    return '/logo.png';
   };
 
   // Build product images array for schema
