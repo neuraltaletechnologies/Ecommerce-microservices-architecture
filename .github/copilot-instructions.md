@@ -161,3 +161,32 @@ cd ../../packages/product-db && pnpm prisma generate && cd ../../apps/client && 
 - Turborepo config: `turbo.json`
 - Frontend middleware: `apps/client/src/middleware.ts`, `apps/admin/src/middleware.ts`
 - Cart store: `apps/client/src/stores/cartStore.ts`
+- External product API: `apps/product-service/src/utils/externalProductApi.ts`
+- Admin product search: `apps/admin/src/components/ExternalProductSearch.tsx`
+
+## External Product API Integration
+
+Admin can import product data from external APIs instead of manual entry:
+
+### API Priority (with fallbacks)
+1. **TechSpecs API** - Primary source for tech products (requires `TECHSPECS_API_KEY`)
+2. **DummyJSON** - Fallback with product dimensions and metadata
+3. **FakeStore API** - Last resort for basic product info
+
+### Admin Workflow
+1. Open "Add Product" → "API" tab
+2. Search for product (e.g., "MacBook Pro 14")
+3. Select result to import specs, images, description
+4. Admin must manually set: **price** and **stock quantity**
+5. Review in "Basic" tab, then save
+
+### Backend Route
+```typescript
+// GET /external-products/search?q=iPhone 15 (admin only)
+// Returns: { results: ExternalProductResult[], fromCache: boolean, rateLimited: boolean }
+```
+
+### Rate Limiting & Caching
+- 30 requests/minute per user (returns 429 if exceeded)
+- Results cached for 10 minutes to reduce API calls
+- Cache key: lowercase search query

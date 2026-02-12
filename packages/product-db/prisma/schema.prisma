@@ -29,6 +29,9 @@ model Product {
   stockStatus        String   @default("in_stock") // in_stock, limited_stock, pre_order, out_of_stock
   lowStockThreshold  Int      @default(10) // Alert when stock falls below this
   soldCount          Int      @default(0) // Total units sold
+  brand              String?  // Product brand (e.g., Apple, Samsung)
+  externalSource     String?  // Source API: techspecs, dummyjson, fakestore, or null for manual
+  externalId         String?  // Original ID from external API
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   categorySlug       String

@@ -47,8 +47,10 @@ import {
   X,
   Plus,
   Check,
-  Loader2
+  Loader2,
+  Search
 } from "lucide-react";
+import ExternalProductSearch, { ExternalProductResult } from "./ExternalProductSearch";
 
 const fetchCategories = async () => {
   const res = await fetch(
@@ -215,6 +217,64 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
     }
   };
 
+  // Import from external product API
+  const handleExternalProductImport = (externalProduct: ExternalProductResult) => {
+    // Map external product to form fields
+    form.setValue("name", externalProduct.name);
+    form.setValue("shortDescription", externalProduct.shortDescription || externalProduct.name);
+    form.setValue("description", externalProduct.description);
+    
+    // Set suggested price if available, otherwise admin must set manually
+    if (externalProduct.suggestedPrice) {
+      form.setValue("price", externalProduct.suggestedPrice);
+    }
+    
+    // Set technical specs from API
+    if (Object.keys(externalProduct.technicalSpecs).length > 0) {
+      form.setValue("technicalSpecs", externalProduct.technicalSpecs);
+    }
+    
+    // Set images - map to a default color if images exist
+    if (externalProduct.images.length > 0) {
+      // Use first color if already selected, otherwise use "default"
+      const currentColors = form.getValues("colors") || [];
+      const imageColor = currentColors[0] || "default";
+      form.setValue("images", { [imageColor]: externalProduct.images });
+      
+      // Auto-add the color if using default
+      if (!currentColors.includes(imageColor) && imageColor !== "default") {
+        form.setValue("colors", [imageColor] as any);
+      }
+    }
+    
+    // Map category from external API to our categories if possible
+    const categoryMapping: Record<string, string> = {
+      "smartphones": "smartphones",
+      "phones": "smartphones",
+      "laptops": "laptops",
+      "computers": "laptops",
+      "tablets": "tablets",
+      "audio": "audio",
+      "headphones": "audio",
+      "wearables": "wearables",
+      "smartwatches": "wearables",
+      "gaming": "gaming",
+      "accessories": "accessories",
+      "electronics": "smartphones", // Default fallback
+    };
+    
+    const normalizedCategory = externalProduct.category.toLowerCase();
+    const matchedCategory = Object.entries(categoryMapping).find(([key]) => 
+      normalizedCategory.includes(key)
+    );
+    if (matchedCategory) {
+      form.setValue("categorySlug", matchedCategory[1]);
+    }
+    
+    // Move to basic tab to let admin review and set price/stock
+    setActiveTab("basic");
+  };
+
   const selectedColors = form.watch("colors") || [];
   const selectedSizes = form.watch("sizes") || [];
   const currentImages = form.watch("images") || {};
@@ -266,7 +326,11 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col min-h-0">
         <div className="px-6 pt-4 flex-shrink-0">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="search" className="text-xs gap-1">
+              <Search className="h-3 w-3" />
+              <span className="hidden sm:inline">API</span>
+            </TabsTrigger>
             <TabsTrigger value="basic" className="text-xs gap-1">
               <Package className="h-3 w-3" />
               <span className="hidden sm:inline">Basic</span>
@@ -285,7 +349,7 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
             </TabsTrigger>
             <TabsTrigger value="import" className="text-xs gap-1">
               <FileJson className="h-3 w-3" />
-              <span className="hidden sm:inline">Import</span>
+              <span className="hidden sm:inline">JSON</span>
             </TabsTrigger>
           </TabsList>
         </div>
@@ -294,6 +358,11 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
             <Form {...form}>
               <form id="product-form" onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="pb-6">
                 
+                {/* EXTERNAL API SEARCH TAB */}
+                <TabsContent value="search" className="space-y-4 mt-4">
+                  <ExternalProductSearch onSelectProduct={handleExternalProductImport} />
+                </TabsContent>
+
                 {/* BASIC INFO TAB */}
                 <TabsContent value="basic" className="space-y-4 mt-4">
                   <Card>
@@ -930,6 +999,11 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
             {/* Fixed footer with navigation and submit button - outside ScrollArea */}
             <div className="border-t px-6 py-4 flex-shrink-0 bg-background space-y-3">
               {/* Tab navigation rows */}
+              {activeTab === "search" && (
+                <Button type="button" className="w-full" onClick={() => setActiveTab("basic")}>
+                  Skip to Manual Entry →
+                </Button>
+              )}
               {activeTab === "basic" && (
                 <Button type="button" className="w-full" onClick={() => setActiveTab("variants")}>
                   Next: Select Variants →

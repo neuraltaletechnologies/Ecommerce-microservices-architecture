@@ -10,6 +10,7 @@ import productRouter from "./routes/product.route";
 import categoryRouter from "./routes/category.route";
 import heroRouter from "./routes/hero.route";
 import uploadRouter from "./routes/upload.route";
+import externalProductRouter from "./routes/externalProduct.route";
 
 const app = express();
 
@@ -50,6 +51,7 @@ app.use("/products", productRouter);
 app.use("/categories", categoryRouter);
 app.use("/hero", heroRouter);
 app.use("/upload", uploadRouter);
+app.use("/external-products", externalProductRouter);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(err);
