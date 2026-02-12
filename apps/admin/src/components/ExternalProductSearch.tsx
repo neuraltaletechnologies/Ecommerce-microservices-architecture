@@ -93,15 +93,6 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
     },
   });
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim().length >= 2) {
-      searchMutation.mutate(query.trim());
-    } else {
-      toast.warning("Please enter at least 2 characters");
-    }
-  };
-
   const handleSelectProduct = (product: ExternalProductResult) => {
     setSelectedProduct(product);
   };
@@ -127,25 +118,41 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSearch} className="flex gap-2">
+          <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
                 placeholder="Search products (e.g., MacBook Pro 14, iPhone 15)"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && query.trim().length >= 2) {
+                    e.preventDefault();
+                    searchMutation.mutate(query.trim());
+                  }
+                }}
                 className="pl-9"
                 disabled={searchMutation.isPending}
               />
             </div>
-            <Button type="submit" disabled={searchMutation.isPending || query.length < 2}>
+            <Button 
+              type="button" 
+              onClick={() => {
+                if (query.trim().length >= 2) {
+                  searchMutation.mutate(query.trim());
+                } else {
+                  toast.warning("Please enter at least 2 characters");
+                }
+              }}
+              disabled={searchMutation.isPending || query.length < 2}
+            >
               {searchMutation.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 "Search"
               )}
             </Button>
-          </form>
+          </div>
           
           {fromCache && results.length > 0 && (
             <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
