@@ -12,17 +12,18 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
 
-  // Protect all other routes - if not authenticated, Clerk will redirect to sign-in
-  try {
-    await auth.protect(); 
-  } catch (error) {
-    // User not authenticated, let Clerk handle the redirect
-    return NextResponse.redirect(new URL("/sign-in", req.url));
-  }
-
+  // Get auth state without throwing
   const { userId, sessionClaims } = await auth();
 
-  if (userId && sessionClaims) {
+  // If not authenticated, redirect to sign-in
+  if (!userId) {
+    const signInUrl = new URL("/sign-in", req.url);
+    signInUrl.searchParams.set("redirect_url", pathname);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  // Check admin role
+  if (sessionClaims) {
     const claims = sessionClaims as CustomJwtSessionClaims;
     
     // Only log in development for debugging
@@ -58,6 +59,7 @@ export default clerkMiddleware(async (auth, req) => {
 }, {
   // Enable debug mode only in development
   debug: process.env.NODE_ENV === 'development',
+  signInUrl: '/sign-in',
 });
 
 export const config = {

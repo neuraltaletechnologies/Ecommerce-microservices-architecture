@@ -70,9 +70,9 @@ router.get("/details/:source/:productId", shouldBeAdmin, async (req: Request, re
   try {
     const { source, productId } = req.params;
     
-    if (!source || !['techspecs', 'fakestore', 'dummyjson'].includes(source)) {
+    if (!source || !['techspecs', 'fakestore', 'dummyjson', 'platzi'].includes(source)) {
       return res.status(400).json({ 
-        error: "Invalid source. Must be 'techspecs', 'dummyjson', or 'fakestore'" 
+        error: "Invalid source. Must be 'techspecs', 'dummyjson', 'platzi', or 'fakestore'" 
       });
     }
 

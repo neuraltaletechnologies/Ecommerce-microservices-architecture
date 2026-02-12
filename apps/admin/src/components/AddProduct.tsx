@@ -247,20 +247,100 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
       }
     }
     
-    // Map category from external API to our categories if possible
+    // Comprehensive category mapping from external APIs to our categories
     const categoryMapping: Record<string, string> = {
+      // Smartphones & Phones
       "smartphones": "smartphones",
       "phones": "smartphones",
+      "mobile": "smartphones",
+      "mobile-accessories": "accessories",
+      "iphone": "smartphones",
+      "android": "smartphones",
+      
+      // Laptops & Computers
       "laptops": "laptops",
+      "laptop": "laptops",
       "computers": "laptops",
+      "computer": "laptops",
+      "notebook": "laptops",
+      "macbook": "laptops",
+      
+      // Tablets
       "tablets": "tablets",
+      "tablet": "tablets",
+      "ipad": "tablets",
+      
+      // Audio
       "audio": "audio",
       "headphones": "audio",
+      "earphones": "audio",
+      "earbuds": "audio",
+      "speakers": "audio",
+      "sound": "audio",
+      
+      // Wearables & Watches
       "wearables": "wearables",
       "smartwatches": "wearables",
+      "smartwatch": "wearables",
+      "watches": "wearables",
+      "mens-watches": "wearables",
+      "womens-watches": "wearables",
+      "fitness": "wearables",
+      "tracker": "wearables",
+      
+      // Gaming
       "gaming": "gaming",
+      "games": "gaming",
+      "console": "gaming",
+      "playstation": "gaming",
+      "xbox": "gaming",
+      "nintendo": "gaming",
+      "video-games": "gaming",
+      
+      // Accessories
       "accessories": "accessories",
-      "electronics": "smartphones", // Default fallback
+      "charger": "accessories",
+      "cable": "accessories",
+      "case": "accessories",
+      "cover": "accessories",
+      "adapter": "accessories",
+      "power-bank": "accessories",
+      
+      // DummyJSON specific categories
+      "beauty": "accessories",
+      "fragrances": "accessories",
+      "furniture": "accessories",
+      "groceries": "accessories",
+      "home-decoration": "accessories",
+      "kitchen-accessories": "accessories",
+      "mens-shirts": "accessories",
+      "mens-shoes": "accessories",
+      "womens-bags": "accessories",
+      "womens-dresses": "accessories",
+      "womens-jewellery": "accessories",
+      "womens-shoes": "accessories",
+      "sunglasses": "accessories",
+      "tops": "accessories",
+      "vehicle": "accessories",
+      "motorcycle": "accessories",
+      "lighting": "accessories",
+      "skin-care": "accessories",
+      "sports-accessories": "accessories",
+      
+      // FakeStore specific categories
+      "men's clothing": "accessories",
+      "women's clothing": "accessories",
+      "jewelery": "accessories",
+      
+      // Platzi specific categories
+      "clothes": "accessories",
+      "shoes": "accessories",
+      "miscellaneous": "accessories",
+      
+      // General electronics fallbacks
+      "electronics": "smartphones",
+      "tech": "smartphones",
+      "gadgets": "smartphones",
     };
     
     const normalizedCategory = externalProduct.category.toLowerCase();

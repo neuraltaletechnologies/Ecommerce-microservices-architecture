@@ -1,8 +1,14 @@
 /**
  * External Product API Integration
  * 
- * Fetches product details from TechSpecs API with fallback to FakeStore API.
+ * Fetches product details from TechSpecs API with fallback to multiple free APIs.
  * Includes caching, rate limiting, and error handling.
+ * 
+ * API Priority:
+ * 1. TechSpecs API - Primary for tech products (requires TECHSPECS_API_KEY)
+ * 2. DummyJSON - Good fallback with product dimensions
+ * 3. Platzi Fake Store API - Additional electronics/tech products
+ * 4. FakeStore API - Basic product info as last resort
  */
 
 interface TechSpecsProduct {
@@ -27,8 +33,17 @@ interface FakeStoreProduct {
   rating: { rate: number; count: number };
 }
 
+interface PlatziProduct {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  category: { id: number; name: string; image: string };
+  images: string[];
+}
+
 export interface ExternalProductResult {
-  source: 'techspecs' | 'fakestore' | 'dummyjson';
+  source: 'techspecs' | 'fakestore' | 'dummyjson' | 'platzi';
   id: string;
   name: string;
   brand: string;
@@ -261,6 +276,82 @@ async function searchFakeStore(query: string): Promise<ExternalProductResult[]> 
 }
 
 /**
+ * Fallback: Search Platzi Fake Store API for products
+ * Good for electronics and tech products
+ */
+async function searchPlatzi(query: string): Promise<ExternalProductResult[]> {
+  try {
+    // Platzi API has search via title parameter
+    const response = await fetch(
+      `https://api.escuelajs.co/api/v1/products?title=${encodeURIComponent(query)}&limit=10`
+    );
+
+    if (!response.ok) {
+      return [];
+    }
+
+    const products: PlatziProduct[] = await response.json();
+
+    return products.map((item): ExternalProductResult => {
+      // Clean up images (Platzi sometimes has invalid JSON in images)
+      const cleanImages = item.images
+        ?.filter((img: string) => img && typeof img === 'string' && img.startsWith('http'))
+        ?.slice(0, 5) || [];
+
+      return {
+        source: 'platzi',
+        id: String(item.id),
+        name: item.title,
+        brand: extractBrandFromTitle(item.title),
+        description: item.description,
+        shortDescription: item.title.slice(0, 100),
+        category: item.category?.name || 'electronics',
+        images: cleanImages.length > 0 ? cleanImages : ['https://placehold.co/400x400?text=No+Image'],
+        technicalSpecs: {
+          'Product Information': [
+            { label: 'Category', value: item.category?.name || 'Unknown' },
+            { label: 'Product ID', value: String(item.id) },
+          ],
+        },
+        suggestedPrice: item.price ? Math.round(item.price * 2500) : undefined,
+      };
+    });
+  } catch (error) {
+    console.error('Platzi API error:', error);
+    return [];
+  }
+}
+
+/**
+ * Extract brand name from product title
+ */
+function extractBrandFromTitle(title: string): string {
+  const knownBrands = [
+    'Apple', 'Samsung', 'Sony', 'LG', 'Dell', 'HP', 'Lenovo', 'Asus', 'Acer',
+    'Microsoft', 'Google', 'OnePlus', 'Xiaomi', 'Huawei', 'Oppo', 'Vivo',
+    'JBL', 'Bose', 'Sennheiser', 'Audio-Technica', 'Beats', 'Anker',
+    'Logitech', 'Razer', 'SteelSeries', 'Corsair', 'HyperX',
+    'Nintendo', 'PlayStation', 'Xbox', 'Canon', 'Nikon', 'GoPro',
+    'Fitbit', 'Garmin', 'Amazfit', 'Polar', 'Suunto',
+    'Nike', 'Adidas', 'Puma', 'Under Armour', 'New Balance',
+  ];
+  
+  for (const brand of knownBrands) {
+    if (title.toLowerCase().includes(brand.toLowerCase())) {
+      return brand;
+    }
+  }
+  
+  // Try to extract first word as brand
+  const firstWord = title.split(' ')[0];
+  if (firstWord && firstWord.length > 2 && firstWord[0] && firstWord[0] === firstWord[0].toUpperCase()) {
+    return firstWord;
+  }
+  
+  return 'Generic';
+}
+
+/**
  * Main search function with caching, rate limiting, and fallbacks
  */
 export async function searchExternalProducts(
@@ -286,6 +377,11 @@ export async function searchExternalProducts(
     results = await searchDummyJson(query);
   }
 
+  // Try Platzi as third option (good for tech products)
+  if (results.length === 0) {
+    results = await searchPlatzi(query);
+  }
+
   // If still no results, try FakeStore as last resort
   if (results.length === 0) {
     results = await searchFakeStore(query);
@@ -303,7 +399,7 @@ export async function searchExternalProducts(
  * Get detailed product by ID from external API
  */
 export async function getExternalProductDetails(
-  source: 'techspecs' | 'fakestore' | 'dummyjson',
+  source: 'techspecs' | 'fakestore' | 'dummyjson' | 'platzi',
   productId: string
 ): Promise<ExternalProductResult | null> {
   try {
@@ -410,6 +506,31 @@ export async function getExternalProductDetails(
           ],
         },
         suggestedPrice: item.price ? Math.round(item.price * 2500) : undefined,
+      };
+    }
+
+    if (source === 'platzi') {
+      const response = await fetch(`https://api.escuelajs.co/api/v1/products/${productId}`);
+      if (!response.ok) return null;
+
+      const item: PlatziProduct = await response.json();
+      const brand = extractBrandFromTitle(item.title);
+
+      return {
+        source: 'platzi',
+        id: String(item.id),
+        name: item.title,
+        brand,
+        description: item.description,
+        shortDescription: item.title.slice(0, 100),
+        category: item.category?.name || 'General',
+        images: item.images || [],
+        technicalSpecs: {
+          'Product Information': [
+            { label: 'Category', value: item.category?.name || 'General' },
+          ],
+        },
+        suggestedPrice: item.price ? Math.round(item.price * 100) : undefined,
       };
     }
 

@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 
 export interface ExternalProductResult {
-  source: "techspecs" | "fakestore" | "dummyjson";
+  source: "techspecs" | "fakestore" | "dummyjson" | "platzi";
   id: string;
   name: string;
   brand: string;
@@ -42,6 +42,7 @@ const sourceLabels: Record<string, { label: string; color: string }> = {
   techspecs: { label: "TechSpecs", color: "bg-blue-500" },
   dummyjson: { label: "DummyJSON", color: "bg-green-500" },
   fakestore: { label: "FakeStore", color: "bg-orange-500" },
+  platzi: { label: "Platzi", color: "bg-purple-500" },
 };
 
 export default function ExternalProductSearch({ onSelectProduct }: ExternalProductSearchProps) {
