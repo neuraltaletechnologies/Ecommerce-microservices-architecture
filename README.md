@@ -1,247 +1,171 @@
 # E-commerce Microservices Architecture
 
-Modern e-commerce platform built with TypeScript microservices in a Turborepo monorepo. Production-ready with hybrid deployment: Render (backends) + Vercel (frontends).
+Production-grade e-commerce platform in a Turborepo monorepo. The backend is split into multiple services with direct HTTP communication. The frontend ships as two Next.js apps plus a Flutter mobile client.
 
-## 🏗️ Architecture
+## Architecture
 
-### Microservices (Backend)
-- **product-service** (port 8000) - Product catalog with Prisma/Neon PostgreSQL
-- **order-service** (port 8001) - Order management with MongoDB Atlas/Fastify  
-- **payment-service** (port 8002) - Stripe payments with Hono framework
-- **auth-service** (port 8003) - Clerk authentication with Express
-- **email-service** (port 8004) - Email notifications via HTTP endpoints
+### Services and ports
 
-### Frontend Applications
-- **client** (port 3002) - User-facing Next.js 15 app with Stripe checkout
-- **admin** (port 3003) - Admin dashboard for order/product management
+| Service | Port | Framework | Database | Auth middleware |
+| --- | --- | --- | --- | --- |
+| product-service | 8000 | Express | Prisma + Neon PostgreSQL | @clerk/express |
+| order-service | 8001 | Fastify | Mongoose + MongoDB Atlas | @clerk/fastify |
+| payment-service | 8002 | Hono | None | @hono/clerk-auth |
+| auth-service | 8003 | Express | None | @clerk/express |
+| email-service | 8004 | Express | None | Internal only |
 
-### Tech Stack
-- **Framework**: Next.js 15, TypeScript, Turborepo
-- **Styling**: Tailwind CSS 4
-- **Auth**: Clerk
-- **Payments**: Stripe
-- **Databases**: Neon PostgreSQL (serverless), MongoDB Atlas
-- **Communication**: Direct HTTP (no message queue)
-- **Deployment**: Render (backends) + Vercel (frontends)
+### Frontends
 
-## 🚀 Quick Start up
+| App | Port | Framework | Auth |
+| --- | --- | --- | --- |
+| client | 3002 | Next.js 15 | @clerk/nextjs |
+| admin | 3003 | Next.js 15 | @clerk/nextjs |
+| mobile | N/A | Flutter | Clerk tokens via API |
+
+### Communication
+
+- Services talk via direct HTTP (no queue). Example flow: payment-service -> order-service -> email-service.
+- Frontends call services via `NEXT_PUBLIC_*_SERVICE_URL` environment variables.
+
+## Repository layout
+
+- Apps live in [apps](apps) (backend services, web clients, Flutter mobile).
+- Shared packages live in [packages](packages) (types, database clients, configs).
+- Deployment blueprint for Render lives in [render.yaml](render.yaml).
+- Turborepo config lives in [turbo.json](turbo.json).
+
+## Quick start
 
 ### Prerequisites
-- Node.js 18+
-- pnpm 9.0.0
-- Neon PostgreSQL account
-- MongoDB Atlas account
-- Clerk account (authentication)
-- Stripe account (payments)
 
-### Local Development
+- Node.js 18+
+- pnpm 9+
+- Neon PostgreSQL and MongoDB Atlas accounts
+- Clerk account (auth)
+- Stripe account (optional payments)
+
+### Install
 
 ```bash
-# Install dependencies
 pnpm install
+```
 
-# Start all services
+### Run all services
+
+```bash
 pnpm dev
+```
 
-# Start specific service
+### Run a single service
+
+```bash
 turbo dev --filter=product-service
 ```
 
-## ☁️ Deployment
+## Environment variables
 
-### Production Architecture (Hybrid Deployment)
+### Backend services
 
-**Optimal Setup**: Vercel (Frontends) + Render (Backends)
+- `DATABASE_URL`, `DIRECT_URL` (product-service, Prisma)
+- `MONGO_URL` (order-service, Mongoose)
+- `CLERK_SECRET_KEY` (all services that verify auth)
+- `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` (payment-service)
+- `EMAIL_SERVICE_URL`, `ORDER_SERVICE_URL` (inter-service calls)
+- `FRONTEND_URL`, `ADMIN_URL` (CORS)
 
-```
-Users → Vercel CDN (Global) → Render APIs → Databases
-         (Frontends)            (Backends)   (Neon/MongoDB)
-```
+### Frontend apps
 
-#### Why This Architecture?
+- `NEXT_PUBLIC_PRODUCT_SERVICE_URL`
+- `NEXT_PUBLIC_ORDER_SERVICE_URL`
+- `NEXT_PUBLIC_PAYMENT_SERVICE_URL`
+- `NEXT_PUBLIC_AUTH_SERVICE_URL`
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
 
-| Component | Platform | Reason |
-|-----------|----------|--------|
-| **Frontends** | ✅ Vercel | Built for Next.js, global CDN, zero cold starts, 100GB free |
-| **Backends** | ✅ Render | Full Node.js, persistent connections, 750 hours/month |
-| **Databases** | Neon + MongoDB Atlas | Serverless PostgreSQL + MongoDB, free tiers |
+## Database workflows
 
----
+### Prisma (product-service)
 
-### 📦 Backend Deployment → Render
+Schema lives in [packages/product-db/prisma/schema.prisma](packages/product-db/prisma/schema.prisma).
 
-1. **Push to GitHub**:
-   ```bash
-   git push origin direct-Link-no-Kafka-
-   ```
-
-2. **Deploy via Blueprint** (Automatic):
-   - Go to [Render Dashboard](https://dashboard.render.com)
-   - Click "New" → "Blueprint"
-   - Connect GitHub → Select this repository
-   - Branch: `direct-Link-no-Kafka-`
-   - Render auto-detects `render.yaml`
-   - Click "Apply" → Deploys all 5 services
-
-3. **Set Environment Variables** (per service):
-   - DATABASE_URL (product-service)
-   - MONGO_URL (order-service)
-   - CLERK_SECRET_KEY (all services)
-   - STRIPE_SECRET_KEY (payment-service)
-   - Service URLs for inter-service communication
-
-📖 **Complete Guide**: [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)
-
-**Service URLs** (after deployment):
-- `https://neuraltale-product-service.onrender.com`
-- `https://neuraltale-order-service.onrender.com`
-- `https://neuraltale-payment-service.onrender.com`
-- `https://neuraltale-auth-service.onrender.com`
-- `https://neuraltale-email-service.onrender.com`
-
----
-
-### 🌐 Frontend Deployment → Vercel
-
-1. **Deploy Client**:
-   - Go to [Vercel Dashboard](https://vercel.com/new)
-   - Import GitHub repository
-   - **Root Directory**: `apps/client`
-   - **Build Command**: `cd ../../packages/product-db && pnpm prisma generate && cd ../../apps/client && pnpm run build`
-   - **Branch**: `direct-Link-no-Kafka-`
-   - Add environment variables (see VERCEL_DEPLOYMENT.md)
-   - Click "Deploy"
-
-2. **Deploy Admin**:
-   - Same process, use **Root Directory**: `apps/admin`
-
-📖 **Complete Guide**: [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)
-
-**Frontend URLs** (after deployment):
-- Client: `https://neuraltale-client.vercel.app`
-- Admin: `https://neuraltale-admin.vercel.app`
-
----
-
-### Post-Deployment Checklist
-
-- [ ] Update backend CORS with Vercel URLs
-- [ ] Set FRONTEND_URL in Render services
-- [ ] Update Stripe webhook URLs
-- [ ] Update Clerk allowed origins
-- [ ] Run Prisma migrations on production DB
-- [ ] Test complete user flow
-
----
-
-## 🗂️ Project Structure
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+pnpm --filter=@repo/product-db db:generate
+pnpm --filter=@repo/product-db db:migrate
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### Mongoose (order-service)
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+Models live in [packages/order-db/src/order-model.ts](packages/order-db/src/order-model.ts). Connection singleton is in [packages/order-db/src/connection.ts](packages/order-db/src/connection.ts).
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+## Auth and roles
 
-### Develop
+- Shared claims type: `CustomJwtSessionClaims` from `@repo/types`.
+- Express services (product/auth) check role in both `publicMetadata.role` and `metadata.role`.
+- Fastify/Hono services check role in `metadata.role` only.
 
-To develop all apps and packages, run the following command:
+## Payments (optional)
 
-```
-cd my-turborepo
+- Client creates a Stripe checkout session in payment-service.
+- Stripe webhook validates signature then creates an order via order-service.
+- Orders can also be created without Stripe for manual or COD workflows.
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+Webhook logic is in [apps/payment-service/src/routes/webhooks.route.ts](apps/payment-service/src/routes/webhooks.route.ts).
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+## Admin external product API
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+- Admin can search external APIs and import product details.
+- Priority order: TechSpecs -> DummyJSON -> FakeStore.
+- Rate limit: 30 requests per minute per user.
+- Cache duration: 10 minutes.
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+Admin UI entry point is in [apps/admin/src/components/ExternalProductSearch.tsx](apps/admin/src/components/ExternalProductSearch.tsx).
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+## Mobile app
 
-### Remote Caching
+- Flutter app lives in [apps/mobile](apps/mobile).
+- Setup and onboarding docs are in [apps/mobile/SETUP.md](apps/mobile/SETUP.md) and [apps/mobile/GETTING_STARTED.md](apps/mobile/GETTING_STARTED.md).
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+## Build and lint
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```bash
+pnpm lint
+pnpm check-types
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+Build a single app or package:
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```bash
+pnpm exec turbo build --filter=product-service
 ```
 
-## Useful Links
+## Deployment
 
-Learn more about the power of Turborepo:
+### Backends on Render
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+- Render reads [render.yaml](render.yaml) to deploy all services.
+- Ensure all backend environment variables are set per service.
+
+### Frontends on Vercel
+
+- Deploy [apps/client](apps/client) and [apps/admin](apps/admin) as separate projects.
+- Vercel build command for both apps:
+
+```bash
+cd ../../packages/product-db && pnpm prisma generate && cd ../../apps/client && pnpm run build
+```
+
+Update the build command path when deploying the admin app.
+
+## Troubleshooting
+
+- If a service returns 401, confirm `CLERK_SECRET_KEY` and allowed origins.
+- If products fail to load, verify `NEXT_PUBLIC_PRODUCT_SERVICE_URL` and CORS settings.
+- If Stripe webhooks fail, confirm `STRIPE_WEBHOOK_SECRET` and webhook URL.
+- If Prisma fails in CI, ensure `DIRECT_URL` is set and migrations ran.
+
+## Key entry points
+
+- product-service: [apps/product-service/src/index.ts](apps/product-service/src/index.ts)
+- order-service: [apps/order-service/src/index.ts](apps/order-service/src/index.ts)
+- payment-service: [apps/payment-service/src/index.ts](apps/payment-service/src/index.ts)
+- auth-service: [apps/auth-service/src/index.ts](apps/auth-service/src/index.ts)
+- email-service: [apps/email-service/src/index.ts](apps/email-service/src/index.ts)
