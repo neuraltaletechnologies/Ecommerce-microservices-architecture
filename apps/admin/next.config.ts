@@ -15,6 +15,18 @@ const nextConfig: NextConfig = {
       {
         protocol:"https",
         hostname:"res.cloudinary.com",
+      },
+      {
+        protocol:"https",
+        hostname:"cdn.dummyjson.com",
+      },
+      {
+        protocol:"https",
+        hostname:"fakestoreapi.com",
+      },
+      {
+        protocol:"https",
+        hostname:"api.escuelajs.co",
       }
     ],
     formats: ['image/webp', 'image/avif'],

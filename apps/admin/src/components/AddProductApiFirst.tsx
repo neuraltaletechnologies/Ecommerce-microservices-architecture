@@ -55,6 +55,7 @@ import {
   EyeOff,
   Percent,
 } from "lucide-react";
+import { formatTZS } from "@/lib/utils/currency";
 
 import type { CategoryType, ProductType } from "@repo/types";
 
@@ -309,9 +310,9 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
       form.setValue("categorySlug", resolvedCategorySlug);
     }
 
-    // Set suggested price if available (convert to smallest unit if needed)
+    // Set suggested price if available (database stores whole TZS)
     if (product.suggestedPrice) {
-      form.setValue("price", Math.round(product.suggestedPrice * 100)); // Assuming price in cents
+      form.setValue("price", Math.round(product.suggestedPrice));
     }
 
     setMode("import");
@@ -333,15 +334,6 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
       return;
     }
     importMutation.mutate(data);
-  };
-
-  // Format price for display (assuming price in smallest currency unit)
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("id-ID", {
-      style: "currency",
-      currency: "IDR",
-      minimumFractionDigits: 0,
-    }).format(price);
   };
 
   return (
@@ -552,7 +544,7 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                             <p className="text-xs text-muted-foreground mt-1">
                               &quot;{duplicateWarning.existingProduct?.name}&quot; exists in database
                               {duplicateWarning.existingProduct?.price && (
-                                <> at {formatPrice(duplicateWarning.existingProduct.price)}</>
+                                <> at {formatTZS(duplicateWarning.existingProduct.price)}</>
                               )}
                             </p>
                           </div>
@@ -581,7 +573,7 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                             name="price"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Price (IDR) *</FormLabel>
+                                <FormLabel>Price (TZS) *</FormLabel>
                                 <FormControl>
                                   <Input
                                     type="number"
@@ -591,7 +583,7 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                                   />
                                 </FormControl>
                                 <FormDescription>
-                                  {field.value > 0 && formatPrice(field.value)}
+                                  {field.value > 0 && formatTZS(field.value)}
                                 </FormDescription>
                                 <FormMessage />
                               </FormItem>
@@ -620,7 +612,7 @@ export default function AddProductApiFirst({ editData, onClose, onOpenManualForm
                                 </FormControl>
                                 {field.value > 0 && form.watch("price") > 0 && (
                                   <FormDescription>
-                                    Final: {formatPrice(form.watch("price") * (1 - field.value / 100))}
+                                    Final: {formatTZS(Math.round(form.watch("price") * (1 - field.value / 100)))}
                                   </FormDescription>
                                 )}
                                 <FormMessage />
