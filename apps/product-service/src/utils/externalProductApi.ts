@@ -290,12 +290,23 @@ async function searchPlatzi(query: string): Promise<ExternalProductResult[]> {
       return [];
     }
 
-    const products: PlatziProduct[] = await response.json();
+    const responseData = await response.json();
+    // Platzi returns { value: [...], Count: number } format
+    const products = Array.isArray(responseData) ? responseData : (responseData.value || []);
 
-    return products.map((item): ExternalProductResult => {
+    if (!Array.isArray(products)) {
+      return [];
+    }
+
+    return products.map((item: any): ExternalProductResult => {
       // Clean up images (Platzi sometimes has invalid JSON in images)
       const cleanImages = item.images
-        ?.filter((img: string) => img && typeof img === 'string' && img.startsWith('http'))
+        ?.filter((img: any) => {
+          if (typeof img === 'string' && img.startsWith('http')) {
+            return true;
+          }
+          return false;
+        })
         ?.slice(0, 5) || [];
 
       return {
@@ -303,7 +314,7 @@ async function searchPlatzi(query: string): Promise<ExternalProductResult[]> {
         id: String(item.id),
         name: item.title,
         brand: extractBrandFromTitle(item.title),
-        description: item.description,
+        description: item.description || `${item.title} - High quality product`,
         shortDescription: item.title.slice(0, 100),
         category: item.category?.name || 'electronics',
         images: cleanImages.length > 0 ? cleanImages : ['https://placehold.co/400x400?text=No+Image'],
@@ -513,24 +524,30 @@ export async function getExternalProductDetails(
       const response = await fetch(`https://api.escuelajs.co/api/v1/products/${productId}`);
       if (!response.ok) return null;
 
-      const item: PlatziProduct = await response.json();
+      const item: any = await response.json();
       const brand = extractBrandFromTitle(item.title);
+
+      // Clean up images
+      const cleanImages = item.images
+        ?.filter((img: any) => typeof img === 'string' && img.startsWith('http'))
+        ?.slice(0, 5) || [];
 
       return {
         source: 'platzi',
         id: String(item.id),
         name: item.title,
         brand,
-        description: item.description,
+        description: item.description || `${item.title} - High quality product`,
         shortDescription: item.title.slice(0, 100),
         category: item.category?.name || 'General',
-        images: item.images || [],
+        images: cleanImages.length > 0 ? cleanImages : ['https://placehold.co/400x400?text=No+Image'],
         technicalSpecs: {
           'Product Information': [
             { label: 'Category', value: item.category?.name || 'General' },
+            { label: 'Product ID', value: String(item.id) },
           ],
         },
-        suggestedPrice: item.price ? Math.round(item.price * 100) : undefined,
+        suggestedPrice: item.price ? Math.round(item.price * 2500) : undefined,
       };
     }
 
