@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "@clerk/nextjs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -135,9 +135,10 @@ const categoryMapping: Record<string, string> = {
 interface AddProductApiFirstProps {
   editData?: ProductType | null;
   onClose: () => void;
+  onOpenManualForm?: () => void;
 }
 
-export default function AddProductApiFirst({ editData, onClose }: AddProductApiFirstProps) {
+export default function AddProductApiFirst({ editData, onClose, onOpenManualForm }: AddProductApiFirstProps) {
   const isEditMode = !!editData;
   const { getToken } = useAuth();
   const queryClient = useQueryClient();
@@ -154,7 +155,7 @@ export default function AddProductApiFirst({ editData, onClose }: AddProductApiF
   const { data: categories = [] } = useQuery<CategoryType[]>({
     queryKey: ["categories"],
     queryFn: async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/category`);
+      const res = await fetch(`${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`);
       if (!res.ok) throw new Error("Failed to fetch categories");
       return res.json();
     },
@@ -279,14 +280,34 @@ export default function AddProductApiFirst({ editData, onClose }: AddProductApiF
     },
   });
 
+  const resolveCategorySlug = useCallback((externalCategory?: string) => {
+    if (!categories.length) return "";
+
+    const normalized = (externalCategory || "").toLowerCase().trim();
+    const mapped = categoryMapping[normalized] || "accessories";
+
+    const mappedExists = categories.some((cat) => cat.slug === mapped);
+    if (mappedExists) return mapped;
+
+    const bySlug = categories.find((cat) => cat.slug.toLowerCase() === normalized);
+    if (bySlug) return bySlug.slug;
+
+    const byName = categories.find((cat) => cat.name.toLowerCase() === normalized);
+    if (byName) return byName.slug;
+
+    return categories[0]?.slug || "";
+  }, [categories]);
+
   // Handle product selection
   const handleSelectProduct = (product: ExternalProductResult) => {
     setSelectedProduct(product);
     checkDuplicateMutation.mutate(product);
 
-    // Auto-fill category if possible
-    const mappedCategory = categoryMapping[product.category?.toLowerCase()] || "accessories";
-    form.setValue("categorySlug", mappedCategory);
+    // Auto-fill category with validated slug
+    const resolvedCategorySlug = resolveCategorySlug(product.category);
+    if (resolvedCategorySlug) {
+      form.setValue("categorySlug", resolvedCategorySlug);
+    }
 
     // Set suggested price if available (convert to smallest unit if needed)
     if (product.suggestedPrice) {
@@ -295,6 +316,15 @@ export default function AddProductApiFirst({ editData, onClose }: AddProductApiF
 
     setMode("import");
   };
+
+  useEffect(() => {
+    if (selectedProduct && !form.getValues("categorySlug")) {
+      const resolvedCategorySlug = resolveCategorySlug(selectedProduct.category);
+      if (resolvedCategorySlug) {
+        form.setValue("categorySlug", resolvedCategorySlug);
+      }
+    }
+  }, [selectedProduct, form, resolveCategorySlug]);
 
   // Handle import submit
   const handleImportSubmit = (data: ImportFormData) => {
@@ -750,9 +780,11 @@ export default function AddProductApiFirst({ editData, onClose }: AddProductApiF
                     name, description, images, and specifications.
                   </p>
                   <Button variant="outline" onClick={() => {
-                    // Open the original AddProduct component for manual entry
-                    // For now, show a message
-                    toast.info("Manual entry form - full implementation in original AddProduct");
+                    if (onOpenManualForm) {
+                      onOpenManualForm();
+                      return;
+                    }
+                    toast.info("Manual full form is not available in this view.");
                   }}>
                     <Pencil className="h-4 w-4 mr-2" />
                     Open Full Form

@@ -173,6 +173,15 @@ router.post("/import", shouldBeAdmin, async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Category is required" });
     }
 
+    const existingCategory = await prisma.category.findUnique({
+      where: { slug: categorySlug },
+      select: { slug: true },
+    });
+
+    if (!existingCategory) {
+      return res.status(400).json({ error: `Invalid category slug: ${categorySlug}` });
+    }
+
     // Check for duplicates before import
     const existingProduct = await prisma.product.findFirst({
       where: {
@@ -245,7 +254,8 @@ router.post("/import", shouldBeAdmin, async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Product import error:", error);
-    return res.status(500).json({ error: "Failed to import product" });
+    const errorMessage = error instanceof Error ? error.message : "Failed to import product";
+    return res.status(500).json({ error: errorMessage });
   }
 });
 

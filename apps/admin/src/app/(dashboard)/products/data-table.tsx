@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import AddProductApiFirst from "@/components/AddProductApiFirst";
+import AddProduct from "@/components/AddProduct";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -55,6 +56,7 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
   const [addProductOpen, setAddProductOpen] = useState(false);
+  const [addProductMode, setAddProductMode] = useState<"api" | "manual">("api");
 
   const { getToken } = useAuth();
   const router = useRouter();
@@ -228,14 +230,26 @@ export function DataTable<TData, TValue>({
 
         <Sheet open={addProductOpen} onOpenChange={setAddProductOpen}>
           <SheetTrigger asChild>
-            <Button>Add Product</Button>
+            <Button onClick={() => setAddProductMode("api")}>Add Product</Button>
           </SheetTrigger>
-          <AddProductApiFirst 
-            onClose={() => {
-              setAddProductOpen(false);
-              router.refresh();
-            }} 
-          />
+          {addProductMode === "api" ? (
+            <AddProductApiFirst 
+              onOpenManualForm={() => setAddProductMode("manual")}
+              onClose={() => {
+                setAddProductOpen(false);
+                setAddProductMode("api");
+                router.refresh();
+              }} 
+            />
+          ) : (
+            <AddProduct
+              onSuccess={() => {
+                setAddProductOpen(false);
+                setAddProductMode("api");
+                router.refresh();
+              }}
+            />
+          )}
         </Sheet>
       </div>
 

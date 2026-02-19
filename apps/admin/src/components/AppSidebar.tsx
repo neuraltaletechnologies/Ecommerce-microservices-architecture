@@ -34,6 +34,7 @@ import AddOrder from "./AddOrder";
 import AddUserSheet from "./AddUserSheet";
 import AddCategory from "./AddCategory";
 import AddProductApiFirst from "./AddProductApiFirst";
+import AddProduct from "./AddProduct";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -261,6 +262,7 @@ const AppSidebar = () => {
 // Separate component for Add Product with sheet state
 function AddProductSidebarItem() {
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<"api" | "manual">("api");
   const router = useRouter();
 
   return (
@@ -268,18 +270,30 @@ function AddProductSidebarItem() {
       <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <SidebarMenuButton asChild>
-            <Link href="#">
+            <Link href="#" onClick={() => setMode("api")}>
               <Plus />
               Add Product
             </Link>
           </SidebarMenuButton>
         </SheetTrigger>
-        <AddProductApiFirst
-          onClose={() => {
-            setOpen(false);
-            router.refresh();
-          }}
-        />
+        {mode === "api" ? (
+          <AddProductApiFirst
+            onOpenManualForm={() => setMode("manual")}
+            onClose={() => {
+              setOpen(false);
+              setMode("api");
+              router.refresh();
+            }}
+          />
+        ) : (
+          <AddProduct
+            onSuccess={() => {
+              setOpen(false);
+              setMode("api");
+              router.refresh();
+            }}
+          />
+        )}
       </Sheet>
     </SidebarMenuItem>
   );
