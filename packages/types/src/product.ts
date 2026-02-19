@@ -87,13 +87,14 @@ export const ProductFormSchema = z
     shortDescription: z
       .string({ message: "Short description is required!" })
       .min(1, { message: "Short description is required!" })
-      .max(60),
+      .max(200),
     description: z
       .string({ message: "Description is required!" })
       .min(1, { message: "Description is required!" }),
     price: z
       .number({ message: "Price is required!" })
       .min(1, { message: "Price is required!" }),
+    discount: z.number().int().min(0).max(100).default(0), // Discount percentage
     categorySlug: z
       .string({ message: "Category is required!" })
       .min(1, { message: "Category is required!" }),
@@ -127,6 +128,10 @@ export const ProductFormSchema = z
     stockStatus: z.enum(["in_stock", "limited_stock", "pre_order", "out_of_stock"]).default("in_stock"),
     lowStockThreshold: z.number().int().min(0).default(10),
     soldCount: z.number().int().min(0).default(0),
+    isPublished: z.boolean().default(true),
+    brand: z.string().optional(),
+    externalSource: z.string().optional(),
+    externalId: z.string().optional(),
   })
   .refine(
     (data) => {
@@ -140,6 +145,17 @@ export const ProductFormSchema = z
       path: ["images"],
     }
   );
+
+// Simplified schema for API imports - only business fields needed
+export const ApiImportSchema = z.object({
+  price: z.number({ message: "Price is required!" }).min(1, { message: "Price must be greater than 0" }),
+  discount: z.number().int().min(0).max(100).default(0),
+  stockQuantity: z.number().int().min(0).default(0),
+  categorySlug: z.string({ message: "Category is required!" }).min(1, { message: "Category is required!" }),
+  isPublished: z.boolean().default(true),
+  colors: z.array(z.string()).optional(),
+  sizes: z.array(z.string()).optional(),
+});
 
 export type CategoryType = Category;
 

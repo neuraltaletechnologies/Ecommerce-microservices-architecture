@@ -26,7 +26,7 @@ import { Trash2, Search, X, Filter, Package } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import AddProduct from "@/components/AddProduct";
+import AddProductApiFirst from "@/components/AddProductApiFirst";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -54,6 +54,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
   const [globalFilter, setGlobalFilter] = useState("");
+  const [addProductOpen, setAddProductOpen] = useState(false);
 
   const { getToken } = useAuth();
   const router = useRouter();
@@ -225,11 +226,16 @@ export function DataTable<TData, TValue>({
           </DropdownMenu>
         </div>
 
-        <Sheet>
+        <Sheet open={addProductOpen} onOpenChange={setAddProductOpen}>
           <SheetTrigger asChild>
             <Button>Add Product</Button>
           </SheetTrigger>
-          <AddProduct />
+          <AddProductApiFirst 
+            onClose={() => {
+              setAddProductOpen(false);
+              router.refresh();
+            }} 
+          />
         </Sheet>
       </div>
 

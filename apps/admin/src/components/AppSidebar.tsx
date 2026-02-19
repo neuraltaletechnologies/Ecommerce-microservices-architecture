@@ -33,9 +33,10 @@ import { Sheet, SheetTrigger } from "./ui/sheet";
 import AddOrder from "./AddOrder";
 import AddUserSheet from "./AddUserSheet";
 import AddCategory from "./AddCategory";
-import AddProduct from "./AddProduct";
+import AddProductApiFirst from "./AddProductApiFirst";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const items = [
   {
@@ -130,19 +131,7 @@ const AppSidebar = () => {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <SidebarMenuButton asChild>
-                      <Link href="#">
-                        <Plus />
-                        Add Product
-                      </Link>
-                    </SidebarMenuButton>
-                  </SheetTrigger>
-                  <AddProduct />
-                </Sheet>
-              </SidebarMenuItem>
+              <AddProductSidebarItem />
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link href="/categories">
@@ -268,5 +257,32 @@ const AppSidebar = () => {
     </Sidebar>
   );
 };
+
+// Separate component for Add Product with sheet state
+function AddProductSidebarItem() {
+  const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  return (
+    <SidebarMenuItem>
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetTrigger asChild>
+          <SidebarMenuButton asChild>
+            <Link href="#">
+              <Plus />
+              Add Product
+            </Link>
+          </SidebarMenuButton>
+        </SheetTrigger>
+        <AddProductApiFirst
+          onClose={() => {
+            setOpen(false);
+            router.refresh();
+          }}
+        />
+      </Sheet>
+    </SidebarMenuItem>
+  );
+}
 
 export default AppSidebar;
