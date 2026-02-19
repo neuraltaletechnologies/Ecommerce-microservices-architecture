@@ -49,36 +49,10 @@ const getStockBadge = (status: string) => {
   }
 };
 
-// Headline variations for different categories
-const categoryHeadlines: Record<string, { headline: string; subheadline: string }> = {
-  audio: {
-    headline: "Sound Redefined",
-    subheadline: "Experience audio like never before with premium headphones and speakers engineered for audiophiles.",
-  },
-  headphones: {
-    headline: "Immerse Yourself",
-    subheadline: "Step into a world of crystal-clear sound with our curated collection of premium headphones.",
-  },
-  gaming: {
-    headline: "Level Up Your Game",
-    subheadline: "Dominate every match with cutting-edge gaming gear designed for serious players.",
-  },
-  "gaming-laptops": {
-    headline: "Power Unleashed",
-    subheadline: "High-performance gaming laptops built for the ultimate gaming experience anywhere.",
-  },
-  smartphones: {
-    headline: "Stay Connected",
-    subheadline: "Discover the latest smartphones featuring innovative technology and stunning design.",
-  },
-  laptops: {
-    headline: "Work Smarter",
-    subheadline: "Premium laptops engineered for productivity, creativity, and everything in between.",
-  },
-  default: {
-    headline: "Discover Excellence",
-    subheadline: "Explore our curated collection of premium products designed to elevate your everyday life.",
-  },
+const truncateText = (text: string, maxLength: number) => {
+  if (!text) return "";
+  if (text.length <= maxLength) return text;
+  return `${text.slice(0, maxLength).trimEnd()}...`;
 };
 
 const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
@@ -203,16 +177,11 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
       .join(" ");
   };
 
-  const getHeadlineContent = (categorySlug: string): { headline: string; subheadline: string } => {
-    const slug = categorySlug.toLowerCase();
-    const content = categoryHeadlines[slug];
-    if (content) return content;
-    return categoryHeadlines.default as { headline: string; subheadline: string };
-  };
-
-  const headlineContent = getHeadlineContent(currentProduct.categorySlug);
-  const headline = headlineContent.headline;
-  const subheadline = headlineContent.subheadline;
+  const headline = currentProduct.shortDescription?.trim() || currentProduct.name;
+  const subheadline = truncateText(
+    currentProduct.description?.trim() || `Explore ${formatCategoryName(currentProduct.categorySlug)} from Neurashop.`,
+    180
+  );
 
   return (
     <section
