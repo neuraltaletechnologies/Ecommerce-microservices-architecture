@@ -55,24 +55,42 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
   const searchMutation = useMutation({
     mutationFn: async (searchQuery: string) => {
       const token = await getToken();
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/external-products/search?q=${encodeURIComponent(searchQuery)}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const url = `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/external-products/search?q=${encodeURIComponent(searchQuery)}`;
+      
+      console.log("Search URL:", url);
+      console.log("Auth token available:", !!token);
+
+      const res = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      console.log("Response status:", res.status, res.statusText);
+
+      // Read the response text first (can only read body once)
+      const responseText = await res.text();
+      
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("API response is not valid JSON:", responseText);
+        throw new Error(`API returned invalid JSON: ${responseText.substring(0, 150)}`);
+      }
 
       if (!res.ok) {
-        const data = await res.json();
         if (res.status === 429) {
           throw new Error("Rate limit exceeded. Please wait a minute.");
         }
-        throw new Error(data.error || "Search failed");
+        if (res.status === 404) {
+          throw new Error("Search endpoint not found. Check if product-service is running.");
+        }
+        throw new Error(data.error || data.message || `Search failed with status ${res.status}`);
       }
 
-      return res.json();
+      return data;
     },
     onSuccess: (data) => {
       setResults(data.results || []);
@@ -88,7 +106,9 @@ export default function ExternalProductSearch({ onSelectProduct }: ExternalProdu
       }
     },
     onError: (error: Error) => {
-      toast.error(error.message);
+      console.error("Search error details:", error);
+      const errorMsg = error.message || "Search failed";
+      toast.error(errorMsg);
       setResults([]);
     },
   });

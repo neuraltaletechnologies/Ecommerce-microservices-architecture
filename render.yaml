@@ -31,6 +31,10 @@ services:
         sync: false
       - key: CLOUDINARY_API_SECRET
         sync: false
+      - key: FRONTEND_URL
+        value: https://neurashop.neuraltale.com
+      - key: ADMIN_URL
+        value: https://backoffice.neuraltale.com
 
   # Order Service
   - type: web
