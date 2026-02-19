@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:neurashop_mobile/config/theme.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -99,8 +99,8 @@ class _SplashScreenState extends State<SplashScreen> {
 class GradientText extends StatelessWidget {
   const GradientText(
     this.text, {
-    required this.style, required this.gradient, Key? key,
-  }) : super(key: key);
+    required this.style, required this.gradient, super.key,
+  });
 
   final String text;
   final TextStyle style;

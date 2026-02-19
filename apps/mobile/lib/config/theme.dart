@@ -14,7 +14,7 @@ class AppColors {
 
 class AppTheme {
   static ThemeData lightTheme() {
-    final colorScheme = ColorScheme(
+    const colorScheme = ColorScheme(
       brightness: Brightness.light,
       primary: AppColors.deepNavy,
       onPrimary: Colors.white,
@@ -26,8 +26,6 @@ class AppTheme {
       onError: Colors.white,
       surface: AppColors.surface,
       onSurface: AppColors.textPrimary,
-      background: AppColors.lightBackground,
-      onBackground: AppColors.textPrimary,
     );
 
     final base = ThemeData(
@@ -111,7 +109,7 @@ class AppTheme {
   }
 
   static ThemeData darkTheme() {
-    final colorScheme = ColorScheme(
+    const colorScheme = ColorScheme(
       brightness: Brightness.dark,
       primary: AppColors.goldenYellow,
       onPrimary: AppColors.deepNavy,
@@ -123,8 +121,6 @@ class AppTheme {
       onError: Colors.black,
       surface: const Color(0xFF0B1220),
       onSurface: const Color(0xFFE2E8F0),
-      background: const Color(0xFF0B1220),
-      onBackground: const Color(0xFFE2E8F0),
     );
 
     final base = ThemeData(

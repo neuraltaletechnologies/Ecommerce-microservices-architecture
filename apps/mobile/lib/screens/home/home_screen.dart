@@ -9,7 +9,7 @@ import 'package:neurashop_mobile/models/product_models.dart';
 import 'package:neurashop_mobile/providers/product_provider.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -43,7 +43,7 @@ class HomeScreen extends ConsumerWidget {
               child: featuredProductsAsync.when(
                 data: (products) => HomeHeroSection(products: products),
                 loading: () => const _HeroSkeleton(),
-                error: (error, stack) => _SectionError(message: 'Failed to load hero products'),
+                error: (error, stack) => const _SectionError(message: 'Failed to load hero products'),
               ),
             ),
             const SliverToBoxAdapter(
@@ -55,12 +55,12 @@ class HomeScreen extends ConsumerWidget {
             const SliverToBoxAdapter(
               child: SizedBox(height: 24),
             ),
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: SectionHeader(
                 badge: 'Featured Collection',
                 title: 'Trending Products',
                 subtitle: 'Discover our most popular tech products handpicked for you.',
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   colors: [AppColors.goldenYellow, AppColors.tealBlue],
                 ),
               ),
@@ -69,7 +69,7 @@ class HomeScreen extends ConsumerWidget {
               child: featuredProductsAsync.when(
                 data: (products) => FeaturedProductsCarousel(products: products),
                 loading: () => const _HorizontalSkeleton(),
-                error: (error, stack) => _SectionError(message: 'Failed to load featured products'),
+                error: (error, stack) => const _SectionError(message: 'Failed to load featured products'),
               ),
             ),
             const SliverToBoxAdapter(
@@ -81,12 +81,12 @@ class HomeScreen extends ConsumerWidget {
             const SliverToBoxAdapter(
               child: SizedBox(height: 24),
             ),
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
               child: SectionHeader(
                 badge: 'Explore Categories',
                 title: 'Shop By Category',
                 subtitle: 'Find the perfect tech companion for your lifestyle.',
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   colors: [AppColors.goldenYellow, AppColors.tealBlue],
                 ),
               ),
@@ -112,7 +112,7 @@ class HomeScreen extends ConsumerWidget {
                   padding: EdgeInsets.all(16),
                   child: _GridSkeleton(),
                 ),
-                error: (error, stack) => _SectionError(message: 'Failed to load categories'),
+                error: (error, stack) => const _SectionError(message: 'Failed to load categories'),
               ),
             ),
             const SliverToBoxAdapter(
@@ -146,7 +146,7 @@ class HomeScreen extends ConsumerWidget {
 }
 
 class HomeHeroSection extends StatelessWidget {
-  const HomeHeroSection({required this.products, Key? key}) : super(key: key);
+  const HomeHeroSection({required this.products, super.key});
 
   final List<Product> products;
 
@@ -270,7 +270,7 @@ class HomeHeroSection extends StatelessWidget {
 }
 
 class _HeroProductCard extends StatelessWidget {
-  const _HeroProductCard({required this.product, Key? key}) : super(key: key);
+  const _HeroProductCard({required this.product, super.key});
 
   final Product product;
 
@@ -344,7 +344,7 @@ class _HeroProductCard extends StatelessWidget {
 }
 
 class FlashDealsBanner extends StatefulWidget {
-  const FlashDealsBanner({Key? key}) : super(key: key);
+  const FlashDealsBanner({super.key});
 
   @override
   State<FlashDealsBanner> createState() => _FlashDealsBannerState();
@@ -469,7 +469,7 @@ class _FlashDealsBannerState extends State<FlashDealsBanner> {
 }
 
 class _CountdownBox extends StatelessWidget {
-  const _CountdownBox({required this.label, required this.value, Key? key}) : super(key: key);
+  const _CountdownBox({required this.label, required this.value, super.key});
 
   final String label;
   final int value;
@@ -509,7 +509,7 @@ class _CountdownBox extends StatelessWidget {
 }
 
 class FeaturedProductsCarousel extends StatelessWidget {
-  const FeaturedProductsCarousel({required this.products, Key? key}) : super(key: key);
+  const FeaturedProductsCarousel({required this.products, super.key});
 
   final List<Product> products;
 
@@ -532,7 +532,7 @@ class FeaturedProductsCarousel extends StatelessWidget {
 }
 
 class ProductCard extends StatelessWidget {
-  const ProductCard({required this.product, Key? key}) : super(key: key);
+  const ProductCard({required this.product, super.key});
 
   final Product product;
 
@@ -600,7 +600,7 @@ class ProductCard extends StatelessWidget {
 }
 
 class CategoryCard extends StatelessWidget {
-  const CategoryCard({required this.category, Key? key}) : super(key: key);
+  const CategoryCard({required this.category, super.key});
 
   final Category category;
 
@@ -672,7 +672,7 @@ class CategoryCard extends StatelessWidget {
 }
 
 class TrustIndicators extends StatelessWidget {
-  const TrustIndicators({Key? key}) : super(key: key);
+  const TrustIndicators({super.key});
 
   @override
   Widget build(BuildContext context) => Container(
@@ -689,9 +689,9 @@ class TrustIndicators extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
+        children: [
           _TrustItem(icon: Icons.local_shipping_outlined, label: 'Fast Delivery'),
           _TrustItem(icon: Icons.verified_outlined, label: 'Genuine Products'),
           _TrustItem(icon: Icons.support_agent_outlined, label: '24/7 Support'),
@@ -701,7 +701,7 @@ class TrustIndicators extends StatelessWidget {
 }
 
 class _TrustItem extends StatelessWidget {
-  const _TrustItem({required this.icon, required this.label, Key? key}) : super(key: key);
+  const _TrustItem({required this.icon, required this.label, super.key});
 
   final IconData icon;
   final String label;
@@ -730,8 +730,8 @@ class _TrustItem extends StatelessWidget {
 
 class SectionHeader extends StatelessWidget {
   const SectionHeader({
-    required this.badge, required this.title, required this.subtitle, required this.gradient, Key? key,
-  }) : super(key: key);
+    required this.badge, required this.title, required this.subtitle, required this.gradient, super.key,
+  });
 
   final String badge;
   final String title;
@@ -807,8 +807,8 @@ class _BrandTitle extends StatelessWidget {
 class GradientText extends StatelessWidget {
   const GradientText(
     this.text, {
-    required this.style, required this.gradient, Key? key,
-  }) : super(key: key);
+    required this.style, required this.gradient, super.key,
+  });
 
   final String text;
   final TextStyle style;
@@ -827,7 +827,7 @@ class GradientText extends StatelessWidget {
 }
 
 class _SectionError extends StatelessWidget {
-  const _SectionError({required this.message, Key? key}) : super(key: key);
+  const _SectionError({required this.message, super.key});
 
   final String message;
 

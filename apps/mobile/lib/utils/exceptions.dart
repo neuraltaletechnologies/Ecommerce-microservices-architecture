@@ -16,11 +16,10 @@ class AppException implements Exception {
 class NetworkException extends AppException {
   NetworkException({
     String? message,
-    dynamic originalException,
+    super.originalException,
   }) : super(
     message: message ?? 'Network error occurred',
     code: 'NETWORK_ERROR',
-    originalException: originalException,
   );
 }
 
@@ -29,11 +28,10 @@ class ServerException extends AppException {
   ServerException({
     String? message,
     this.statusCode,
-    dynamic originalException,
+    super.originalException,
   }) : super(
     message: message ?? 'Server error occurred',
     code: 'SERVER_ERROR',
-    originalException: originalException,
   );
   final int? statusCode;
 }
@@ -41,21 +39,19 @@ class ServerException extends AppException {
 class UnauthorizedException extends AppException {
   UnauthorizedException({
     String? message,
-    dynamic originalException,
+    super.originalException,
   }) : super(
     message: message ?? 'Unauthorized',
     code: 'UNAUTHORIZED',
-    originalException: originalException,
   );
 }
 
 class NotFoundException extends AppException {
   NotFoundException({
     String? message,
-    dynamic originalException,
+    super.originalException,
   }) : super(
     message: message ?? 'Not found',
     code: 'NOT_FOUND',
-    originalException: originalException,
   );
 }

@@ -18,7 +18,7 @@ void main() async {
 }
 
 class NeurashopApp extends ConsumerWidget {
-  const NeurashopApp({Key? key}) : super(key: key);
+  const NeurashopApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
