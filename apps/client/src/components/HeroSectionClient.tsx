@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { formatTZS } from "@/lib/utils/currency";
-import { ChevronLeft, ChevronRight, ArrowRight, Sparkles } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight, Sparkles, Tag } from "lucide-react";
 
 interface HeroProduct {
   id: number;
@@ -36,22 +36,16 @@ const BRAND_COLORS = {
 const getStockBadge = (status: string) => {
   switch (status) {
     case 'in_stock':
-      return { label: 'In Stock', bgColor: 'bg-green-100', textColor: 'text-green-800', dotColor: 'bg-green-500' };
+      return { label: 'In Stock', bgColor: 'bg-green-100', textColor: 'text-green-800', dotColor: 'bg-green-500', showOfferIcon: false };
     case 'limited_stock':
-      return { label: 'Limited Stock', bgColor: 'bg-[#FDB913]/20', textColor: 'text-[#001E3C]', dotColor: 'bg-[#FDB913]' };
+      return { label: 'Limited Stock', bgColor: 'bg-[#FDB913]/20', textColor: 'text-[#001E3C]', dotColor: 'bg-[#FDB913]', showOfferIcon: true };
     case 'pre_order':
-      return { label: 'Pre-Order', bgColor: 'bg-[#0A7EA4]/20', textColor: 'text-[#0A7EA4]', dotColor: 'bg-[#0A7EA4]' };
+      return { label: 'Pre-Order', bgColor: 'bg-[#0A7EA4]/20', textColor: 'text-[#0A7EA4]', dotColor: 'bg-[#0A7EA4]', showOfferIcon: false };
     case 'out_of_stock':
-      return { label: 'Out of Stock', bgColor: 'bg-red-100', textColor: 'text-red-800', dotColor: 'bg-red-500' };
+      return { label: 'Out of Stock', bgColor: 'bg-red-100', textColor: 'text-red-800', dotColor: 'bg-red-500', showOfferIcon: false };
     default:
-      return { label: 'In Stock', bgColor: 'bg-green-100', textColor: 'text-green-800', dotColor: 'bg-green-500' };
+      return { label: 'In Stock', bgColor: 'bg-green-100', textColor: 'text-green-800', dotColor: 'bg-green-500', showOfferIcon: false };
   }
-};
-
-const truncateText = (text: string, maxLength: number) => {
-  if (!text) return "";
-  if (text.length <= maxLength) return text;
-  return `${text.slice(0, maxLength).trimEnd()}...`;
 };
 
 const HeroSectionClient = ({ initialProducts }: HeroSectionClientProps) => {
@@ -146,11 +140,11 @@ const HeroSectionClient = ({ initialProducts }: HeroSectionClientProps) => {
       .join(" ");
   };
 
-  const headline = currentProduct.shortDescription?.trim() || currentProduct.name;
-  const subheadline = truncateText(
-    currentProduct.description?.trim() || `Explore ${formatCategoryName(currentProduct.categorySlug)} from Neurashop.`,
-    180
-  );
+  const headline = currentProduct.name;
+  const subheadline =
+    currentProduct.shortDescription?.trim() ||
+    currentProduct.description?.trim() ||
+    `Discover premium ${formatCategoryName(currentProduct.categorySlug)} built for your needs.`;
 
   return (
     <section
@@ -194,6 +188,7 @@ const HeroSectionClient = ({ initialProducts }: HeroSectionClientProps) => {
                 return (
                   <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${badge.bgColor} ${badge.textColor} text-sm font-semibold`}>
                     <span className={`w-2 h-2 rounded-full ${badge.dotColor} animate-pulse`}></span>
+                    {badge.showOfferIcon && <Tag className="w-3 h-3" />}
                     {badge.label}
                   </div>
                 );
@@ -216,14 +211,14 @@ const HeroSectionClient = ({ initialProducts }: HeroSectionClientProps) => {
                 href={`/products/${currentProduct.id}`}
                 className="inline-flex items-center justify-center gap-2 bg-[#FDB913] hover:bg-[#e5a811] text-[#001E3C] px-6 py-3 rounded-lg font-bold text-sm transition-all duration-200 group shadow-lg hover:shadow-xl hover:scale-[1.02]"
               >
-                Explore {formatCategoryName(currentProduct.categorySlug)}
+                Explore Product
                 <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
               </Link>
               <Link
-                href="/products"
+                href={`/products?category=${currentProduct.categorySlug}`}
                 className="inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm text-[#001E3C] border-2 border-[#001E3C] hover:bg-[#001E3C] hover:text-white transition-all duration-200"
               >
-                Browse All
+                Browse {formatCategoryName(currentProduct.categorySlug)}
               </Link>
             </div>
 
@@ -292,6 +287,7 @@ const HeroSectionClient = ({ initialProducts }: HeroSectionClientProps) => {
                 return (
                   <div className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full ${badge.bgColor} ${badge.textColor} text-xs font-semibold mb-2`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${badge.dotColor}`}></span>
+                    {badge.showOfferIcon && <Tag className="w-3 h-3" />}
                     {badge.label}
                   </div>
                 );

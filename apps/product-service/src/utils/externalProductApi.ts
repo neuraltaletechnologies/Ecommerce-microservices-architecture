@@ -363,7 +363,7 @@ function extractBrandFromTitle(title: string): string {
 }
 
 /**
- * Main search function with caching, rate limiting, and fallbacks
+ * Main search function with caching, rate limiting, and multi-source aggregation
  */
 export async function searchExternalProducts(
   query: string,
@@ -380,23 +380,32 @@ export async function searchExternalProducts(
     return { results: cached, fromCache: true, rateLimited: false };
   }
 
-  // Try TechSpecs first
-  let results = await searchTechSpecs(query);
+  // Fetch all sources so admin can choose across APIs, not just first non-empty fallback.
+  const [techspecsResults, dummyJsonResults, platziResults, fakeStoreResults] = await Promise.all([
+    searchTechSpecs(query),
+    searchDummyJson(query),
+    searchPlatzi(query),
+    searchFakeStore(query),
+  ]);
 
-  // If no results, try DummyJSON (better for electronics)
-  if (results.length === 0) {
-    results = await searchDummyJson(query);
-  }
+  // Preserve source priority while including all available results.
+  const mergedResults = [
+    ...techspecsResults,
+    ...dummyJsonResults,
+    ...platziResults,
+    ...fakeStoreResults,
+  ];
 
-  // Try Platzi as third option (good for tech products)
-  if (results.length === 0) {
-    results = await searchPlatzi(query);
-  }
-
-  // If still no results, try FakeStore as last resort
-  if (results.length === 0) {
-    results = await searchFakeStore(query);
-  }
+  // Deduplicate exact duplicates per source + id.
+  const seen = new Set<string>();
+  const results = mergedResults.filter((item) => {
+    const key = `${item.source}:${item.id}`;
+    if (seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
 
   // Cache results
   if (results.length > 0) {
