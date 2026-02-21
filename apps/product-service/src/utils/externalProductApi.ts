@@ -98,10 +98,15 @@ function setCache(query: string, data: ExternalProductResult[]): void {
  * Search TechSpecs API for product details
  */
 async function searchTechSpecs(query: string): Promise<ExternalProductResult[]> {
-  const apiKey = process.env.TECHSPECS_API_KEY;
+  const apiToken = (
+    process.env.TECHSPECS_BEARER_TOKEN ||
+    process.env.TECHSPECS_API_TOKEN ||
+    process.env.TECHSPECS_API_KEY ||
+    ""
+  ).trim();
   
-  if (!apiKey) {
-    console.warn('TECHSPECS_API_KEY not configured, skipping TechSpecs search');
+  if (!apiToken) {
+    console.warn('TechSpecs token not configured (set TECHSPECS_BEARER_TOKEN or TECHSPECS_API_KEY), skipping TechSpecs search');
     return [];
   }
 
@@ -112,14 +117,25 @@ async function searchTechSpecs(query: string): Promise<ExternalProductResult[]> 
       {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${apiKey}`,
+          'Authorization': `Bearer ${apiToken}`,
           'Accept': 'application/json',
         },
       }
     );
 
     if (!response.ok) {
-      console.error(`TechSpecs API error: ${response.status} ${response.statusText}`);
+      let apiErrorText = '';
+      try {
+        apiErrorText = await response.text();
+      } catch {
+        apiErrorText = '';
+      }
+
+      if (response.status === 401) {
+        console.error('TechSpecs API auth failed (401). Check TECHSPECS_BEARER_TOKEN/TECHSPECS_API_KEY value.');
+      }
+
+      console.error(`TechSpecs API error: ${response.status} ${response.statusText}${apiErrorText ? ` | ${apiErrorText.slice(0, 200)}` : ''}`);
       return [];
     }
 
