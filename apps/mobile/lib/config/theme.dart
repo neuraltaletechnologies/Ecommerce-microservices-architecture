@@ -22,7 +22,7 @@ class AppTheme {
       onSecondary: Colors.white,
       tertiary: AppColors.goldenYellow,
       onTertiary: AppColors.deepNavy,
-      error: const Color(0xFFEF4444),
+      error: Color(0xFFEF4444),
       onError: Colors.white,
       surface: AppColors.surface,
       onSurface: AppColors.textPrimary,
@@ -117,10 +117,10 @@ class AppTheme {
       onSecondary: Colors.white,
       tertiary: AppColors.goldenYellow,
       onTertiary: AppColors.deepNavy,
-      error: const Color(0xFFF87171),
+      error: Color(0xFFF87171),
       onError: Colors.black,
-      surface: const Color(0xFF0B1220),
-      onSurface: const Color(0xFFE2E8F0),
+      surface: Color(0xFF0B1220),
+      onSurface: Color(0xFFE2E8F0),
     );
 
     final base = ThemeData(

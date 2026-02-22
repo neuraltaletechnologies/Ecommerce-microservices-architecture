@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
       },
       {
+        protocol: "http",
+        hostname: "res.cloudinary.com",
+      },
+      {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
@@ -25,11 +29,35 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "dummyjson.com",
+      },
+      {
+        protocol: "https",
         hostname: "fakestoreapi.com",
       },
       {
         protocol: "https",
         hostname: "api.escuelajs.co",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com",
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.co",
+      },
+      {
+        protocol: "https",
+        hostname: "loremflickr.com",
+      },
+      {
+        protocol: "https",
+        hostname: "picsum.photos",
+      },
+      {
+        protocol: "https",
+        hostname: "placehold.jp",
       },
     ],
     formats: ['image/webp', 'image/avif'],

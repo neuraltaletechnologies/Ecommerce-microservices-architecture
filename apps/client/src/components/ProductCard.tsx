@@ -9,13 +9,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { getCloudinaryUrl } from "@/lib/utils/cloudinary";
 
 const ProductCard = ({ product }: { product: ProductType }) => {
   const [productTypes, setProductTypes] = useState({
     size: product.sizes?.[0] || "",
     color: product.colors?.[0] || "",
   });
-  
+
   const { addToCart } = useCartStore();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlistStore();
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -88,7 +89,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
   const getImageUrl = (): string => {
     const images = product.images as Record<string, string | string[]>;
     const colorImages = images?.[productTypes.color];
-    
+
     // Handle both string and array formats
     if (typeof colorImages === 'string' && colorImages.trim() !== '') {
       return colorImages;
@@ -98,7 +99,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
         return validImage; // Use first valid image
       }
     }
-    
+
     // Fallback to first available color
     const firstColor = Object.keys(images || {})[0];
     if (firstColor) {
@@ -112,25 +113,19 @@ const ProductCard = ({ product }: { product: ProductType }) => {
         }
       }
     }
-    
-    return "/products/placeholder.jpg";
+
+    return "https://via.placeholder.com/600x600?text=Product+Image";
   };
 
   const imageUrl = getImageUrl();
 
   // Optimize Cloudinary images with transformations
-  const optimizeCloudinaryUrl = (url: string) => {
-    if (url.includes('cloudinary.com')) {
-      // Add Cloudinary transformations: auto quality, auto format, width 400px
-      const parts = url.split('/upload/');
-      if (parts.length === 2) {
-        return `${parts[0]}/upload/q_auto,f_auto,w_400,c_limit/${parts[1]}`;
-      }
-    }
-    return url;
-  };
-
-  const optimizedImageUrl = optimizeCloudinaryUrl(imageUrl);
+  const optimizedImageUrl = getCloudinaryUrl(imageUrl, {
+    width: 400,
+    quality: 'auto',
+    format: 'auto',
+    crop: 'limit'
+  });
 
   return (
     <div className="group bg-white shadow-lg rounded-xl overflow-hidden border border-gray-100 hover:shadow-2xl hover:border-[#FDB913]/30 transition-all duration-300 transform hover:-translate-y-1">
@@ -145,18 +140,17 @@ const ProductCard = ({ product }: { product: ProductType }) => {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover group-hover:scale-105 transition-all duration-300"
           />
-          
+
           {/* Wishlist Button */}
           <button
             onClick={(e) => {
               e.preventDefault();
               handleWishlist();
             }}
-            className={`absolute top-2 right-2 p-1.5 rounded-full transition-all duration-200 ${
-              isWishlisted 
-                ? "bg-red-500 text-white" 
+            className={`absolute top-2 right-2 p-1.5 rounded-full transition-all duration-200 ${isWishlisted
+                ? "bg-red-500 text-white"
                 : "bg-white/80 text-gray-600 hover:bg-white hover:text-red-500"
-            }`}
+              }`}
             aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
             title={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
           >
@@ -184,11 +178,10 @@ const ProductCard = ({ product }: { product: ProductType }) => {
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-3 h-3 ${
-                    i < Math.floor(rating)
+                  className={`w-3 h-3 ${i < Math.floor(rating)
                       ? "text-[#FDB913] fill-current"
                       : "text-gray-300"
-                  }`}
+                    }`}
                 />
               ))}
             </div>
@@ -219,7 +212,7 @@ const ProductCard = ({ product }: { product: ProductType }) => {
               )}
             </div>
           </div>
-          
+
           <button
             onClick={handleAddToCart}
             className="w-full bg-[#FDB913] hover:bg-[#e5a811] text-[#001E3C] font-bold py-2 px-3 rounded-lg transition-colors duration-200 flex items-center justify-center gap-1 shadow-md hover:shadow-lg"
@@ -227,8 +220,8 @@ const ProductCard = ({ product }: { product: ProductType }) => {
             <ShoppingCart className="w-3 h-3" />
             <span className="text-xs sm:text-sm">Add to Cart</span>
           </button>
-          
-      
+
+
         </div>
       </div>
     </div>

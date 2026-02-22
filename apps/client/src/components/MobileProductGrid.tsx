@@ -5,6 +5,7 @@ import ProductCard from "./ProductCard";
 import { Grid, List } from "lucide-react";
 import { useState } from "react";
 import { formatTZS } from "@/lib/utils/currency";
+import { getCloudinaryUrl } from "@/lib/utils/cloudinary";
 
 interface MobileProductGridProps {
   products: ProductType[];
@@ -23,22 +24,20 @@ const MobileProductGrid: React.FC<MobileProductGridProps> = ({ products }) => {
         <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
           <button
             onClick={() => setViewMode("grid")}
-            className={`p-2 rounded transition-colors ${
-              viewMode === "grid"
-                ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-600"
-            }`}
+            className={`p-2 rounded transition-colors ${viewMode === "grid"
+              ? "bg-white text-gray-900 shadow-sm"
+              : "text-gray-600"
+              }`}
             aria-label="Grid view"
           >
             <Grid className="w-4 h-4" />
           </button>
           <button
             onClick={() => setViewMode("list")}
-            className={`p-2 rounded transition-colors ${
-              viewMode === "list"
-                ? "bg-white text-gray-900 shadow-sm"
-                : "text-gray-600"
-            }`}
+            className={`p-2 rounded transition-colors ${viewMode === "list"
+              ? "bg-white text-gray-900 shadow-sm"
+              : "text-gray-600"
+              }`}
             aria-label="List view"
           >
             <List className="w-4 h-4" />
@@ -77,15 +76,30 @@ const MobileProductGrid: React.FC<MobileProductGridProps> = ({ products }) => {
 
 // List view component for mobile
 const MobileProductListItem = ({ product }: { product: ProductType }) => {
-  const firstImage = Object.values(product.images as Record<string, string>)[0];
+  // Get the first available image more robustly
+  const getFirstImage = (): string => {
+    const images = product.images as Record<string, string | string[]>;
+    if (!images || Object.keys(images).length === 0) {
+      return "https://via.placeholder.com/600x600?text=Product+Image";
+    }
+
+    const firstValue = Object.values(images)[0];
+    if (typeof firstValue === 'string') return firstValue;
+    if (Array.isArray(firstValue) && firstValue.length > 0 && typeof firstValue[0] === 'string') return firstValue[0];
+
+    return "https://via.placeholder.com/600x600?text=Product+Image";
+  };
+
+  const firstImage = getFirstImage();
+  const optimizedImageUrl = getCloudinaryUrl(firstImage, { width: 200, crop: 'fill' });
   const rating = 4.3 + (product.id % 10) * 0.06;
 
   return (
     <div className="flex gap-4 p-4">
       {/* Image */}
-      <div className="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-lg overflow-hidden">
+      <div className="flex-shrink-0 w-24 h-24 bg-gray-100 rounded-lg overflow-hidden relative">
         <img
-          src={firstImage}
+          src={optimizedImageUrl}
           alt={product.name}
           className="w-full h-full object-cover"
         />
@@ -106,11 +120,10 @@ const MobileProductListItem = ({ product }: { product: ProductType }) => {
             {[...Array(5)].map((_, i) => (
               <svg
                 key={i}
-                className={`w-3 h-3 ${
-                  i < Math.floor(rating)
-                    ? "text-[#FDB913]"
-                    : "text-gray-300"
-                }`}
+                className={`w-3 h-3 ${i < Math.floor(rating)
+                  ? "text-[#FDB913]"
+                  : "text-gray-300"
+                  }`}
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >

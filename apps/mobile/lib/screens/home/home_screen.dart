@@ -270,7 +270,7 @@ class HomeHeroSection extends StatelessWidget {
 }
 
 class _HeroProductCard extends StatelessWidget {
-  const _HeroProductCard({required this.product, super.key});
+  const _HeroProductCard({required this.product});
 
   final Product product;
 
@@ -469,7 +469,7 @@ class _FlashDealsBannerState extends State<FlashDealsBanner> {
 }
 
 class _CountdownBox extends StatelessWidget {
-  const _CountdownBox({required this.label, required this.value, super.key});
+  const _CountdownBox({required this.label, required this.value});
 
   final String label;
   final int value;
@@ -701,7 +701,7 @@ class TrustIndicators extends StatelessWidget {
 }
 
 class _TrustItem extends StatelessWidget {
-  const _TrustItem({required this.icon, required this.label, super.key});
+  const _TrustItem({required this.icon, required this.label});
 
   final IconData icon;
   final String label;
@@ -827,7 +827,7 @@ class GradientText extends StatelessWidget {
 }
 
 class _SectionError extends StatelessWidget {
-  const _SectionError({required this.message, super.key});
+  const _SectionError({required this.message});
 
   final String message;
 
