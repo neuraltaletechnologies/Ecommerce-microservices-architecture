@@ -21,6 +21,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "plus.unsplash.com",
+      },
+      {
+        protocol: "https",
         hostname: "upload.wikimedia.org",
       },
       {
@@ -58,6 +62,14 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "placehold.jp",
+      },
+      {
+        protocol: "https",
+        hostname: "neurashop.neuraltale.com",
+      },
+      {
+        protocol: "https",
+        hostname: "neuraltale.com",
       },
     ],
     formats: ['image/webp', 'image/avif'],

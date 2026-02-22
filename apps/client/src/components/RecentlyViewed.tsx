@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { formatTZS } from "@/lib/utils/currency";
+import { getCloudinaryUrl } from "@/lib/utils/cloudinary";
 
 interface RecentlyViewedProps {
   currentProductId?: number;
@@ -15,7 +16,6 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
   const [recentProducts, setRecentProducts] = useState<ProductType[]>([]);
 
   useEffect(() => {
-    // In a real app, this would load from localStorage or API
     const mockRecentProducts: ProductType[] = [
       {
         id: 1,
@@ -127,9 +127,8 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
         updatedAt: new Date(),
       },
     ];
-
     // Filter out current product if provided
-    const filteredProducts = currentProductId 
+    const filteredProducts = currentProductId
       ? mockRecentProducts.filter(p => p.id !== currentProductId)
       : mockRecentProducts;
 
@@ -146,23 +145,37 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
         <Clock className="w-5 h-5 text-gray-600" />
         <h3 className="text-lg font-semibold text-gray-900">Recently Viewed</h3>
       </div>
-      
+
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {recentProducts.map((product) => {
-          const firstImage = Object.values(product.images as Record<string, string>)[0] || '/placeholder.png';
-          
+          // Get the first available image more robustly
+          const getFirstImage = (): string => {
+            const images = product.images as Record<string, string | string[]>;
+            if (!images || Object.keys(images).length === 0) {
+              return "https://via.placeholder.com/600x600?text=Product+Image";
+            }
+
+            const firstValue = Object.values(images)[0];
+            if (typeof firstValue === 'string') return firstValue;
+            if (Array.isArray(firstValue) && firstValue.length > 0 && typeof firstValue[0] === 'string') return firstValue[0];
+
+            return "https://via.placeholder.com/600x600?text=Product+Image";
+          };
+
+          const firstImage = getFirstImage();
+          const optimizedImageUrl = getCloudinaryUrl(firstImage, { width: 400, crop: 'fill' });
+
           return (
             <Link
               key={product.id}
               href={`/products/${product.id}`}
               className="group block"
             >
-              <div className="bg-gray-50 rounded-lg overflow-hidden mb-2 aspect-square">
+              <div className="bg-gray-50 rounded-lg overflow-hidden mb-2 aspect-square relative">
                 <Image
-                  src={firstImage}
+                  src={optimizedImageUrl}
                   alt={product.name}
-                  width={200}
-                  height={200}
+                  fill
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                 />
               </div>
@@ -176,7 +189,7 @@ const RecentlyViewed: React.FC<RecentlyViewedProps> = ({ currentProductId }) => 
           );
         })}
       </div>
-      
+
       <div className="mt-4 pt-4 border-t border-gray-100">
         <Link
           href="/products"
