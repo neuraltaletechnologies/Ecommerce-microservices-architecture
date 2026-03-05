@@ -21,26 +21,26 @@ interface CategoryCard {
 const categories: CategoryCard[] = [
   {
     id: 1,
-    badge: "Enjoy",
-    descriptor: "With",
-    name: "HEADPHONE",
+    badge: "Premium",
+    descriptor: "Crystal Clear",
+    name: "AUDIO",
     bgColor: "bg-purple-600",
     textColor: "text-white",
     buttonColor: "bg-white text-purple-600 hover:bg-purple-50",
-    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&h=600&fit=crop",
     link: "/products?category=audio",
     size: "small",
     productCount: 48,
   },
   {
     id: 2,
-    badge: "New",
-    descriptor: "Smart",
-    name: "WATCH",
+    badge: "Style",
+    descriptor: "Modern",
+    name: "WEARABLES",
     bgColor: "bg-orange-500",
     textColor: "text-white",
     buttonColor: "bg-white text-orange-500 hover:bg-orange-50",
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1508685096489-7aac29bca5b3?w=600&h=600&fit=crop",
     link: "/products?category=wearables",
     size: "small",
     productCount: 32,
@@ -48,53 +48,51 @@ const categories: CategoryCard[] = [
   {
     id: 3,
     badge: "Latest",
-    descriptor: "Smart",
+    descriptor: "Powerful",
     name: "PHONES",
     bgColor: "bg-green-600",
     textColor: "text-white",
     buttonColor: "bg-white text-green-600 hover:bg-green-50",
-    image: "https://plus.unsplash.com/premium_photo-1680985551022-ad298e8a5f82?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    link: "/products?category=phones",
+    image: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600&h=600&fit=crop",
+    link: "/products?category=smartphones",
     size: "small",
     productCount: 65,
   },
- 
   {
     id: 4,
     badge: "Play",
-    descriptor: "Game",
-    name: "CONSOLE",
+    descriptor: "Immersive",
+    name: "GAMING",
     bgColor: "bg-gray-900",
     textColor: "text-white",
     buttonColor: "bg-white text-gray-900 hover:bg-gray-100",
-    image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop",
+    image: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=800&h=600&fit=crop",
     link: "/products?category=gaming",
     size: "large",
     productCount: 24,
   },
   {
     id: 5,
-    badge: "New",
-    descriptor: "Smart",
-    name: "SPEAKER",
+    badge: "Essential",
+    descriptor: "Must-Have",
+    name: "ACCESSORIES",
     bgColor: "bg-blue-600",
     textColor: "text-white",
     buttonColor: "bg-white text-blue-600 hover:bg-blue-50",
-    image: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop",
-    link: "/products?category=audio",
+    image: "https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?w=600&h=600&fit=crop",
+    link: "/products?category=accessories",
     size: "small",
     productCount: 36,
   },
-   
-   {
+  {
     id: 6,
-    badge: "Productivity",
-    descriptor: "Gaming",
-    name: "LAPTOP",
+    badge: "Performance",
+    descriptor: "Portable",
+    name: "LAPTOPS",
     bgColor: "bg-cyan-500",
     textColor: "text-white",
     buttonColor: "bg-white text-cyan-600 hover:bg-cyan-50",
-    image: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&h=600&fit=crop",
     link: "/products?category=laptops",
     size: "large",
     productCount: 87,
@@ -107,7 +105,7 @@ const ShopByCategory = () => {
       {/* Background Decorations */}
       <div className="absolute top-20 left-10 w-72 h-72 bg-[#FDB913] rounded-full blur-3xl opacity-15"></div>
       <div className="absolute bottom-20 right-10 w-96 h-96 bg-[#0A7EA4] rounded-full blur-3xl opacity-15"></div>
-      
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         {/* Header */}
         <div className="text-center mb-14">
@@ -119,7 +117,7 @@ const ShopByCategory = () => {
             Shop By <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FDB913] to-[#0A7EA4]">Category</span>
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover your perfect tech companion. From premium audio to cutting-edge laptops, 
+            Discover your perfect tech companion. From premium audio to cutting-edge laptops,
             Neurashop has everything you need.
           </p>
         </div>
@@ -186,8 +184,8 @@ const ShopByCategory = () => {
 
         {/* View All Categories Link */}
         <div className="text-center mt-12">
-          <Link 
-            href="/products" 
+          <Link
+            href="/products"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-semibold transition-colors group"
           >
             View All Categories
