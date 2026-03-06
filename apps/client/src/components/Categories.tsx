@@ -7,10 +7,10 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 // Category image mapping - matched to actual database categories
 const categoryImages: Record<string, string> = {
   all: "", // Will use icon instead
-  laptops: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200&h=200&fit=crop&q=80",
+  Laptops: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200&h=200&fit=crop&q=80",
   "computer-monitors": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&h=200&fit=crop&q=80",
   "smart-phones": "https://images.unsplash.com/photo-1592899677112-901b65d2a4e0?w=200&h=200&fit=crop&q=80",
-  speaker: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200&h=200&fit=crop&q=80",
+  Speaker: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200&h=200&fit=crop&q=80",
   desktops: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=200&h=200&fit=crop&q=80",
   components: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=200&fit=crop&q=80",
   peripherals: "https://images.unsplash.com/photo-1563297007-0686b7003af7?w=200&h=200&fit=crop&q=80",

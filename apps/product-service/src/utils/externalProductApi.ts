@@ -95,6 +95,83 @@ function setCache(query: string, data: ExternalProductResult[]): void {
 }
 
 /**
+ * Normalize external image payloads into valid https URLs.
+ * Handles arrays, JSON-string arrays, relative paths, and protocol-relative URLs.
+ */
+function normalizeExternalImages(rawImages: unknown, fallbackImage?: unknown): string[] {
+  const result: string[] = [];
+  const seen = new Set<string>();
+
+  const pushUrl = (input: unknown) => {
+    if (typeof input !== 'string') return;
+
+    let value = input.trim();
+    if (!value) return;
+
+    value = value.replace(/^['\"]+|['\"]+$/g, '');
+
+    if (value.startsWith('//')) {
+      value = `https:${value}`;
+    }
+
+    // Avoid mixed-content blocking in browser previews.
+    if (value.startsWith('http://')) {
+      value = `https://${value.slice('http://'.length)}`;
+    }
+
+    // Platzi can return relative file paths for images.
+    if (value.startsWith('/')) {
+      value = `https://api.escuelajs.co${value}`;
+    }
+
+    if (!/^https?:\/\//i.test(value)) return;
+
+    try {
+      const parsed = new URL(value);
+      const normalized = parsed.toString();
+      if (!seen.has(normalized)) {
+        seen.add(normalized);
+        result.push(normalized);
+      }
+    } catch {
+      // Ignore invalid URL entries.
+    }
+  };
+
+  const processValue = (value: unknown) => {
+    if (Array.isArray(value)) {
+      value.forEach(pushUrl);
+      return;
+    }
+
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+
+      if ((trimmed.startsWith('[') && trimmed.endsWith(']')) || (trimmed.startsWith('{') && trimmed.endsWith('}'))) {
+        try {
+          processValue(JSON.parse(trimmed));
+          return;
+        } catch {
+          // Fall through and treat as single candidate.
+        }
+      }
+
+      pushUrl(trimmed);
+      return;
+    }
+
+    if (value && typeof value === 'object') {
+      pushUrl((value as Record<string, unknown>).url);
+    }
+  };
+
+  processValue(rawImages);
+  processValue(fallbackImage);
+
+  return result.slice(0, 5);
+}
+
+/**
  * Search TechSpecs API for product details
  */
 async function searchTechSpecs(query: string): Promise<ExternalProductResult[]> {
@@ -315,15 +392,7 @@ async function searchPlatzi(query: string): Promise<ExternalProductResult[]> {
     }
 
     return products.map((item: any): ExternalProductResult => {
-      // Clean up images (Platzi sometimes has invalid JSON in images)
-      const cleanImages = item.images
-        ?.filter((img: any) => {
-          if (typeof img === 'string' && img.startsWith('http')) {
-            return true;
-          }
-          return false;
-        })
-        ?.slice(0, 5) || [];
+      const cleanImages = normalizeExternalImages(item.images, item.image);
 
       return {
         source: 'platzi',
@@ -552,10 +621,7 @@ export async function getExternalProductDetails(
       const item: any = await response.json();
       const brand = extractBrandFromTitle(item.title);
 
-      // Clean up images
-      const cleanImages = item.images
-        ?.filter((img: any) => typeof img === 'string' && img.startsWith('http'))
-        ?.slice(0, 5) || [];
+      const cleanImages = normalizeExternalImages(item.images, item.image);
 
       return {
         source: 'platzi',
