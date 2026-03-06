@@ -1,10 +1,33 @@
 import { MetadataRoute } from 'next';
 import { ProductType } from '@repo/types';
 
+function getProductServiceUrl(): string {
+  return (process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL || '').trim();
+}
+
+function normalizeBaseUrl(): string {
+  const fallback = 'https://neurashop.neuraltale.com';
+  const raw = (process.env.NEXT_PUBLIC_BASE_URL || fallback).trim();
+
+  try {
+    return new URL(raw).toString().replace(/\/$/, '');
+  } catch {
+    return fallback;
+  }
+}
+
+function safeDate(input: unknown): Date {
+  const parsed = new Date(String(input || ''));
+  return Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+}
+
 async function fetchAllProducts(): Promise<ProductType[]> {
   try {
+    const serviceUrl = getProductServiceUrl();
+    if (!serviceUrl) return [];
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products`,
+      `${serviceUrl}/products`,
       { 
         next: { revalidate: 3600 }, // Revalidate every hour
         headers: {
@@ -15,7 +38,7 @@ async function fetchAllProducts(): Promise<ProductType[]> {
     
     if (!res.ok) return [];
     const data = await res.json();
-    return data;
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error('Error fetching products for sitemap:', error);
     return [];
@@ -24,8 +47,11 @@ async function fetchAllProducts(): Promise<ProductType[]> {
 
 async function fetchAllCategories(): Promise<{ slug: string; name: string }[]> {
   try {
+    const serviceUrl = getProductServiceUrl();
+    if (!serviceUrl) return [];
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`,
+      `${serviceUrl}/categories`,
       { 
         next: { revalidate: 3600 }, // Revalidate every hour
         headers: {
@@ -36,7 +62,7 @@ async function fetchAllCategories(): Promise<{ slug: string; name: string }[]> {
     
     if (!res.ok) return [];
     const data = await res.json();
-    return data;
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error('Error fetching categories for sitemap:', error);
     return [];
@@ -44,7 +70,7 @@ async function fetchAllCategories(): Promise<{ slug: string; name: string }[]> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://neurashop.neuraltale.com';
+  const baseUrl = normalizeBaseUrl();
   const products = await fetchAllProducts();
   const categories = await fetchAllCategories();
   const currentDate = new Date();
@@ -72,17 +98,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   // Category pages - high priority for product discovery
-  const categoryPages: MetadataRoute.Sitemap = categories.map((category) => ({
-    url: `${baseUrl}/products?category=${encodeURIComponent(category.slug)}`,
+  const categoryPages: MetadataRoute.Sitemap = categories
+    .filter((category) => Boolean(category?.slug))
+    .map((category) => ({
+    url: `${baseUrl}/products?category=${encodeURIComponent(String(category.slug))}`,
     lastModified: currentDate,
     changeFrequency: 'daily',
     priority: 0.85,
   }));
 
   // Product pages - medium-high priority
-  const productPages: MetadataRoute.Sitemap = products.map((product) => ({
-    url: `${baseUrl}/products/${encodeURIComponent(product.id)}`,
-    lastModified: new Date(product.updatedAt),
+  const productPages: MetadataRoute.Sitemap = products
+    .filter((product) => product && product.id !== undefined && product.id !== null)
+    .map((product) => ({
+    url: `${baseUrl}/products/${encodeURIComponent(String(product.id))}`,
+    lastModified: safeDate((product as ProductType & { updatedAt?: string | Date }).updatedAt),
     changeFrequency: 'weekly',
     priority: 0.8,
   }));
