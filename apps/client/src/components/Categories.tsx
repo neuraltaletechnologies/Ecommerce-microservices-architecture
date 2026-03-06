@@ -4,28 +4,18 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, Grid3X3 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-// Category image mapping - using representative product images
+// Category image mapping - matched to actual database categories
 const categoryImages: Record<string, string> = {
   all: "", // Will use icon instead
-  smartphones: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&h=200&fit=crop&q=80",
-  laptops: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200&h=200&fit=crop&q=80",
-  "gaming-laptops": "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=200&h=200&fit=crop&q=80",
-  tablets: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=200&h=200&fit=crop&q=80",
-  monitors: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&h=200&fit=crop&q=80",
-  audio: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop&q=80",
-  accessories: "https://images.unsplash.com/photo-1625772452859-1c03d5bf1137?w=200&h=200&fit=crop&q=80",
-  wearables: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop&q=80",
-  "graphics-cards": "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=200&h=200&fit=crop&q=80",
-  processors: "https://images.unsplash.com/photo-1555617981-dac3880eac6e?w=200&h=200&fit=crop&q=80",
-  storage: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=200&h=200&fit=crop&q=80",
-  keyboards: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=200&h=200&fit=crop&q=80",
-  mice: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=200&h=200&fit=crop&q=80",
-  webcams: "https://images.unsplash.com/photo-1587826080692-f439cd0b70da?w=200&h=200&fit=crop&q=80",
-  speakers: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=200&h=200&fit=crop&q=80",
-  networking: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=200&h=200&fit=crop&q=80",
-  "smart-home": "https://images.unsplash.com/photo-1558089687-f282ffcbc126?w=200&h=200&fit=crop&q=80",
-  cameras: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=200&h=200&fit=crop&q=80",
-  gaming: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=200&h=200&fit=crop&q=80",
+  laptops: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200&h=200&fit=crop&q=80",
+  "computer-monitors": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&h=200&fit=crop&q=80",
+  "smart-phones": "https://images.unsplash.com/photo-1592899677112-901b65d2a4e0?w=200&h=200&fit=crop&q=80",
+  speaker: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200&h=200&fit=crop&q=80",
+  desktops: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=200&h=200&fit=crop&q=80",
+  components: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=200&fit=crop&q=80",
+  peripherals: "https://images.unsplash.com/photo-1563297007-0686b7003af7?w=200&h=200&fit=crop&q=80",
+  networking: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=200&h=200&fit=crop&q=80",
+  gadgets: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop&q=80",
 };
 
 interface Category {
@@ -135,7 +125,7 @@ const CategoriesContent = () => {
             },
             ...data.map((category) => ({
               ...category,
-              image: categoryImages[category.slug] || categoryImages.accessories || "",
+              image: categoryImages[category.slug] || categoryImages.gadgets || "",
               count: category.count || 0,
             })),
           ];
