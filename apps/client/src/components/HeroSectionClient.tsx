@@ -127,8 +127,14 @@ const HeroSectionClient = ({ initialProducts }: HeroSectionClientProps) => {
   const getProductImage = (product: HeroProduct): string => {
     const firstColor = product.colors?.[0];
     if (firstColor && product.images && product.images[firstColor]) {
-      const imageArray = product.images[firstColor];
-      return imageArray?.[0] || "/products/placeholder.jpg";
+      const imageData = product.images[firstColor];
+      // Handle both string and array formats
+      if (typeof imageData === 'string' && imageData.trim() !== '') {
+        return imageData;
+      } else if (Array.isArray(imageData) && imageData.length > 0) {
+        const validUrl = imageData.find((url: string) => url && typeof url === 'string' && url.trim() !== '');
+        return validUrl || "/products/placeholder.jpg";
+      }
     }
     return "/products/placeholder.jpg";
   };

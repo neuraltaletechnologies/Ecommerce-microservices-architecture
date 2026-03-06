@@ -89,8 +89,13 @@ const WishlistPage = () => {
                         const firstColor = Object.keys(images)[0];
                         if (!firstColor) return "/products/placeholder.jpg";
                         const imageValue = images[firstColor];
-                        const result = Array.isArray(imageValue) ? imageValue[0] : imageValue;
-                        return result || "/products/placeholder.jpg";
+                        if (typeof imageValue === 'string' && imageValue.trim() !== '') {
+                          return imageValue;
+                        } else if (Array.isArray(imageValue)) {
+                          const validUrl = imageValue.find((url: string) => url && typeof url === 'string' && url.trim() !== '');
+                          return validUrl || "/products/placeholder.jpg";
+                        }
+                        return "/products/placeholder.jpg";
                       } catch {
                         return "/products/placeholder.jpg";
                       }

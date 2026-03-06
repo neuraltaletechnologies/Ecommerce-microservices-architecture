@@ -97,15 +97,26 @@ export const generateMetadata = async ({
       // Old structure: {main, gallery}
       if (images.main) return String(images.main);
       
-      // New structure: {color: url}
-      if (typeof images === 'object') {
+      // New structure: {color: url or color: [urls]}
+      if (typeof images === 'object' && !Array.isArray(images)) {
         const firstImage = Object.values(images)[0];
-        if (firstImage) return String(firstImage);
+        if (firstImage) {
+          // Handle array of URLs
+          if (Array.isArray(firstImage)) {
+            const validUrl = firstImage.find((url: any) => url && typeof url === 'string' && url.trim() !== '');
+            if (validUrl) return String(validUrl);
+          }
+          // Handle string URL
+          if (typeof firstImage === 'string' && firstImage.trim() !== '') {
+            return String(firstImage);
+          }
+        }
       }
       
       // Array structure (legacy)
       if (Array.isArray(images) && images.length > 0) {
-        return String(images[0]);
+        const validUrl = images.find((url: any) => url && typeof url === 'string' && url.trim() !== '');
+        if (validUrl) return String(validUrl);
       }
       
       return '/logo.png';
@@ -285,15 +296,26 @@ const ProductPage = async ({
     // Old structure: {main, gallery}
     if (images.main) return String(images.main);
     
-    // New structure: {color: url}
-    if (typeof images === 'object') {
+    // New structure: {color: url or color: [urls]}
+    if (typeof images === 'object' && !Array.isArray(images)) {
       const firstImage = Object.values(images)[0];
-      if (firstImage) return String(firstImage);
+      if (firstImage) {
+        // Handle array of URLs
+        if (Array.isArray(firstImage)) {
+          const validUrl = firstImage.find((url: any) => url && typeof url === 'string' && url.trim() !== '');
+          if (validUrl) return String(validUrl);
+        }
+        // Handle string URL
+        if (typeof firstImage === 'string' && firstImage.trim() !== '') {
+          return String(firstImage);
+        }
+      }
     }
     
     // Array structure (legacy)
     if (Array.isArray(images) && images.length > 0) {
-      return String(images[0]);
+      const validUrl = images.find((url: any) => url && typeof url === 'string' && url.trim() !== '');
+      if (validUrl) return String(validUrl);
     }
     
     return '/logo.png';
@@ -301,12 +323,19 @@ const ProductPage = async ({
 
   // Build product images array for schema
   const productImages: string[] = [];
-  const images = product.images as Record<string, string> | undefined;
+  const images = product.images as Record<string, string | string[]> | undefined;
   if (images) {
     if (typeof images === 'object' && !Array.isArray(images)) {
-      productImages.push(...Object.values(images).filter(img => typeof img === 'string'));
+      // Handle both string and array values
+      Object.values(images).forEach(img => {
+        if (typeof img === 'string' && img.trim() !== '') {
+          productImages.push(img);
+        } else if (Array.isArray(img)) {
+          productImages.push(...img.filter((url: string) => typeof url === 'string' && url.trim() !== ''));
+        }
+      });
     } else if (Array.isArray(images)) {
-      productImages.push(...images.filter(img => typeof img === 'string'));
+      productImages.push(...images.filter(img => typeof img === 'string' && img.trim() !== ''));
     }
   }
   if (productImages.length === 0) {

@@ -153,8 +153,14 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
     let imageUrl = "https://via.placeholder.com/1200x800?text=Product+Image";
 
     if (firstColor && product.images && product.images[firstColor]) {
-      const imageArray = product.images[firstColor];
-      imageUrl = imageArray?.[0] || imageUrl;
+      const imageData = product.images[firstColor];
+      // Handle both string and array formats
+      if (typeof imageData === 'string' && imageData.trim() !== '') {
+        imageUrl = imageData;
+      } else if (Array.isArray(imageData) && imageData.length > 0) {
+        const validUrl = imageData.find((url: string) => url && typeof url === 'string' && url.trim() !== '');
+        imageUrl = validUrl || imageUrl;
+      }
     }
 
     return getCloudinaryUrl(imageUrl, {

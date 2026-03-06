@@ -79,6 +79,67 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "neuraltale.com",
       },
+      {
+        protocol: "https",
+        hostname: "in-files.apjonlinecdn.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.apple.com",
+      },
+      // Common image CDNs (wildcard patterns)
+      {
+        protocol: "https",
+        hostname: "**.ftcdn.net", // Adobe Stock/Fotolia
+      },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.pexels.com",
+      },
+      {
+        protocol: "https",
+        hostname: "pixabay.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.pixabay.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.shutterstock.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.gettyimages.com",
+      },
+      {
+        protocol: "https",
+        hostname: "images-na.ssl-images-amazon.com",
+      },
+      {
+        protocol: "https",
+        hostname: "m.media-amazon.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.cdninstagram.com",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.googleapis.com",
+      },
+      {
+        protocol: "https",
+        hostname: "**.hiclipart.com",
+      },
     ],
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
