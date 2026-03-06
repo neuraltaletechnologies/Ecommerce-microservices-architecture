@@ -36,6 +36,7 @@ const CardList = async ({ title }: { title: string }) => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          cache: "no-store",
         }
       );
       if (res.ok) {

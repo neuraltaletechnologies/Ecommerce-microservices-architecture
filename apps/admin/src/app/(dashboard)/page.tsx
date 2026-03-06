@@ -44,6 +44,7 @@ const Homepage = async () => {
     // Monthly order chart data
     fetch(`${process.env.NEXT_PUBLIC_ORDER_SERVICE_URL}/order-chart`, {
       headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
     })
       .then(res => res.ok ? res.json() : [])
       .catch(() => []) as Promise<OrderChartType[]>,
@@ -51,6 +52,7 @@ const Homepage = async () => {
     // Order status distribution for pie chart
     fetch(`${process.env.NEXT_PUBLIC_ORDER_SERVICE_URL}/order-status-distribution`, {
       headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
     })
       .then(res => res.ok ? res.json() : [])
       .catch(() => []) as Promise<OrderStatusDistribution[]>,
@@ -58,6 +60,7 @@ const Homepage = async () => {
     // Daily order trends for area chart
     fetch(`${process.env.NEXT_PUBLIC_ORDER_SERVICE_URL}/daily-order-trends`, {
       headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
     })
       .then(res => res.ok ? res.json() : [])
       .catch(() => []) as Promise<DailyOrderTrend[]>,
@@ -65,6 +68,7 @@ const Homepage = async () => {
     // Dashboard stats
     fetch(`${process.env.NEXT_PUBLIC_ORDER_SERVICE_URL}/dashboard-stats`, {
       headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
     })
       .then(res => res.ok ? res.json() : null)
       .catch(() => null) as Promise<DashboardStats | null>,

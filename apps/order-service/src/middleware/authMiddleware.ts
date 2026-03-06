@@ -30,8 +30,10 @@ export const shouldBeAdmin = async (
   }
 
   const claims = auth.sessionClaims as CustomJwtSessionClaims;
+  const role = claims.publicMetadata?.role || claims.metadata?.role;
+  const allowedRoles = new Set(["admin", "superadmin"]);
 
-  if (claims.metadata?.role !== "admin") {
+  if (!role || !allowedRoles.has(role)) {
     return reply.status(403).send({ message: "Unauthorized!" });
   }
 
