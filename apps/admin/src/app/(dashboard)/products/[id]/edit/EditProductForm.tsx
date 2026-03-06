@@ -36,6 +36,41 @@ type FormData = {
   certifications: Array<{label: string, icon: string}>;
 };
 
+const normalizeImages = (colors: string[], images: Record<string, string>) => {
+  const normalized: Record<string, string> = {};
+
+  colors.forEach((color) => {
+    const value = images[color]?.trim();
+    if (value) {
+      normalized[color] = value;
+    }
+  });
+
+  return normalized;
+};
+
+const sanitizeSpecs = (technicalSpecs: FormData["technicalSpecs"]) => {
+  const normalized: FormData["technicalSpecs"] = {};
+
+  Object.entries(technicalSpecs || {}).forEach(([section, items]) => {
+    const sectionName = section.trim();
+    if (!sectionName) return;
+
+    const validItems = (items || [])
+      .filter((item) => item?.label?.trim() && item?.value?.trim())
+      .map((item) => ({
+        label: item.label.trim(),
+        value: item.value.trim(),
+      }));
+
+    if (validItems.length > 0) {
+      normalized[sectionName] = validItems;
+    }
+  });
+
+  return normalized;
+};
+
 const fetchCategories = async () => {
   try {
     const res = await fetch(
@@ -118,6 +153,45 @@ export default function EditProductForm({ product }: EditProductFormProps) {
     
     try {
       const token = await getToken();
+      const normalizedColors = Array.from(new Set(formData.colors.map((color) => color.trim()).filter(Boolean)));
+      const normalizedSizes = Array.from(new Set(formData.sizes.map((size) => size.trim()).filter(Boolean)));
+      const normalizedImages = normalizeImages(normalizedColors, formData.images);
+
+      const missingImageColors = normalizedColors.filter((color) => !normalizedImages[color]);
+      if (missingImageColors.length > 0) {
+        toast.error(`Add image URL for: ${missingImageColors.join(", ")}`);
+        setIsLoading(false);
+        return;
+      }
+
+      const price = Number(formData.price);
+      if (!Number.isFinite(price) || price <= 0) {
+        toast.error("Price must be a valid number greater than 0");
+        setIsLoading(false);
+        return;
+      }
+
+      const payload = {
+        name: formData.name.trim(),
+        shortDescription: formData.shortDescription.trim(),
+        description: formData.description.trim(),
+        price,
+        categorySlug: formData.categorySlug,
+        colors: normalizedColors,
+        sizes: normalizedSizes,
+        images: normalizedImages,
+        techHighlights: formData.techHighlights
+          .filter((item) => item.label.trim() && item.icon.trim())
+          .map((item) => ({ label: item.label.trim(), icon: item.icon.trim() })),
+        boxContents: formData.boxContents.map((item) => item.trim()).filter(Boolean),
+        productFeatures: formData.productFeatures
+          .filter((item) => item.title.trim() && item.description.trim())
+          .map((item) => ({ title: item.title.trim(), description: item.description.trim() })),
+        technicalSpecs: sanitizeSpecs(formData.technicalSpecs),
+        certifications: formData.certifications
+          .filter((item) => item.label.trim() && item.icon.trim())
+          .map((item) => ({ label: item.label.trim(), icon: item.icon.trim() })),
+      };
       
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products/${product.id}`,
@@ -127,12 +201,24 @@ export default function EditProductForm({ product }: EditProductFormProps) {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(payload),
         }
       );
 
       if (!res.ok) {
-        throw new Error("Failed to update product");
+        let message = "Failed to update product";
+        try {
+          const body = await res.json();
+          message = body?.error || body?.message || message;
+        } catch {
+          try {
+            const text = await res.text();
+            if (text) message = text;
+          } catch {
+            // Keep fallback message.
+          }
+        }
+        throw new Error(message);
       }
 
       toast.success("Product updated successfully");
@@ -140,7 +226,7 @@ export default function EditProductForm({ product }: EditProductFormProps) {
       router.refresh();
     } catch (error) {
       console.error("Error updating product:", error);
-      toast.error("Failed to update product");
+      toast.error(error instanceof Error ? error.message : "Failed to update product");
     } finally {
       setIsLoading(false);
     }
@@ -203,7 +289,13 @@ export default function EditProductForm({ product }: EditProductFormProps) {
                 id="price"
                 type="number"
                 value={formData.price}
-                onChange={(e) => setFormData({...formData, price: parseFloat(e.target.value)})}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setFormData({
+                    ...formData,
+                    price: value === "" ? 0 : Number(value),
+                  });
+                }}
                 required
               />
             </div>
