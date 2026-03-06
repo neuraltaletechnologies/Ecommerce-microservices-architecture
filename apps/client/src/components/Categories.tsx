@@ -11,11 +11,13 @@ const categoryImages: Record<string, string> = {
   "computer-monitors": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&h=200&fit=crop&q=80",
   "smart-phones": "https://images.unsplash.com/photo-1592899677112-901b65d2a4e0?w=200&h=200&fit=crop&q=80",
   Speaker: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200&h=200&fit=crop&q=80",
-  desktops: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=200&h=200&fit=crop&q=80",
-  components: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=200&fit=crop&q=80",
-  peripherals: "https://images.unsplash.com/photo-1563297007-0686b7003af7?w=200&h=200&fit=crop&q=80",
-  networking: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=200&h=200&fit=crop&q=80",
-  gadgets: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop&q=80",
+  Desktops: "https://images.unsplash.com/photo-1587831990711-23ca6441447b?w=200&h=200&fit=crop&q=80",
+  Components: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=200&h=200&fit=crop&q=80",
+  Peripherals: "https://images.unsplash.com/photo-1563297007-0686b7003af7?w=200&h=200&fit=crop&q=80",
+  Networking: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=200&h=200&fit=crop&q=80",
+  Gadgets: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop&q=80",
+  Gaming: "https://images.unsplash.com/photo-1606813909358-1c672e9b0aab?w=200&h=200&fit=crop&q=80",
+  "Software & Services": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop&q=80",
 };
 
 interface Category {

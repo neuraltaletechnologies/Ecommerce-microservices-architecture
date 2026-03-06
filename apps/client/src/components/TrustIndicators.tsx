@@ -13,11 +13,11 @@ const TrustIndicators = () => {
     },
     {
       name: "Samsung",
-      logo: "https://www.svgrepo.com/show/303265/samsung-logo.png",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/6/61/Samsung_old_logo_before_year_2015.svg",
     },
     {
       name: "Sony",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/c/ca/Sony_logo.png",
+      logo: "https://1000logos.net/wp-content/uploads/2021/05/Sony-logo-500x281.png",
     },
     {
       name: "Dell",
@@ -37,7 +37,7 @@ const TrustIndicators = () => {
     },
     {
       name: "Microsoft",
-      logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.png",
+      logo: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Microsoft_logo_-_2012_%28vertical%29.svg",
     },
     {
       name: "LG",

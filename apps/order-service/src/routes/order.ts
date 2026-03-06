@@ -3,8 +3,22 @@ import { shouldBeAdmin, shouldBeUser } from "../middleware/authMiddleware";
 import { Order } from "@repo/order-db";
 import { startOfMonth, subMonths, subDays, format, startOfDay, endOfDay } from "date-fns";
 import { OrderChartType, OrderStatusDistribution, DailyOrderTrend, DashboardStats } from "@repo/types";
+import { createOrder } from "../utils/order";
 
 export const orderRoute = async (fastify: FastifyInstance) => {
+  // Internal order creation endpoint (used by payment-service webhook).
+  fastify.post("/orders", async (request, reply) => {
+    try {
+      const order = await createOrder(request.body as any);
+      return reply.status(201).send(order);
+    } catch (error) {
+      return reply.status(400).send({
+        error: "Failed to create order",
+        message: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+  });
+
   fastify.get(
     "/user-orders",
     { preHandler: shouldBeUser },
@@ -17,8 +31,13 @@ export const orderRoute = async (fastify: FastifyInstance) => {
     "/orders",
     { preHandler: shouldBeAdmin },
     async (request, reply) => {
-      const { limit } = request.query as { limit: number };
-      const orders = await Order.find().limit(limit).sort({ createdAt: -1 });
+      const { limit } = request.query as { limit?: string | number };
+      const parsedLimit = Number(limit);
+      const safeLimit = Number.isFinite(parsedLimit)
+        ? Math.min(Math.max(parsedLimit, 1), 200)
+        : 50;
+
+      const orders = await Order.find().limit(safeLimit).sort({ createdAt: -1 });
       return reply.send(orders);
     }
   );

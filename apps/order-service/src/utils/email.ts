@@ -3,11 +3,20 @@ export const sendOrderEmail = async (email: string, amount: number, status: stri
   const EMAIL_SERVICE_URL = process.env.EMAIL_SERVICE_URL || 'http://localhost:8004';
   
   try {
-    await fetch(`${EMAIL_SERVICE_URL}/send-order-email`, {
+    const response = await fetch(`${EMAIL_SERVICE_URL}/send-order-email`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, amount, status }),
     });
+
+    if (!response.ok) {
+      const body = await response.text().catch(() => '');
+      console.error(
+        `Failed to send order email: ${response.status} ${response.statusText}${body ? ` | ${body}` : ''}`
+      );
+      return;
+    }
+
     console.log(`Order email sent to ${email}`);
   } catch (error) {
     console.error('Failed to send order email:', error);
