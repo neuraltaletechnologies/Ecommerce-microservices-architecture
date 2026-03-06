@@ -8,6 +8,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { useForm } from "react-hook-form";
+import type { FieldErrors } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -167,7 +168,22 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (!res.ok) throw new Error(isEditMode ? "Failed to update product!" : "Failed to create product!");
+
+      if (!res.ok) {
+        let message = isEditMode ? "Failed to update product!" : "Failed to create product!";
+        try {
+          const body = await res.json();
+          message = body?.error || body?.message || message;
+        } catch {
+          try {
+            const text = await res.text();
+            if (text) message = text;
+          } catch {
+            // Keep fallback message.
+          }
+        }
+        throw new Error(message);
+      }
     },
     onSuccess: () => {
       toast.success(isEditMode ? "Product updated successfully!" : "Product created successfully!");
@@ -185,6 +201,40 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
       toast.error(error.message);
     },
   });
+
+  const getTabForField = (fieldPath: string): string => {
+    const [root] = fieldPath.split(".");
+
+    if (["sizes", "colors"].includes(root)) return "variants";
+    if (root === "images") return "images";
+    if (["techHighlights", "boxContents", "productFeatures", "technicalSpecs", "certifications"].includes(root)) {
+      return "extras";
+    }
+    return "basic";
+  };
+
+  const handleFormSubmit = (data: z.infer<typeof ProductFormSchema>) => {
+    mutation.mutate(data);
+  };
+
+  const handleFormInvalid = (errors: FieldErrors<z.infer<typeof ProductFormSchema>>) => {
+    const firstErrorPath = Object.keys(errors)[0];
+    if (!firstErrorPath) {
+      toast.error("Please fix form errors before submitting.");
+      return;
+    }
+
+    const tab = getTabForField(firstErrorPath);
+    setActiveTab(tab);
+
+    const fieldError = errors[firstErrorPath as keyof typeof errors];
+    const message =
+      (fieldError && typeof fieldError === "object" && "message" in fieldError && fieldError.message)
+        ? String(fieldError.message)
+        : "Please fix the highlighted field and try again.";
+
+    toast.error(message);
+  };
 
   // Import from JSON - quick way to populate form
   const handleJsonImport = () => {
@@ -436,7 +486,7 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
         <ScrollArea className="flex-1 px-6 min-h-0">
           <Form {...form}>
-            <form id="product-form" onSubmit={form.handleSubmit((data) => mutation.mutate(data))} className="pb-6">
+            <form id="product-form" onSubmit={form.handleSubmit(handleFormSubmit, handleFormInvalid)} className="pb-6">
 
               {/* EXTERNAL API SEARCH TAB */}
               <TabsContent value="search" className="space-y-4 mt-4">
