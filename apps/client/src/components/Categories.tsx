@@ -7,7 +7,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 // Category image mapping - matched to actual database categories
 const categoryImages: Record<string, string> = {
   all: "", // Will use icon instead
-  Laptops: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=200&h=200&fit=crop&q=80",
+  Laptops: "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   "computer-monitors": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&h=200&fit=crop&q=80",
   "smart-phones": "https://images.unsplash.com/photo-1592899677112-901b65d2a4e0?w=200&h=200&fit=crop&q=80",
   Speaker: "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200&h=200&fit=crop&q=80",
@@ -16,7 +16,7 @@ const categoryImages: Record<string, string> = {
   Peripherals: "https://images.unsplash.com/photo-1563297007-0686b7003af7?w=200&h=200&fit=crop&q=80",
   Networking: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=200&h=200&fit=crop&q=80",
   Gadgets: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop&q=80",
-  Gaming: "https://images.unsplash.com/photo-1606813909358-1c672e9b0aab?w=200&h=200&fit=crop&q=80",
+  Gaming: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop",
   "Software & Services": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop&q=80",
 };
 

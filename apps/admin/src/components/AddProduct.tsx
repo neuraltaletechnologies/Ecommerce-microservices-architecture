@@ -91,6 +91,85 @@ interface AddProductProps {
   onSuccess?: () => void;
 }
 
+const allowedColors = new Set<string>(colors as unknown as string[]);
+const allowedSizes = new Set<string>(sizes as unknown as string[]);
+
+const pickFirstImageUrl = (value: unknown): string | undefined => {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed || undefined;
+  }
+
+  if (Array.isArray(value)) {
+    const first = value.find((item) => typeof item === "string" && item.trim()) as string | undefined;
+    return first?.trim();
+  }
+
+  return undefined;
+};
+
+const getFormDefaults = (product?: ProductType): z.infer<typeof ProductFormSchema> => {
+  const rawImages = (product?.images && typeof product.images === "object"
+    ? (product.images as Record<string, unknown>)
+    : {}) as Record<string, unknown>;
+
+  const normalizedImages: Record<string, string | string[]> = {};
+  for (const [key, value] of Object.entries(rawImages)) {
+    const imageUrl = pickFirstImageUrl(value);
+    if (imageUrl) normalizedImages[key] = imageUrl;
+  }
+
+  const imageKeys = Object.keys(normalizedImages);
+
+  let normalizedColors = (product?.colors || []).filter((color) => allowedColors.has(color));
+  if (product && normalizedColors.length === 0) {
+    normalizedColors = imageKeys.filter((color) => allowedColors.has(color));
+  }
+  if (product && normalizedColors.length === 0) {
+    normalizedColors = ["black"];
+  }
+
+  let normalizedSizes = (product?.sizes || []).filter((size) => allowedSizes.has(size));
+  if (product && normalizedSizes.length === 0) {
+    normalizedSizes = ["Standard"];
+  }
+
+  const fallbackImage = Object.values(normalizedImages)
+    .map((value) => pickFirstImageUrl(value))
+    .find(Boolean) || "https://placehold.co/600x600?text=Product";
+
+  normalizedColors.forEach((color) => {
+    if (!normalizedImages[color]) {
+      normalizedImages[color] = fallbackImage;
+    }
+  });
+
+  return {
+    name: product?.name || "",
+    shortDescription: product?.shortDescription || "",
+    description: product?.description || "",
+    price: product?.price || 0,
+    categorySlug: product?.categorySlug || "",
+    sizes: normalizedSizes as z.infer<typeof ProductFormSchema>["sizes"],
+    colors: normalizedColors as z.infer<typeof ProductFormSchema>["colors"],
+    images: normalizedImages as z.infer<typeof ProductFormSchema>["images"],
+    techHighlights: product?.techHighlights || [],
+    boxContents: product?.boxContents || [],
+    productFeatures: product?.productFeatures || [],
+    technicalSpecs: product?.technicalSpecs || {},
+    certifications: product?.certifications || [],
+    stockQuantity: product?.stockQuantity || 0,
+    stockStatus: (product?.stockStatus || "in_stock") as z.infer<typeof ProductFormSchema>["stockStatus"],
+    lowStockThreshold: product?.lowStockThreshold || 10,
+    soldCount: product?.soldCount || 0,
+    discount: product?.discount || 0,
+    isPublished: product?.isPublished ?? true,
+    brand: product?.brand || undefined,
+    externalSource: product?.externalSource || undefined,
+    externalId: product?.externalId || undefined,
+  };
+};
+
 const AddProduct = ({ product, onSuccess }: AddProductProps) => {
   const isEditMode = !!product;
   const [activeTab, setActiveTab] = useState("basic");
@@ -100,49 +179,13 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
   const form = useForm<z.infer<typeof ProductFormSchema>>({
     resolver: zodResolver(ProductFormSchema) as any,
-    defaultValues: {
-      name: product?.name || "",
-      shortDescription: product?.shortDescription || "",
-      description: product?.description || "",
-      price: product?.price || 0,
-      categorySlug: product?.categorySlug || "",
-      sizes: (product?.sizes || []) as z.infer<typeof ProductFormSchema>["sizes"],
-      colors: (product?.colors || []) as z.infer<typeof ProductFormSchema>["colors"],
-      images: (product?.images || {}) as z.infer<typeof ProductFormSchema>["images"],
-      techHighlights: product?.techHighlights || [],
-      boxContents: product?.boxContents || [],
-      productFeatures: product?.productFeatures || [],
-      technicalSpecs: product?.technicalSpecs || {},
-      certifications: product?.certifications || [],
-      stockQuantity: product?.stockQuantity || 0,
-      stockStatus: (product?.stockStatus || "in_stock") as z.infer<typeof ProductFormSchema>["stockStatus"],
-      lowStockThreshold: product?.lowStockThreshold || 10,
-      soldCount: product?.soldCount || 0,
-    },
+    defaultValues: getFormDefaults(product),
   });
 
   // Reset form when product changes (for edit mode)
   useEffect(() => {
     if (product) {
-      form.reset({
-        name: product.name || "",
-        shortDescription: product.shortDescription || "",
-        description: product.description || "",
-        price: product.price || 0,
-        categorySlug: product.categorySlug || "",
-        sizes: (product.sizes || []) as z.infer<typeof ProductFormSchema>["sizes"],
-        colors: (product.colors || []) as z.infer<typeof ProductFormSchema>["colors"],
-        images: (product.images || {}) as z.infer<typeof ProductFormSchema>["images"],
-        techHighlights: product.techHighlights || [],
-        boxContents: product.boxContents || [],
-        productFeatures: product.productFeatures || [],
-        technicalSpecs: product.technicalSpecs || {},
-        certifications: product.certifications || [],
-        stockQuantity: product.stockQuantity || 0,
-        stockStatus: (product.stockStatus || "in_stock") as z.infer<typeof ProductFormSchema>["stockStatus"],
-        lowStockThreshold: product.lowStockThreshold || 10,
-        soldCount: product.soldCount || 0,
-      });
+      form.reset(getFormDefaults(product));
     }
   }, [product, form]);
 
@@ -204,6 +247,7 @@ const AddProduct = ({ product, onSuccess }: AddProductProps) => {
 
   const getTabForField = (fieldPath: string): string => {
     const [root] = fieldPath.split(".");
+    if (!root) return "basic";
 
     if (["sizes", "colors"].includes(root)) return "variants";
     if (root === "images") return "images";
