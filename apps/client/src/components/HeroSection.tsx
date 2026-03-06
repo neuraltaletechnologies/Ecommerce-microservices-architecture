@@ -14,7 +14,7 @@ interface HeroProduct {
   shortDescription: string;
   description: string;
   price: number;
-  images: Record<string, string[]>;
+  images: Record<string, string | string[]>;
   categorySlug: string;
   colors: string[];
   sizes: string[];
