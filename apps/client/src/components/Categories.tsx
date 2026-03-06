@@ -8,17 +8,56 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 const categoryImages: Record<string, string> = {
   all: "", // Will use icon instead
   Laptops: "https://p7.hiclipart.com/preview/210/256/992/laptop-clip-art-laptop-notebook-png-image-thumbnail.jpg",
-  "computer-monitors": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&h=200&fit=crop&q=80",
-  "smart-phones": "https://images.unsplash.com/photo-1592899677112-901b65d2a4e0?w=200&h=200&fit=crop&q=80",
+  "Computer Monitors": "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=200&h=200&fit=crop&q=80",
+  "Smart Phones": "https://p7.hiclipart.com/preview/450/269/77/iphone-4-iphone-8-plus-iphone-5-iphone-x-iphone-apple-thumbnail.jpg?w=200&h=200&fit=crop&q=80",
   Speaker: "https://p7.hiclipart.com/preview/168/674/441/loudspeaker-wireless-speaker-jbl-audio-bluetooth.jpg",
   Desktops: "https://in-files.apjonlinecdn.com/landingpages/content-pages/visid-rich-content/hp-omen-45l/images/w100_desktop_laptop_v1.png",
   Components: "https://p7.hiclipart.com/preview/866/368/879/laptop-dell-motherboard-microatx-asus-motherboard-thumbnail.jpg",
   Peripherals: "https://p7.hiclipart.com/preview/273/555/811/computer-mouse-optical-mouse-sensor-mousepad-microsoft-surface-logitech-gaming-mouse-thumbnail.jpg",
   Networking: "https://p7.hiclipart.com/preview/966/244/938/wireless-router-ieee-802-11ac-tp-link-router-thumbnail.jpg",
-  Gadgets: "https://p7.hiclipart.com/preview/491/534/459/headphones-microphone-headset-phone-connector-apple-earbuds-white-headphones-thumbnail.jpg",
+  Gadgets: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop&q=80",
   Gaming: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=400&h=400&fit=crop",
   Storage: "https://as1.ftcdn.net/v2/jpg/03/15/67/52/1000_F_315675287_mbsCqFFs1MQ807oFkPDZD6D7xKJwj6AL.jpg",
   "Software & Services": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop&q=80",
+};
+
+const normalizeCategoryKey = (value: string): string =>
+  value
+    .toLowerCase()
+    .trim()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+const normalizedCategoryImages: Record<string, string> = Object.fromEntries(
+  Object.entries(categoryImages).map(([key, image]) => [normalizeCategoryKey(key), image])
+);
+
+const getCategoryImage = (slug: string, name?: string): string => {
+  const normalizedSlug = normalizeCategoryKey(slug);
+  const normalizedName = normalizeCategoryKey(name || "");
+
+  const aliases: Record<string, string> = {
+    "smart-phones": "smart-phones",
+    "computer-monitor": "computer-monitors",
+    "software-services": "software-and-services",
+  };
+
+  const candidates = [
+    normalizedSlug,
+    aliases[normalizedSlug],
+    normalizedName,
+    aliases[normalizedName],
+  ].filter(Boolean) as string[];
+
+  for (const key of candidates) {
+    if (normalizedCategoryImages[key]) {
+      return normalizedCategoryImages[key];
+    }
+  }
+
+  return normalizedCategoryImages.gadgets || "";
 };
 
 interface Category {
@@ -128,7 +167,7 @@ const CategoriesContent = () => {
             },
             ...data.map((category) => ({
               ...category,
-              image: categoryImages[category.slug] || categoryImages.gadgets || "",
+              image: getCategoryImage(category.slug, category.name),
               count: category.count || 0,
             })),
           ];
@@ -277,7 +316,7 @@ const CategoriesContent = () => {
                       alt={category.name}
                       width={56}
                       height={56}
-                      className="object-cover w-full h-full"
+                      className="object-contain w-full h-full p-1"
                       draggable={false}
                     />
                   )}
