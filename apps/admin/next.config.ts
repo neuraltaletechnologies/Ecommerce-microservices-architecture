@@ -27,6 +27,14 @@ const nextConfig: NextConfig = {
       {
         protocol:"https",
         hostname:"api.escuelajs.co",
+      },
+      {
+        protocol:"https",
+        hostname:"i.imgur.com",
+      },
+      {
+        protocol:"https",
+        hostname:"imgur.com",
       }
     ],
     formats: ['image/webp', 'image/avif'],
