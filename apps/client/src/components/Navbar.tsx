@@ -21,102 +21,102 @@ const Navbar = () => {
   const categories = [
     {
       name: "Laptops",
-      href: "/products?category=laptops",
+      href: "/products?category=Laptops",
       subcategories: [
-        { name: "Gaming Laptops", href: "/products?category=gaming-laptops" },
-        { name: "Business Laptops", href: "/products?category=business-laptops" },
-        { name: "Ultrabooks", href: "/products?category=ultrabooks" },
-        { name: "MacBooks", href: "/products?category=macbooks" },
+        { name: "Gaming Laptops", href: "/products?category=Gaming-Laptops" },
+        { name: "Business Laptops", href: "/products?category=Business-Laptops" },
+        { name: "Ultrabooks", href: "/products?category=Ultrabooks" },
+        { name: "MacBooks", href: "/products?category=MacBooks" },
       ]
     },
     {
       name: "Desktops",
-      href: "/products?category=desktops",
+      href: "/products?category=Desktops",
       subcategories: [
-        { name: "Gaming PCs", href: "/products?category=gaming-pcs" },
-        { name: "Workstations", href: "/products?category=workstations" },
-        { name: "All-in-One PCs", href: "/products?category=all-in-one" },
-        { name: "Mini PCs", href: "/products?category=mini-pcs" },
+        { name: "Gaming PCs", href: "/products?category=Gaming-PCs" },
+        { name: "Workstations", href: "/products?category=Workstations" },
+        { name: "All-in-One PCs", href: "/products?category=All-in-One-PCs" },
+        { name: "Mini PCs", href: "/products?category=Mini-PCs" },
       ]
     },
     {
       name: "Computer Monitors",
       href: "/products?category=monitors",
       subcategories: [
-        { name: "Gaming Monitors", href: "/products?category=gaming-monitors" },
-        { name: "4K Monitors", href: "/products?category=4k-monitors" },
-        { name: "Ultrawide", href: "/products?category=ultrawide-monitors" },
-        { name: "Professional", href: "/products?category=professional-monitors" },
+        { name: "Gaming Monitors", href: "/products?category=Gaming-Monitors" },
+        { name: "4K Monitors", href: "/products?category=4K-Monitors" },
+        { name: "Ultrawide", href: "/products?category=Ultrawide-Monitors" },
+        { name: "Professional", href: "/products?category=Professional-Monitors" },
       ]
     },
     {
       name: "Storage",
-      href: "/products?category=storage",
+      href: "/products?category=Storage",
       subcategories: [
-        { name: "SSDs", href: "/products?category=ssds" },
-        { name: "Hard Drives", href: "/products?category=hard-drives" },
-        { name: "External Storage", href: "/products?category=external-storage" },
-        { name: "NAS", href: "/products?category=nas" },
+        { name: "SSDs", href: "/products?category=SSDs" },
+        { name: "Hard Drives", href: "/products?category=Hard-Drives" },
+        { name: "External Storage", href: "/products?category=External-Storage" },
+        { name: "NAS", href: "/products?category=NAS" },
       ]
     },
     {
       name: "Components",
-      href: "/products?category=components",
+      href: "/products?category=Components",
       subcategories: [
-        { name: "Processors", href: "/products?category=processors" },
-        { name: "Graphics Cards", href: "/products?category=graphics-cards" },
-        { name: "Motherboards", href: "/products?category=motherboards" },
-        { name: "RAM", href: "/products?category=ram" },
+        { name: "Processors", href: "/products?category=Processors" },
+        { name: "Graphics Cards", href: "/products?category=Graphics-Cards" },
+        { name: "Motherboards", href: "/products?category=Motherboards" },
+        { name: "RAM", href: "/products?category=RAM" },
       ]
     },
     {
       name: "Peripherals",
-      href: "/products?category=peripherals",
+      href: "/products?category=Peripherals",
       subcategories: [
-        { name: "Keyboards", href: "/products?category=keyboards" },
-        { name: "Mice", href: "/products?category=mice" },
-        { name: "Headsets", href: "/products?category=headsets" },
-        { name: "Webcams", href: "/products?category=webcams" },
+        { name: "Keyboards", href: "/products?category=Keyboards" },
+        { name: "Mice", href: "/products?category=Mice" },
+        { name: "Headsets", href: "/products?category=Headsets" },
+        { name: "Webcams", href: "/products?category=Webcams" },
       ]
     },
     {
       name: "Networking",
-      href: "/products?category=networking",
+      href: "/products?category=Networking",
       subcategories: [
-        { name: "Routers", href: "/products?category=routers" },
-        { name: "WiFi Adapters", href: "/products?category=wifi-adapters" },
-        { name: "Switches", href: "/products?category=switches" },
-        { name: "Access Points", href: "/products?category=access-points" },
+        { name: "Routers", href: "/products?category=Routers" },
+        { name: "WiFi Adapters", href: "/products?category=WiFi-Adapters" },
+        { name: "Switches", href: "/products?category=Switches" },
+        { name: "Access Points", href: "/products?category=Access-Points" },
       ]
     },
     {
       name: "Gadgets",
-      href: "/products?category=gadgets",
+      href: "/products?category=Gadgets",
       subcategories: [
-        { name: "Smartphones", href: "/products?category=smartphones" },
-        { name: "Tablets", href: "/products?category=tablets" },
-        { name: "Smartwatches", href: "/products?category=smartwatches" },
-        { name: "Audio", href: "/products?category=audio" },
+        { name: "Smartphones", href: "/products?category=Smartphones" },
+        { name: "Tablets", href: "/products?category=Tablets" },
+        { name: "Smartwatches", href: "/products?category=Smartwatches" },
+        { name: "Audio", href: "/products?category=Audio" },
       ]
     },
     {
       name: "Gaming",
-      href: "/products?category=gaming",
+      href: "/products?category=Gaming",
       subcategories: [
-        { name: "Gaming Chairs", href: "/products?category=gaming-chairs" },
-        { name: "Controllers", href: "/products?category=controllers" },
-        { name: "VR Headsets", href: "/products?category=vr-headsets" },
-        { name: "Gaming Accessories", href: "/products?category=gaming-accessories" },
+        { name: "Gaming Chairs", href: "/products?category=Gaming-Chairs" },
+        { name: "Controllers", href: "/products?category=Controllers" },
+        { name: "VR Headsets", href: "/products?category=VR-Headsets" },
+        { name: "Gaming Accessories", href: "/products?category=Gaming-Accessories" },
       ]
     },
     {
       name: "Software & Digital",
-      href: "/products?category=software",
+      href: "/products?category=Software-&-Digital",
       subcategories: [
-        { name: "Operating Systems", href: "/products?category=operating-systems" },
-        { name: "Productivity", href: "/products?category=productivity-software" },
-        { name: "Security", href: "/products?category=security-software" },
-        { name: "Games", href: "/products?category=digital-games" },
+        { name: "Operating Systems", href: "/products?category=Operating-systems" },
+        { name: "Productivity", href: "/products?category=Productivity" },
+        { name: "Security", href: "/products?category=Security" },
+        { name: "Games", href: "/products?category=Games" },
       ]
     },
   ];
