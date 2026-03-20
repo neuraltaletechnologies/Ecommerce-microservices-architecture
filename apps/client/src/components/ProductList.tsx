@@ -88,7 +88,7 @@ const fetchData = async ({
     
     // Limit for homepage (fetch a larger pool so we can keep one per category)
     if (params === "homepage") {
-      queryParams.append("limit", "8");
+      queryParams.append("limit", "48");
     }
 
     const url = `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL || 'http://localhost:8000'}/products?${queryParams.toString()}`;
