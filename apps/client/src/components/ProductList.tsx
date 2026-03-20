@@ -1,4 +1,4 @@
-import { ProductsType, ProductType } from "@repo/types";
+import { ProductType } from "@repo/types";
 import Categories from "./Categories";
 import ProductCard from "./ProductCard";
 import Link from "next/link";
@@ -145,6 +145,38 @@ interface ProductListProps {
   batteryCapacity?: string;
 }
 
+const ProductGrid = async ({
+  category,
+  sort,
+  search,
+  params,
+  brands,
+  rating,
+  priceMin,
+  priceMax,
+  batteryCapacity,
+}: ProductListProps) => {
+  const products = await fetchData({
+    category,
+    sort,
+    search,
+    params,
+    brands,
+    rating,
+    priceMin,
+    priceMax,
+    batteryCapacity,
+  });
+
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
+      {Array.isArray(products) && products.map((product) => (
+        <ProductCard key={product.id} product={product} />
+      ))}
+    </div>
+  );
+};
+
 const ProductList = async ({
   category,
   sort,
@@ -156,17 +188,6 @@ const ProductList = async ({
   priceMax,
   batteryCapacity,
 }: ProductListProps) => {
-  const products = await fetchData({ 
-    category, 
-    sort, 
-    search, 
-    params,
-    brands,
-    rating,
-    priceMin,
-    priceMax,
-    batteryCapacity,
-  });
   return (
     <div className="w-full">
       {/* Section Header */}
@@ -182,11 +203,17 @@ const ProductList = async ({
           ))}
         </div>
       }>
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
-          {Array.isArray(products) && products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        <ProductGrid
+          category={category}
+          sort={sort}
+          search={search}
+          params={params}
+          brands={brands}
+          rating={rating}
+          priceMin={priceMin}
+          priceMax={priceMax}
+          batteryCapacity={batteryCapacity}
+        />
       </Suspense>
       
       {params === "homepage" && (

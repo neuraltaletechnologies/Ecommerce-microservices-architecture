@@ -57,8 +57,14 @@ const getCategoryImage = (slug: string, name?: string): string => {
     }
   }
 
-  return normalizedCategoryImages.gadgets || "";
+  return (
+    normalizedCategoryImages.gadgets ||
+    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop&q=80"
+  );
 };
+
+const isValidImageSrc = (src: string): boolean =>
+  typeof src === "string" && (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("/"));
 
 interface Category {
   id: number;
@@ -155,17 +161,17 @@ const CategoriesContent = () => {
 
         if (res.ok) {
           const data: Category[] = await res.json();
-          const totalProducts = data.reduce((sum, cat) => sum + (cat.count || 0), 0);
 
+          const safeData = Array.isArray(data) ? data : [];
           const categoriesWithImages: CategoryWithImage[] = [
             {
               id: 0,
               name: "All",
               slug: "all",
-              count: totalProducts,
+              count: safeData.reduce((sum, cat) => sum + (cat.count || 0), 0),
               image: "",
             },
-            ...data.map((category) => ({
+            ...safeData.map((category) => ({
               ...category,
               image: getCategoryImage(category.slug, category.name),
               count: category.count || 0,
@@ -304,7 +310,7 @@ const CategoriesContent = () => {
                       : "border-[#E5E5E5] hover:border-[#CCCCCC] hover:shadow-md"
                   } ${isAllCategory ? (isSelected ? "bg-blue-100" : "bg-gray-100") : "bg-white"}`}
                 >
-                  {isAllCategory ? (
+                  {isAllCategory || !isValidImageSrc(category.image) ? (
                     <Grid3X3
                       className={`w-6 h-6 ${
                         isSelected ? "text-[#0066FF]" : "text-[#666666]"

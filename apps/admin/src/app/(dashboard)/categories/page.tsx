@@ -15,14 +15,29 @@ export const metadata: Metadata = {
 
 const getData = async (): Promise<CategoryType[]> => {
   try {
+    const productServiceUrl =
+      process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL || "http://localhost:8000";
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`,
+      `${productServiceUrl}/categories`,
       { cache: "no-store" }
     );
+
+    if (!res.ok) {
+      console.error("Failed to fetch categories:", res.status, res.statusText);
+      return [];
+    }
+
     const data = await res.json();
+
+    if (!Array.isArray(data)) {
+      console.error("Categories API returned non-array data:", data);
+      return [];
+    }
+
     return data;
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching categories:", error);
     return [];
   }
 };
