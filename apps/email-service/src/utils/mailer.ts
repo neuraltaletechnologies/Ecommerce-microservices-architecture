@@ -3,11 +3,8 @@ import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    type: "OAuth2",
-    user: "lamadevtest@gmail.com",
-    clientId: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_APP_PASSWORD,
   },
 });
 
@@ -21,7 +18,7 @@ const sendMail = async ({
   text: string;
 }) => {
   const res = await transporter.sendMail({
-    from: '"Lama Dev" <lamadev@gmail.com>',
+    from: `"NeuralTale Shop" <${process.env.EMAIL_USER}>`,
     to: email,
     subject,
     text,
