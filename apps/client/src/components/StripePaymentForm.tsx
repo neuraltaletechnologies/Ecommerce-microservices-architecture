@@ -16,7 +16,7 @@ const stripe = loadStripe(
 const fetchClientSecret = async (cart: CartItemsType, token: string): Promise<string> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_PAYMENT_SERVICE_URL}/sessions/create-checkout-session`,
+      "/api/payment/create-checkout-session",
       {
         method: "POST",
         body: JSON.stringify({ cart }),
@@ -30,9 +30,12 @@ const fetchClientSecret = async (cart: CartItemsType, token: string): Promise<st
     if (!response.ok) {
       let errorMessage = "Failed to create checkout session";
       try {
-        const errorJson = await response.json();
+        const errorJson = await response.json() as { error?: { message?: string } | string; message?: string };
         console.error("Payment service error response:", response.status, errorJson);
-        errorMessage = errorJson.error?.message || errorJson.error || errorMessage;
+        errorMessage =
+          (typeof errorJson.error === "object" ? errorJson.error?.message : errorJson.error) ||
+          errorJson.message ||
+          errorMessage;
       } catch {
         const errorText = await response.text();
         console.error("Payment service error text:", response.status, errorText);
@@ -51,6 +54,10 @@ const fetchClientSecret = async (cart: CartItemsType, token: string): Promise<st
       console.error("Payment service returned error object:", json.error);
       console.error("Parsed error message:", errorMessage);
       throw new Error(errorMessage);
+    }
+
+    if (json.message && !json.checkoutSessionClientSecret) {
+      throw new Error(String(json.message));
     }
     
     // Check for various possible property names

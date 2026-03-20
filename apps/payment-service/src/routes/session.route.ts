@@ -2,9 +2,16 @@ import { Hono } from "hono";
 import stripe from "../utils/stripe";
 import { shouldBeUser } from "../middleware/authMiddleware";
 import { CartItemsType } from "@repo/types";
-import { getStripeProductPrice } from "../utils/stripeProduct";
 
 const sessionRoute = new Hono();
+
+const getFallbackUnitAmount = (price: unknown): number | null => {
+  const tzs = Number(price);
+  if (!Number.isFinite(tzs) || tzs <= 0) return null;
+
+  // Database/cart prices are stored as whole TZS. Stripe expects smallest unit.
+  return Math.round(tzs * 100);
+};
 
 sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
   try {
@@ -13,32 +20,29 @@ sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
     const userId = c.get("userId");
 
     if (!cart || !Array.isArray(cart) || cart.length === 0) {
-      return c.json(
-        { error: "Cart is empty or invalid" },
-        { status: 400 }
-      );
+      return c.json({ error: "Cart is empty or invalid" }, 400);
     }
 
-    const lineItems = await Promise.all(
-      cart.map(async (item) => {
-        try {
-          const unitAmount = await getStripeProductPrice(item.id);
-          return {
-            price_data: {
-              currency: "tzs", // Tanzanian Shilling
-              product_data: {
-                name: item.name,
-              },
-              unit_amount: unitAmount,
-            },
-            quantity: item.quantity,
-          };
-        } catch (error) {
-          console.error(`Failed to get price for product ${item.id} (${item.name}):`, error);
-          throw new Error(`Product "${item.name}" (ID: ${item.id}) is not set up in Stripe. Please contact support.`);
-        }
-      })
-    );
+    const lineItems = cart.map((item) => {
+      const unitAmount = getFallbackUnitAmount(item.price);
+
+      if (!unitAmount) {
+        throw new Error(
+          `Invalid product price for "${item.name}" (ID: ${item.id}).`
+        );
+      }
+
+      return {
+        price_data: {
+          currency: "tzs", // Tanzanian Shilling
+          product_data: {
+            name: item.name,
+          },
+          unit_amount: unitAmount,
+        },
+        quantity: item.quantity,
+      };
+    });
 
     const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3002";
 
@@ -54,10 +58,7 @@ sessionRoute.post("/create-checkout-session", shouldBeUser, async (c) => {
   } catch (error) {
     console.error("Error creating checkout session:", error);
     const errorMessage = error instanceof Error ? error.message : "Failed to create checkout session";
-    return c.json(
-      { error: { message: errorMessage } },
-      { status: 500 }
-    );
+    return c.json({ error: { message: errorMessage } }, 500);
   }
 });
 

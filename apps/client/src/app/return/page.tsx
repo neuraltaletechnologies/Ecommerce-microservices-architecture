@@ -12,7 +12,7 @@ const ReturnPage = async ({
   }
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_PAYMENT_SERVICE_URL}/sessions/${session_id}`
+    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3002"}/api/payment/sessions/${session_id}`
   );
   const data = await res.json();
 
