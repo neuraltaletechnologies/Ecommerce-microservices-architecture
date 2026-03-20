@@ -1,0 +1,19 @@
+# pnpm specific configuration for monorepo optimization
+
+# Hoist dependencies to reduce nesting depth (Windows path length issue)
+shamefully-hoist=true
+hoist-pattern[]=*
+
+# Use symbolic links instead of hardlinks for better compatibility
+symlink=true
+
+# Optimize workspace resolution
+prefer-workspace-packages=true
+
+# Better caching
+fetch-retries=5
+fetch-retry-mintimeout=20000
+fetch-retry-maxtimeout=120000
+
+# Use node-modules linker for Windows compatibility
+node-linker=node-modules

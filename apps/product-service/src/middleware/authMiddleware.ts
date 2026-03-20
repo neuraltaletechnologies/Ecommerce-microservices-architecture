@@ -41,8 +41,11 @@ export const shouldBeAdmin = (
 
   const claims = auth.sessionClaims as CustomJwtSessionClaims;
 
-  if (claims.metadata?.role !== "admin") {
-    return res.status(403).send({ message: "Unauthorized!" });
+  // Check both publicMetadata and metadata for role (Clerk uses publicMetadata)
+  const role = claims.publicMetadata?.role || claims.metadata?.role;
+  
+  if (role !== "admin") {
+    return res.status(403).json({ message: "Unauthorized! Admin role required." });
   }
 
   req.userId = auth.userId;

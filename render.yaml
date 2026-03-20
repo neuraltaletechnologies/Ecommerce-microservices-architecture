@@ -1,0 +1,138 @@
+# Render Blueprint for E-commerce Microservices
+# This file defines all services for automatic deployment on Render
+# Deploy via: Connect your GitHub repo to Render and it will auto-detect this file
+
+services:
+  # Product Service
+  - type: web
+    name: neuraltale-product-service
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install -g pnpm && pnpm install && pnpm --filter @repo/product-db db:generate
+    startCommand: cd apps/product-service && pnpm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8000
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        value: https://neurashop.neuraltale.com
+      - key: ADMIN_URL
+        value: https://backoffice.neuraltale.com
+
+  # Order Service
+  - type: web
+    name: neuraltale-order-service
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install -g pnpm && pnpm install
+    startCommand: cd apps/order-service && pnpm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8001
+      - key: MONGO_URL
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: EMAIL_SERVICE_URL
+        value: https://neuraltale-email-service.onrender.com
+      - key: PRODUCT_SERVICE_URL
+        value: https://neuraltale-product-service.onrender.com
+
+  # Payment Service
+  - type: web
+    name: neuraltale-payment-service
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install -g pnpm && pnpm install
+    startCommand: cd apps/payment-service && pnpm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8002
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: ORDER_SERVICE_URL
+        value: https://neuraltale-order-service.onrender.com
+      - key: FRONTEND_URL
+        value: https://neuraltale-client.onrender.com
+
+  # Auth Service
+  - type: web
+    name: neuraltale-auth-service
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install -g pnpm && pnpm install
+    startCommand: cd apps/auth-service && pnpm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8003
+      - key: CLERK_SECRET_KEY
+        sync: false
+      - key: CLERK_PUBLISHABLE_KEY
+        sync: false
+      - key: EMAIL_SERVICE_URL
+        value: https://neuraltale-email-service.onrender.com
+
+  # Email Service
+  - type: web
+    name: neuraltale-email-service
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install -g pnpm && pnpm install
+    startCommand: cd apps/email-service && pnpm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8004
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+
+  # Note: Client and Admin frontends should be deployed to Cloudflare Pages
+  # See CLOUDFLARE_PAGES.md for deployment instructions

@@ -4,10 +4,10 @@ import useCartStore from "@/stores/cartStore";
 import { ProductType } from "@repo/types";
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { toast } from "react-toastify";
 
-const ProductInteraction = ({
+const ProductInteractionContent = ({
   product,
   selectedSize,
   selectedColor,
@@ -46,65 +46,35 @@ const ProductInteraction = ({
       selectedColor,
       selectedSize,
     });
-    toast.success("Product added to cart")
+    toast.success("Product added to cart");
+  };
+
+  const handleBuyNow = () => {
+    addToCart({
+      ...product,
+      quantity,
+      selectedColor,
+      selectedSize,
+    });
+    toast.success("Proceeding to checkout...");
+    // Navigate to cart with delivery step
+    router.push("/cart?step=2");
   };
   return (
-    <div className="flex flex-col gap-4 mt-4">
-      {/* SIZE */}
-      <div className="flex flex-col gap-2 text-xs">
-        <span className="text-gray-500">Size</span>
-        <div className="flex items-center gap-2">
-          {product.sizes.map((size) => (
-            <div
-              className={`cursor-pointer border-1 p-[2px] ${
-                selectedSize === size ? "border-gray-600" : "border-gray-300"
-              }`}
-              key={size}
-              onClick={() => handleTypeChange("size", size)}
-            >
-              <div
-                className={`w-6 h-6 text-center flex items-center justify-center ${
-                  selectedSize === size
-                    ? "bg-black text-white"
-                    : "bg-white text-black"
-                }`}
-              >
-                {size.toUpperCase()}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* COLOR */}
-      <div className="flex flex-col gap-2 text-sm">
-        <span className="text-gray-500">Color</span>
-        <div className="flex items-center gap-2">
-          {product.colors.map((color) => (
-            <div
-              className={`cursor-pointer border-1 p-[2px] ${
-                selectedColor === color ? "border-gray-300" : "border-white"
-              }`}
-              key={color}
-              onClick={() => handleTypeChange("color", color)}
-            >
-              <div className={`w-6 h-6`} style={{ backgroundColor: color }} />
-            </div>
-          ))}
-        </div>
-      </div>
+    <div className="flex flex-col gap-4">
       {/* QUANTITY */}
-      <div className="flex flex-col gap-2 text-sm">
-        <span className="text-gray-500">Quantity</span>
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col gap-3">
+        <label className="text-sm font-semibold text-gray-900 uppercase tracking-wide">Quantity</label>
+        <div className="flex items-center gap-3">
           <button
-            className="cursor-pointer border-1 border-gray-300 p-1"
+            className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-lg hover:border-[#FDB913] hover:bg-[#FDB913]/10 transition-all"
             onClick={() => handleQuantityChange("decrement")}
           >
             <Minus className="w-4 h-4" />
           </button>
-          <span>{quantity}</span>
+          <span className="text-lg font-semibold text-gray-900 min-w-[3rem] text-center">{quantity}</span>
           <button
-            className="cursor-pointer border-1 border-gray-300 p-1"
+            className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded-lg hover:border-[#FDB913] hover:bg-[#FDB913]/10 transition-all"
             onClick={() => handleQuantityChange("increment")}
           >
             <Plus className="w-4 h-4" />
@@ -114,16 +84,35 @@ const ProductInteraction = ({
       {/* BUTTONS */}
       <button
         onClick={handleAddToCart}
-        className="bg-gray-800 text-white px-4 py-2 rounded-md shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-medium"
+        className="bg-[#FDB913] text-[#001E3C] px-6 py-3 rounded-lg shadow-lg flex items-center justify-center gap-2 cursor-pointer text-sm font-semibold hover:bg-[#e5a811] hover:shadow-xl transition-all"
       >
-        <Plus className="w-4 h-4" />
+        <Plus className="w-5 h-5" />
         Add to Cart
       </button>
-      <button className="ring-1 ring-gray-400 shadow-lg text-gray-800 px-4 py-2 rounded-md flex items-center justify-center cursor-pointer gap-2 text-sm font-medium">
-        <ShoppingCart className="w-4 h-4" />
-        Buy this Item
+      <button 
+        onClick={handleBuyNow}
+        className="border-2 border-[#001E3C] shadow-lg text-[#001E3C] px-6 py-3 rounded-lg flex items-center justify-center cursor-pointer gap-2 text-sm font-semibold hover:bg-[#001E3C] hover:text-white transition-all"
+      >
+        <ShoppingCart className="w-5 h-5" />
+        Buy Now
       </button>
     </div>
+  );
+};
+
+const ProductInteraction = ({
+  product,
+  selectedSize,
+  selectedColor,
+}: {
+  product: ProductType;
+  selectedSize: string;
+  selectedColor: string;
+}) => {
+  return (
+    <Suspense fallback={<div className="w-full h-48" />}>
+      <ProductInteractionContent product={product} selectedSize={selectedSize} selectedColor={selectedColor} />
+    </Suspense>
   );
 };
 

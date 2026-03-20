@@ -21,6 +21,12 @@ import {
 import { DataTablePagination } from "@/components/TablePagination";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { useAuth } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+import { OrderType } from "@repo/types";
+import { Button } from "@/components/ui/button";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -33,6 +39,40 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
+
+  const { getToken } = useAuth();
+  const router = useRouter();
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      const token = await getToken();
+      const selectedRows = table.getSelectedRowModel().rows;
+
+      await Promise.all(
+        selectedRows.map(async (row) => {
+          const orderId = (row.original as OrderType)._id;
+          await fetch(
+            `${process.env.NEXT_PUBLIC_ORDER_SERVICE_URL}/orders/${orderId}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+        })
+      );
+    },
+    onSuccess: () => {
+      toast.success("Order(s) deleted successfully");
+      setRowSelection({});
+      router.refresh();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to delete orders");
+    },
+  });
 
   const table = useReactTable({
     data,
@@ -49,14 +89,27 @@ export function DataTable<TData, TValue>({
   });
 
   console.log(rowSelection);
+  
+  const selectedCount = Object.keys(rowSelection).length;
+  
   return (
     <div className="rounded-md border">
-      {Object.keys(rowSelection).length > 0 && (
+      {selectedCount > 0 && (
         <div className="flex justify-end">
-          <button className="flex items-center gap-2 bg-red-500 text-white px-2 py-1 text-sm rounded-md m-4 cursor-pointer">
+          <Button 
+            variant="destructive"
+            size="sm"
+            className="flex items-center gap-2 px-4 py-2 text-sm rounded-md m-4"
+            onClick={() => {
+              if (confirm(`Are you sure you want to delete ${selectedCount} order${selectedCount > 1 ? "s" : ""}?`)) {
+                deleteMutation.mutate();
+              }
+            }}
+            disabled={deleteMutation.isPending}
+          >
             <Trash2 className="w-4 h-4"/>
-            Delete Payment(s)
-          </button>
+            {deleteMutation.isPending ? "Deleting..." : `Delete Order${selectedCount > 1 ? "s" : ""}`}
+          </Button>
         </div>
       )}
       <Table>

@@ -36,3 +36,5 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+scripts/upload-images-to-cloudinary.js
+scripts/update-seed-urls.js

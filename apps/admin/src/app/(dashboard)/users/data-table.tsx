@@ -39,8 +39,11 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
+  // Ensure data is always an array
+  const safeData = Array.isArray(data) ? data : [];
+
   const table = useReactTable({
-    data,
+    data: safeData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -61,10 +64,10 @@ export function DataTable<TData, TValue>({
       const token = await getToken();
       const selectedRows = table.getSelectedRowModel().rows;
 
-      Promise.all(
+      await Promise.all(
         selectedRows.map(async (row) => {
           const userId = (row.original as User).id;
-          const res = await fetch(
+          await fetch(
             `${process.env.NEXT_PUBLIC_AUTH_SERVICE_URL}/users/${userId}`,
             {
               method: "DELETE",

@@ -49,14 +49,21 @@ export const columns: ColumnDef<User>[] = [
     header: "Avatar",
     cell: ({ row }) => {
       const user = row.original;
+      const hasImage = user.imageUrl && typeof user.imageUrl === 'string' && user.imageUrl.trim() !== "";
       return (
-        <div className="w-9 h-9 relative">
-          <Image
-            src={user.imageUrl}
-            alt={user.firstName || user.username || "-"}
-            fill
-            className="rounded-full object-cover"
-          />
+        <div className="w-9 h-9 relative bg-gray-100 rounded-full flex items-center justify-center">
+          {hasImage ? (
+            <Image
+              src={user.imageUrl}
+              alt={user.firstName || user.username || "-"}
+              fill
+              className="rounded-full object-cover"
+            />
+          ) : (
+            <span className="text-xs text-gray-400 font-semibold">
+              {(user.firstName?.[0] || user.username?.[0] || "?").toUpperCase()}
+            </span>
+          )}
         </div>
       );
     },
@@ -129,7 +136,7 @@ export const columns: ColumnDef<User>[] = [
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link href={`/users/${user.id}`}>View customer</Link>
+              <Link href={`/users/${user.id}`}>View user</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

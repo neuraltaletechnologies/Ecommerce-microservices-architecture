@@ -5,7 +5,9 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "pnpm dlx tsx --env-file=.env --watch src/index.ts",
+    "dev": "tsx --env-file=.env --watch src/index.ts",
+    "build": "echo 'Build handled by product-db package'",
+    "start": "tsx src/index.ts",
     "check-types": "tsc --noEmit"
   },
   "keywords": [],
@@ -13,15 +15,20 @@
   "license": "ISC",
   "dependencies": {
     "@clerk/express": "^1.7.30",
-    "cors": "^2.8.5",
-    "express": "^5.0.3",
     "@repo/product-db": "workspace:*",
-    "@repo/kafka": "workspace:*"
+    "cloudinary": "^2.8.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.0.3",
+    "multer": "^2.0.2",
+    "prisma": "^6.16.0",
+    "tsx": "^4.20.5"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
     "@repo/types": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3"
+    "@types/express": "^5.0.3",
+    "@types/multer": "^2.0.0"
   }
 }

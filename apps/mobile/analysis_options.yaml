@@ -1,0 +1,27 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    - camel_case_types
+    - camel_case_extensions
+    - library_names
+    - library_private_types_in_public_api
+    - type_init_formals
+    - empty_constructor_bodies
+    - unnecessary_getters_setters
+    - prefer_expression_function_bodies
+    - prefer_final_fields
+    - use_setters_to_change_properties
+    - avoid_returning_null
+    - avoid_returning_null_for_future
+    - avoid_returning_this
+    - type_annotate_public_apis
+    - avoid_bool_logic_in_user_facing_api
+    - avoid_private_typedef_functions
+    - avoid_positional_boolean_parameters
+    - avoid_relative_lib_imports
+    - sort_pub_dependencies
+    - sort_constructors_first
+    - always_declare_return_types
+    - always_put_control_body_on_new_line
+    - always_put_required_named_parameters_first

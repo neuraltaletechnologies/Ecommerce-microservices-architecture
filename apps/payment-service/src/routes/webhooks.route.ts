@@ -1,7 +1,6 @@
 import { Hono } from "hono";
 import Stripe from "stripe";
 import stripe from "../utils/stripe";
-import { producer } from "../utils/kafka";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
 const webhookRoute = new Hono();
@@ -35,20 +34,31 @@ webhookRoute.post("/stripe", async (c) => {
       const lineItems = await stripe.checkout.sessions.listLineItems(
         session.id
       );
-      // TODO: CREATE ORDER
-      producer.send("payment.successful", {
-        value: {
-          userId: session.client_reference_id,
-          email: session.customer_details?.email,
-          amount: session.amount_total,
-          status: session.payment_status === "paid" ? "success" : "failed",
-          products: lineItems.data.map((item) => ({
-            name: item.description,
-            quantity: item.quantity,
-            price: item.price?.unit_amount,
-          })),
-        },
-      });
+      
+      // Create order via direct HTTP call to order service
+      const orderData = {
+        userId: session.client_reference_id,
+        email: session.customer_details?.email,
+        amount: session.amount_total,
+        status: session.payment_status === "paid" ? "success" : "failed",
+        products: lineItems.data.map((item) => ({
+          name: item.description,
+          quantity: item.quantity,
+          price: item.price?.unit_amount,
+        })),
+      };
+
+      try {
+        const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL || 'http://localhost:8001';
+        await fetch(`${ORDER_SERVICE_URL}/orders`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderData),
+        });
+        console.log('Order created successfully');
+      } catch (error) {
+        console.error('Failed to create order:', error);
+      }
 
       break;
 

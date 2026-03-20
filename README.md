@@ -1,135 +1,171 @@
-# Turborepo starter
+# E-commerce Microservices Architecture
 
-This Turborepo starter is maintained by the Turborepo core team.
+Production-grade e-commerce platform in a Turborepo monorepo. The backend is split into multiple services with direct HTTP communication. The frontend ships as two Next.js apps plus a Flutter mobile client.
 
-## Using this example
+## Architecture
 
-Run the following command:
+### Services and ports
 
-```sh
-npx create-turbo@latest
+| Service | Port | Framework | Database | Auth middleware |
+| --- | --- | --- | --- | --- |
+| product-service | 8000 | Express | Prisma + Neon PostgreSQL | @clerk/express |
+| order-service | 8001 | Fastify | Mongoose + MongoDB Atlas | @clerk/fastify |
+| payment-service | 8002 | Hono | None | @hono/clerk-auth |
+| auth-service | 8003 | Express | None | @clerk/express |
+| email-service | 8004 | Express | None | Internal only |
+
+### Frontends
+
+| App | Port | Framework | Auth |
+| --- | --- | --- | --- |
+| client | 3002 | Next.js 15 | @clerk/nextjs |
+| admin | 3003 | Next.js 15 | @clerk/nextjs |
+| mobile | N/A | Flutter | Clerk tokens via API |
+
+### Communication
+
+- Services talk via direct HTTP (no queue). Example flow: payment-service -> order-service -> email-service.
+- Frontends call services via `NEXT_PUBLIC_*_SERVICE_URL` environment variables.
+
+## Repository layout
+
+- Apps live in [apps](apps) (backend services, web clients, Flutter mobile).
+- Shared packages live in [packages](packages) (types, database clients, configs).
+- Deployment blueprint for Render lives in [render.yaml](render.yaml).
+- Turborepo config lives in [turbo.json](turbo.json).
+
+## Quick start
+
+### Prerequisites
+
+- Node.js 18+
+- pnpm 9+
+- Neon PostgreSQL and MongoDB Atlas accounts
+- Clerk account (auth)
+- Stripe account (optional payments)
+
+### Install
+
+```bash
+pnpm install
 ```
 
-## What's inside?
+### Run all services
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+```bash
+pnpm dev
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+### Run a single service
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```bash
+turbo dev --filter=product-service
 ```
 
-### Develop
+## Environment variables
 
-To develop all apps and packages, run the following command:
+### Backend services
 
-```
-cd my-turborepo
+- `DATABASE_URL`, `DIRECT_URL` (product-service, Prisma)
+- `MONGO_URL` (order-service, Mongoose)
+- `CLERK_SECRET_KEY` (all services that verify auth)
+- `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` (payment-service)
+- `EMAIL_SERVICE_URL`, `ORDER_SERVICE_URL` (inter-service calls)
+- `FRONTEND_URL`, `ADMIN_URL` (CORS)
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+### Frontend apps
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
+- `NEXT_PUBLIC_PRODUCT_SERVICE_URL`
+- `NEXT_PUBLIC_ORDER_SERVICE_URL`
+- `NEXT_PUBLIC_PAYMENT_SERVICE_URL`
+- `NEXT_PUBLIC_AUTH_SERVICE_URL`
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+## Database workflows
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+### Prisma (product-service)
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+Schema lives in [packages/product-db/prisma/schema.prisma](packages/product-db/prisma/schema.prisma).
 
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```bash
+pnpm --filter=@repo/product-db db:generate
+pnpm --filter=@repo/product-db db:migrate
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Mongoose (order-service)
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+Models live in [packages/order-db/src/order-model.ts](packages/order-db/src/order-model.ts). Connection singleton is in [packages/order-db/src/connection.ts](packages/order-db/src/connection.ts).
 
+## Auth and roles
+
+- Shared claims type: `CustomJwtSessionClaims` from `@repo/types`.
+- Express services (product/auth) check role in both `publicMetadata.role` and `metadata.role`.
+- Fastify/Hono services check role in `metadata.role` only.
+
+## Payments (optional)
+
+- Client creates a Stripe checkout session in payment-service.
+- Stripe webhook validates signature then creates an order via order-service.
+- Orders can also be created without Stripe for manual or COD workflows.
+
+Webhook logic is in [apps/payment-service/src/routes/webhooks.route.ts](apps/payment-service/src/routes/webhooks.route.ts).
+
+## Admin external product API
+
+- Admin can search external APIs and import product details.
+- Priority order: TechSpecs -> DummyJSON -> FakeStore.
+- Rate limit: 30 requests per minute per user.
+- Cache duration: 10 minutes.
+
+Admin UI entry point is in [apps/admin/src/components/ExternalProductSearch.tsx](apps/admin/src/components/ExternalProductSearch.tsx).
+
+## Mobile app
+
+- Flutter app lives in [apps/mobile](apps/mobile).
+- Setup and onboarding docs are in [apps/mobile/SETUP.md](apps/mobile/SETUP.md) and [apps/mobile/GETTING_STARTED.md](apps/mobile/GETTING_STARTED.md).
+
+## Build and lint
+
+```bash
+pnpm lint
+pnpm check-types
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+Build a single app or package:
+
+```bash
+pnpm exec turbo build --filter=product-service
 ```
 
-## Useful Links
+## Deployment
 
-Learn more about the power of Turborepo:
+### Backends on Render
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+- Render reads [render.yaml](render.yaml) to deploy all services.
+- Ensure all backend environment variables are set per service.
+
+### Frontends on Vercel
+
+- Deploy [apps/client](apps/client) and [apps/admin](apps/admin) as separate projects.
+- Vercel build command for both apps:
+
+```bash
+cd ../../packages/product-db && pnpm prisma generate && cd ../../apps/client && pnpm run build
+```
+
+Update the build command path when deploying the admin app.
+
+## Troubleshooting
+
+- If a service returns 401, confirm `CLERK_SECRET_KEY` and allowed origins.
+- If products fail to load, verify `NEXT_PUBLIC_PRODUCT_SERVICE_URL` and CORS settings.
+- If Stripe webhooks fail, confirm `STRIPE_WEBHOOK_SECRET` and webhook URL.
+- If Prisma fails in CI, ensure `DIRECT_URL` is set and migrations ran.
+
+## Key entry points
+
+- product-service: [apps/product-service/src/index.ts](apps/product-service/src/index.ts)
+- order-service: [apps/order-service/src/index.ts](apps/order-service/src/index.ts)
+- payment-service: [apps/payment-service/src/index.ts](apps/payment-service/src/index.ts)
+- auth-service: [apps/auth-service/src/index.ts](apps/auth-service/src/index.ts)
+- email-service: [apps/email-service/src/index.ts](apps/email-service/src/index.ts)

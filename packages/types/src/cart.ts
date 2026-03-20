@@ -9,7 +9,7 @@ export type CartItemType = Product & {
 
 export type CartItemsType = CartItemType[];
 
-export const shippingFormSchema = z.object({
+export const deliveryFormSchema = z.object({
   name: z.string().min(1, "Name is required!"),
   email: z
     .string()
@@ -24,7 +24,7 @@ export const shippingFormSchema = z.object({
   city: z.string().min(1, "City is required!"),
 });
 
-export type ShippingFormInputs = z.infer<typeof shippingFormSchema>;
+export type DeliveryFormInputs = z.infer<typeof deliveryFormSchema>;
 
 export type CartStoreStateType = {
   cart: CartItemsType;
@@ -34,5 +34,6 @@ export type CartStoreStateType = {
 export type CartStoreActionsType = {
   addToCart: (product: CartItemType) => void;
   removeFromCart: (product: CartItemType) => void;
+  updateCartItem: (product: CartItemType, updates: Partial<CartItemType>) => void;
   clearCart: () => void;
 };

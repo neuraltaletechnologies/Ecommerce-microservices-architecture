@@ -1,19 +1,29 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
+import dotenv from "dotenv";
 import { clerkMiddleware } from "@hono/clerk-auth";
 import sessionRoute from "./routes/session.route.js";
 import { cors } from "hono/cors";
-import { consumer, producer } from "./utils/kafka.js";
-import { runKafkaSubscriptions } from "./utils/subscriptions.js";
 import webhookRoute from "./routes/webhooks.route.js";
 
+dotenv.config();
+
 const app = new Hono();
+
+const allowedOrigins = [
+  "http://localhost:3002",
+  "https://neuraltale-client.onrender.com",
+  "https://neurashop.neuraltale.com",
+  process.env.FRONTEND_URL,
+].filter((origin): origin is string => Boolean(origin));
+
 app.use("*", clerkMiddleware());
-app.use("*", cors({ origin: ["http://localhost:3002"] }));
+app.use("*", cors({ origin: allowedOrigins }));
 
 app.get("/health", (c) => {
   return c.json({
     status: "ok",
+    service: "payment-service",
     uptime: process.uptime(),
     timestamp: Date.now(),
   });
@@ -43,21 +53,22 @@ app.route("/webhooks", webhookRoute);
 //   return c.json(res);
 // });
 
+const PORT = Number(process.env.PORT) || 8002;
+
 const start = async () => {
   try {
-    Promise.all([await producer.connect(), await consumer.connect()]);
-    await runKafkaSubscriptions()
     serve(
       {
         fetch: app.fetch,
-        port: 8002,
+        port: PORT,
+        hostname: '0.0.0.0',
       },
       (info) => {
-        console.log(`Payment service is running on port 8002`);
+        console.log(`Payment service is running on port ${PORT}`);
       }
     );
   } catch (error) {
-    console.log(error);
+    console.error("Failed to start payment service:", error);
     process.exit(1);
   }
 };

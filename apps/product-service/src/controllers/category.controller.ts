@@ -31,7 +31,23 @@ export const deleteCategory = async (req: Request, res: Response) => {
 };
 
 export const getCategories = async (req: Request, res: Response) => {
-  const categories = await prisma.category.findMany();
+  const categories = await prisma.category.findMany({
+    include: {
+      _count: {
+        select: {
+          products: true
+        }
+      }
+    }
+  });
 
-  return res.status(200).json(categories);
+  // Transform the response to include product count
+  const categoriesWithCount = categories.map(category => ({
+    id: category.id,
+    name: category.name,
+    slug: category.slug,
+    count: category._count.products
+  }));
+
+  return res.status(200).json(categoriesWithCount);
 };

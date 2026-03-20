@@ -10,18 +10,40 @@ datasource db {
 }
 
 model Product {
-  id               Int      @id @default(autoincrement())
-  name             String
-  shortDescription String
-  description      String
-  price            Int
-  sizes            String[]
-  colors           String[]
-  images           Json
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  categorySlug     String
-  category         Category @relation(fields: [categorySlug], references: [slug])
+  id                 Int      @id @default(autoincrement())
+  name               String
+  shortDescription   String
+  description        String
+  price              Int
+  discount           Int?     @default(0)  // Discount percentage (0-100)
+  sizes              String[]
+  colors             String[]
+  images             Json
+  techHighlights     Json?    // Array of {label: string, icon: string}
+  boxContents        Json?    // Array of strings
+  productFeatures    Json?    // Array of {title: string, description: string}
+  technicalSpecs     Json?    // Object with categories containing {label: string, value: string}[]
+  certifications     Json?    // Array of {label: string, icon: string}
+  isHeroProduct      Boolean  @default(false) // Flag for hero/slider products
+  heroOrder          Int?     // Order in hero slider (null if not hero product)
+  isPublished        Boolean  @default(true)  // Product visibility
+  stockQuantity      Int      @default(0) // Current inventory count
+  stockStatus        String   @default("in_stock") // in_stock, limited_stock, pre_order, out_of_stock
+  lowStockThreshold  Int      @default(10) // Alert when stock falls below this
+  soldCount          Int      @default(0) // Total units sold
+  brand              String?  // Product brand (e.g., Apple, Samsung)
+  externalSource     String?  // Source API: techspecs, dummyjson, fakestore, platzi, or null for manual
+  externalId         String?  // Original ID from external API
+  externalRawData    Json?    // Store original API response for reference
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  categorySlug       String
+  category           Category @relation(fields: [categorySlug], references: [slug])
+
+  @@unique([externalSource, externalId]) // Prevent duplicate imports from same source
+  @@index([brand])
+  @@index([externalSource])
+  @@index([isPublished])
 }
 
 model Category {
