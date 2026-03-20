@@ -146,6 +146,8 @@ export const getProducts = async (req: Request, res: Response) => {
       categorySlug: true,
       shortDescription: true,
       description: true, // Include for brand and battery filters
+      technicalSpecs: true,
+      techHighlights: true,
       stockQuantity: true,
       stockStatus: true,
       lowStockThreshold: true,
@@ -160,12 +162,17 @@ export const getProducts = async (req: Request, res: Response) => {
   // Apply brand filter (client-side for now, as brand info is in name/description)
   if (brands) {
     const brandList = (brands as string).split(',').map(b => b.trim().toLowerCase());
-    products = products.filter(product => 
-      brandList.some(brand => 
-        product.name.toLowerCase().includes(brand) ||
-        product.description?.toLowerCase().includes(brand)
-      )
-    );
+    products = products.filter(product => {
+      const fullText = [
+        product.name,
+        product.shortDescription || '',
+        product.description || '',
+        JSON.stringify(product.technicalSpecs || {}),
+        JSON.stringify(product.techHighlights || [])
+      ].join(' ').toLowerCase();
+      
+      return brandList.some(brand => fullText.includes(brand));
+    });
   }
 
   // Apply rating filter (client-side, assuming we'll add reviews later)
@@ -179,7 +186,13 @@ export const getProducts = async (req: Request, res: Response) => {
   if (batteryCapacity) {
     const capacities = (batteryCapacity as string).split(',');
     products = products.filter(product => {
-      const desc = product.description?.toLowerCase() || '';
+      const desc = [
+        product.description || '',
+        product.shortDescription || '',
+        JSON.stringify(product.technicalSpecs || {}),
+        JSON.stringify(product.techHighlights || [])
+      ].join(' ').toLowerCase();
+      
       return capacities.some(cap => {
         if (cap.includes('Up to 3000mAh')) {
           return /([0-9]{3,4})\s*mah/i.test(desc) && parseInt(desc.match(/([0-9]{3,4})\s*mah/i)?.[1] || '0') < 3000;

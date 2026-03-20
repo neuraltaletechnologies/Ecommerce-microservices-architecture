@@ -111,7 +111,7 @@ const Navbar = () => {
     },
     {
       name: "Software & Digital",
-      href: "/products?category=Software-&-Digital",
+      href: "/products?category=Software-and-Digital",
       subcategories: [
         { name: "Operating Systems", href: "/products?category=Operating-systems" },
         { name: "Productivity", href: "/products?category=Productivity" },

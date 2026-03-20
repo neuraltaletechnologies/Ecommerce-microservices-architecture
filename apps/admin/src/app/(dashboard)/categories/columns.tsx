@@ -128,7 +128,35 @@ export const columns: ColumnDef<CategoryType>[] = [
   },
   {
     accessorKey: "slug",
-    header: "Slug",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Slug
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
+    accessorKey: "count",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Products
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const count = (row.original as any).count || 0;
+      return <span className="font-medium text-sm ml-4">{count} Items</span>;
+    },
   },
   {
     id: "actions",

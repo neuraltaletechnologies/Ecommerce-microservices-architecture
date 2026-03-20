@@ -118,9 +118,37 @@ export const columns: ColumnDef<ProductType>[] = [
     },
   },
   {
-    accessorKey: "shortDescription",
-    header: "Description",
+    accessorKey: "categorySlug",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Category
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const slug = row.original.categorySlug;
+      return (
+        <Badge variant="outline" className="capitalize">
+          {slug?.replace(/-/g, ' ')}
+        </Badge>
+      );
+    },
   },
+  {
+    accessorKey: "isHeroProduct",
+    header: "Hero",
+    cell: ({ row }) => (
+      row.original.isHeroProduct ? (
+        <Badge variant="default" className="bg-purple-100 text-purple-800 hover:bg-purple-100">Hero</Badge>
+      ) : null
+    ),
+  },
+
   {
     accessorKey: "stockQuantity",
     header: ({ column }) => {
