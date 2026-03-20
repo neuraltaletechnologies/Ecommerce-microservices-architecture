@@ -16,11 +16,15 @@ import { ArrowUpDown, MoreHorizontal, Trash2 } from "lucide-react";
 import { useAuth } from "@clerk/nextjs";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Sheet } from "@/components/ui/sheet";
+import EditCategory from "@/components/EditCategory";
 
 // Action cell component to use hooks
 const ActionCell = ({ category }: { category: CategoryType }) => {
   const { getToken } = useAuth();
   const router = useRouter();
+  const [isEditOpen, setIsEditOpen] = useState(false);
 
   const handleDelete = async () => {
     if (!confirm(`Are you sure you want to delete "${category.name}"? This action cannot be undone.`)) {
@@ -53,30 +57,39 @@ const ActionCell = ({ category }: { category: CategoryType }) => {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="h-8 w-8 p-0">
-          <span className="sr-only">Open menu</span>
-          <MoreHorizontal className="h-4 w-4" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={() => navigator.clipboard.writeText(category.slug)}
-        >
-          Copy category slug
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          onClick={handleDelete}
-          className="text-red-600 focus:text-red-600 focus:bg-red-50"
-        >
-          <Trash2 className="mr-2 h-4 w-4" />
-          Delete category
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={() => navigator.clipboard.writeText(category.slug)}
+          >
+            Copy category slug
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
+            Edit category
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onClick={handleDelete}
+            className="text-red-600 focus:text-red-600 focus:bg-red-50"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete category
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      
+      <Sheet open={isEditOpen} onOpenChange={setIsEditOpen}>
+        <EditCategory category={category} onClose={() => setIsEditOpen(false)} />
+      </Sheet>
+    </>
   );
 };
 
