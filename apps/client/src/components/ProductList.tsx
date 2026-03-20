@@ -86,9 +86,9 @@ const fetchData = async ({
     }
     queryParams.append("sort", sortParam);
     
-    // Limit for homepage
+    // Limit for homepage (fetch a larger pool so we can keep one per category)
     if (params === "homepage") {
-      queryParams.append("limit", "8");
+      queryParams.append("limit", "48");
     }
 
     const url = `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL || 'http://localhost:8000'}/products?${queryParams.toString()}`;
@@ -105,7 +105,28 @@ const fetchData = async ({
     }
 
     const data: ProductType[] = await res.json();
-    return Array.isArray(data) ? data : [];
+    const products = Array.isArray(data) ? data : [];
+
+    // Homepage rule: show at most one product per category.
+    // Because backend already sorts by newest by default, this keeps the newest product per category.
+    if (params === "homepage") {
+      const seenCategories = new Set<string>();
+      const uniqueByCategory: ProductType[] = [];
+
+      for (const product of products) {
+        const categoryKey = String(product.categorySlug || "").toLowerCase().trim();
+        if (!categoryKey || seenCategories.has(categoryKey)) continue;
+
+        seenCategories.add(categoryKey);
+        uniqueByCategory.push(product);
+
+        if (uniqueByCategory.length >= 8) break;
+      }
+
+      return uniqueByCategory;
+    }
+
+    return products;
   } catch (error) {
     console.error("Error fetching products:", error);
     return [];
