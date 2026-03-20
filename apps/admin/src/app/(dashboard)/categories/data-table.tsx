@@ -49,6 +49,8 @@ export function DataTable<TData, TValue>({
   const { getToken } = useAuth();
   const router = useRouter();
 
+  const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
+
   // Delete mutation
   const deleteMutation = useMutation({
     mutationFn: async () => {
@@ -134,11 +136,11 @@ export function DataTable<TData, TValue>({
           )}
         </div>
         
-        <Sheet>
+        <Sheet open={isAddCategoryOpen} onOpenChange={setIsAddCategoryOpen}>
           <SheetTrigger asChild>
             <Button>Add Category</Button>
           </SheetTrigger>
-          <AddCategory />
+          <AddCategory onClose={() => setIsAddCategoryOpen(false)} />
         </Sheet>
       </div>
 
