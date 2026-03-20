@@ -20,8 +20,8 @@ app.post('/send-welcome-email', async (req, res) => {
     if (email) {
       await sendMail({
         email,
-        subject: "Welcome to E-commerce App",
-        text: `Welcome ${username}. Your account has been created!`,
+        subject: "Welcome to NeuralTale Shop!",
+        text: `Hello ${username},\n\nWelcome to NeuralTale Shop! Your account has been successfully created. Enjoy the best tech deals with us!\n\nBest,\nNeuralTale Shop Team`,
       });
       res.json({ success: true, message: 'Welcome email sent' });
     } else {
@@ -48,8 +48,8 @@ app.post('/send-order-email', async (req, res) => {
       
       await sendMail({
         email,
-        subject: "Order Confirmation",
-        text: `Hello! Your order has been ${status}. Amount: ${formattedAmount}`,
+        subject: "NeuralTale Shop - Order Confirmation",
+        text: `Hello!\n\nYour order has been ${status}. Your total amount is: ${formattedAmount}.\n\nThank you for shopping with NeuralTale Shop!\n\nBest,\nNeuralTale Shop Team`,
       });
       res.json({ success: true, message: 'Order email sent' });
     } else {
@@ -61,7 +61,7 @@ app.post('/send-order-email', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 8004;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8004;
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Email service running on port ${PORT}`);

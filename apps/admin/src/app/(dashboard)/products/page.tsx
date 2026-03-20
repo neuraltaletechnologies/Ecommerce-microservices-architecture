@@ -15,8 +15,11 @@ export const metadata: Metadata = {
 
 const getData = async (): Promise<ProductsType> => {
   try {
+    const productServiceUrl =
+      process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL || "http://localhost:8000";
+
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products`,
+      `${productServiceUrl}/products`,
       { cache: 'no-store' }
     );
     

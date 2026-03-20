@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useAuth } from "@clerk/nextjs";
 import { ProductType, CategoryType } from "@repo/types";
 import { formatTZS } from "@/lib/utils/currency";
 import { Button } from "./ui/button";
@@ -31,7 +30,6 @@ interface SearchResult {
 }
 
 const NavbarSearch = () => {
-  const { getToken } = useAuth();
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,12 +52,9 @@ const NavbarSearch = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const token = await getToken();
-        const headers = { Authorization: `Bearer ${token}` };
-
         const [productsRes, categoriesRes] = await Promise.all([
-          fetch(`${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/products`, { headers }),
-          fetch(`${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL}/categories`),
+          fetch(`/api/products`),
+          fetch(`/api/categories`),
         ]);
 
         if (productsRes.ok) setProducts(await productsRes.json());
@@ -72,7 +67,7 @@ const NavbarSearch = () => {
     };
 
     fetchData();
-  }, [getToken]);
+  }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
