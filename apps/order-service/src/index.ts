@@ -5,7 +5,9 @@ import { shouldBeUser } from "./middleware/authMiddleware.js";
 import { connectOrderDB } from "@repo/order-db";
 import { orderRoute } from "./routes/order.js";
 
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const fastify = Fastify();
 
@@ -42,7 +44,7 @@ fastify.get("/test", { preHandler: shouldBeUser }, (request, reply) => {
 
 fastify.register(orderRoute);
 
-const PORT = Number(process.env.PORT) || 8001;
+const PORT = Number(process.env.PORT || 8001);
 
 const start = async () => {
   try {
@@ -60,8 +62,8 @@ const start = async () => {
     
     await connectOrderDB();
     console.log("Database connection established");
-    await fastify.listen({ port: PORT, host: '0.0.0.0' });
-    console.log(`Order service is running on port ${PORT}`);
+    const address = await fastify.listen({ port: PORT, host: "0.0.0.0" });
+    console.log(`Order service is running on ${address}`);
   } catch (err) {
     console.error("Failed to start order service:", err);
     process.exit(1);
