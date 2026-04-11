@@ -6,7 +6,9 @@ import sessionRoute from "./routes/session.route.js";
 import { cors } from "hono/cors";
 import webhookRoute from "./routes/webhooks.route.js";
 
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const app = new Hono();
 
@@ -53,7 +55,7 @@ app.route("/webhooks", webhookRoute);
 //   return c.json(res);
 // });
 
-const PORT = Number(process.env.PORT) || 8002;
+const PORT = Number(process.env.PORT || 8002);
 
 const start = async () => {
   try {
@@ -64,7 +66,7 @@ const start = async () => {
         hostname: '0.0.0.0',
       },
       (info) => {
-        console.log(`Payment service is running on port ${PORT}`);
+        console.log(`Payment service is running on http://${info.address}:${info.port}`);
       }
     );
   } catch (error) {

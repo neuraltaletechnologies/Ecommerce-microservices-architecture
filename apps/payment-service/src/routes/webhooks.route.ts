@@ -50,12 +50,20 @@ webhookRoute.post("/stripe", async (c) => {
 
       try {
         const ORDER_SERVICE_URL = process.env.ORDER_SERVICE_URL || 'http://localhost:8001';
-        await fetch(`${ORDER_SERVICE_URL}/orders`, {
+        const orderRes = await fetch(`${ORDER_SERVICE_URL}/orders`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(orderData),
         });
-        console.log('Order created successfully');
+
+        if (!orderRes.ok) {
+          const body = await orderRes.text().catch(() => "");
+          console.error(
+            `Order creation failed: ${orderRes.status} ${orderRes.statusText}${body ? ` | ${body}` : ""}`
+          );
+        } else {
+          console.log('Order created successfully');
+        }
       } catch (error) {
         console.error('Failed to create order:', error);
       }

@@ -2,7 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import sendMail from "./utils/mailer";
 
-dotenv.config();
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config();
+}
 
 const app = express();
 app.use(express.json());
