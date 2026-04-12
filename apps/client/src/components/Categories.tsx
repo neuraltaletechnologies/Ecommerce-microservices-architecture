@@ -78,7 +78,11 @@ interface CategoryWithImage extends Category {
   image: string;
 }
 
-const CategoriesContent = () => {
+interface CategoriesProps {
+  sticky?: boolean;
+}
+
+const CategoriesContent = ({ sticky = false }: CategoriesProps) => {
   const [categories, setCategories] = useState<CategoryWithImage[]>([]);
   const [loading, setLoading] = useState(true);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -241,11 +245,15 @@ const CategoriesContent = () => {
   }
 
   return (
-    <div className="bg-white border-2 border-[#E5E5E5] rounded-2xl p-4 mb-6 shadow-sm">
+    <div
+      className={`bg-white border-2 border-[#E5E5E5] rounded-2xl p-2 sm:p-4 mb-4 sm:mb-6 shadow-sm ${
+        sticky ? "sticky top-14 sm:top-16 z-40" : ""
+      }`}
+    >
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="hidden sm:flex items-center justify-between mb-4">
         <h3 className="text-xl font-semibold text-[#1A1A1A]">Browse Categories</h3>
-        <p className="text-sm text-[#666666] hidden sm:block">
+        <p className="text-sm text-[#666666]">
           Find exactly what you&apos;re looking for
         </p>
       </div>
@@ -277,7 +285,7 @@ const CategoriesContent = () => {
         {/* Scrollable Categories */}
         <div
           ref={scrollContainerRef}
-          className={`flex gap-4 overflow-x-auto px-1 scroll-smooth no-scrollbar ${
+          className={`flex gap-3 sm:gap-4 overflow-x-auto px-1 scroll-smooth no-scrollbar snap-x snap-mandatory sm:snap-none touch-pan-x overscroll-x-contain ${
             isDragging ? "cursor-grabbing" : "cursor-grab"
           }`}
           onMouseDown={handleMouseDown}
@@ -294,7 +302,7 @@ const CategoriesContent = () => {
               <button
                 key={category.slug}
                 onClick={() => !isDragging && handleChange(category.slug)}
-                className={`flex-shrink-0 flex flex-col items-center rounded-xl transition-all duration-200 min-w-[90px] ${
+                className={`flex-shrink-0 flex flex-col items-center rounded-xl transition-all duration-200 min-w-[76px] sm:min-w-[90px] snap-start snap-always ${
                   isSelected
                     ? "bg-white"
                     : "hover:bg-gray-50"
@@ -304,7 +312,7 @@ const CategoriesContent = () => {
               >
                 {/* Circular Image Container */}
                 <div
-                  className={`w-14 h-14 rounded-full flex items-center justify-center mb-2 overflow-hidden border-2 transition-all duration-200 ${
+                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center mb-1.5 sm:mb-2 overflow-hidden border-2 transition-all duration-200 ${
                     isSelected
                       ? "border-[#0066FF] ring-4 ring-blue-100 shadow-lg"
                       : "border-[#E5E5E5] hover:border-[#CCCCCC] hover:shadow-md"
@@ -312,7 +320,7 @@ const CategoriesContent = () => {
                 >
                   {isAllCategory || !isValidImageSrc(category.image) ? (
                     <Grid3X3
-                      className={`w-6 h-6 ${
+                      className={`w-5 h-5 sm:w-6 sm:h-6 ${
                         isSelected ? "text-[#0066FF]" : "text-[#666666]"
                       }`}
                     />
@@ -330,7 +338,7 @@ const CategoriesContent = () => {
 
                 {/* Category Name */}
                 <span
-                  className={`text-xs font-medium mb-0.5 text-center line-clamp-1 ${
+                  className={`text-[10px] sm:text-xs font-medium mb-0.5 text-center line-clamp-1 leading-tight ${
                     isSelected ? "text-[#0066FF]" : "text-[#1A1A1A]"
                   }`}
                 >
@@ -354,7 +362,7 @@ const CategoriesContent = () => {
       </div>
 
       {/* Footer Stats */}
-      <div className="mt-3 pt-3 border-t border-[#E5E5E5]">
+      <div className="hidden sm:block mt-3 pt-3 border-t border-[#E5E5E5]">
         <p className="text-center text-sm text-[#666666]">
           <span className="font-medium text-[#1A1A1A]">
             {categories.find((cat) => cat.slug === "all")?.count || 0}
@@ -370,10 +378,10 @@ const CategoriesContent = () => {
   );
 };
 
-const Categories = () => {
+const Categories = ({ sticky = false }: CategoriesProps) => {
   return (
     <Suspense fallback={<div className="w-full h-12" />}>
-      <CategoriesContent />
+      <CategoriesContent sticky={sticky} />
     </Suspense>
   );
 };

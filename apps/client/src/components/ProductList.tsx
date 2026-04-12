@@ -193,7 +193,7 @@ const ProductList = async ({
       {/* Section Header */}
 
 
-      <Categories />
+      <Categories sticky={params === "products"} />
       {params === "products" && <Filter />}
       
       <Suspense fallback={
