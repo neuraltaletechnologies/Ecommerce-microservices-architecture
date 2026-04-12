@@ -4,6 +4,8 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, Grid3X3 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
+const MOBILE_SWIPE_HINT_KEY = "categories-swipe-hint-seen";
+
 // Category image mapping - matched to actual database categories
 const categoryImages: Record<string, string> = {
   all: "", // Will use icon instead
@@ -85,6 +87,7 @@ interface CategoriesProps {
 const CategoriesContent = ({ sticky = false }: CategoriesProps) => {
   const [categories, setCategories] = useState<CategoryWithImage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSwipeHint, setShowSwipeHint] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
   const [scrollProgress, setScrollProgress] = useState(0);
@@ -201,6 +204,29 @@ const CategoriesContent = ({ sticky = false }: CategoriesProps) => {
     fetchCategories();
   }, []);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const isMobile = window.matchMedia("(max-width: 639px)").matches;
+    if (!isMobile) return;
+
+    try {
+      const hasSeenHint = window.localStorage.getItem(MOBILE_SWIPE_HINT_KEY) === "true";
+      if (hasSeenHint) return;
+
+      window.localStorage.setItem(MOBILE_SWIPE_HINT_KEY, "true");
+      setShowSwipeHint(true);
+
+      const timer = window.setTimeout(() => {
+        setShowSwipeHint(false);
+      }, 3500);
+
+      return () => window.clearTimeout(timer);
+    } catch {
+      setShowSwipeHint(false);
+    }
+  }, []);
+
   // Add scroll event listener
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -260,10 +286,16 @@ const CategoriesContent = ({ sticky = false }: CategoriesProps) => {
 
       {/* Scrollable Container with Arrows */}
       <div className="relative group">
+        {showSwipeHint ? (
+          <div className="sm:hidden pointer-events-none absolute right-3 top-[-10px] z-20 rounded-full border border-[#E5E5E5] bg-white/95 px-3 py-1 text-[11px] font-medium text-[#1A1A1A] shadow-lg backdrop-blur">
+            Swipe to browse
+          </div>
+        ) : null}
+
         {/* Left Arrow */}
         <button
           onClick={() => scroll("left")}
-          className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg border border-[#E5E5E5] flex items-center justify-center transition-all duration-200 hover:shadow-xl hover:border-[#CCCCCC] ${
+          className={`hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg border border-[#E5E5E5] items-center justify-center transition-all duration-200 hover:shadow-xl hover:border-[#CCCCCC] ${
             canScrollLeft ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
           aria-label="Scroll left"
@@ -274,7 +306,7 @@ const CategoriesContent = ({ sticky = false }: CategoriesProps) => {
         {/* Right Arrow */}
         <button
           onClick={() => scroll("right")}
-          className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg border border-[#E5E5E5] flex items-center justify-center transition-all duration-200 hover:shadow-xl hover:border-[#CCCCCC] ${
+          className={`hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg border border-[#E5E5E5] items-center justify-center transition-all duration-200 hover:shadow-xl hover:border-[#CCCCCC] ${
             canScrollRight ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
           aria-label="Scroll right"

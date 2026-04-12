@@ -18,8 +18,10 @@ export default function SimilarProducts({ categorySlug, currentProductId }: Simi
   useEffect(() => {
     const fetchSimilarProducts = async () => {
       try {
-        const url = `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_URL || 'http://localhost:8000'}/products?category=${categorySlug}&limit=8`;
-        const res = await fetch(url);
+        const params = new URLSearchParams({ category: categorySlug, limit: "8" });
+        const res = await fetch(`/api/products?${params.toString()}`, {
+          cache: "no-store",
+        });
         
         if (!res.ok) {
           console.error('Failed to fetch similar products');

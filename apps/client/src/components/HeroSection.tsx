@@ -185,7 +185,7 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
 
   return (
     <section
-      className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-gradient-to-br from-[#F8F8F8] via-white to-[#F5E6D3]/30 overflow-hidden h-[620px] lg:h-[700px]"
+      className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-gradient-to-br from-[#F8F8F8] via-white to-[#F5E6D3]/30 overflow-hidden h-[760px] sm:h-[700px] lg:h-[700px]"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -208,31 +208,32 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
 
       {/* Main Content Container */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-4 items-center h-full py-8 lg:py-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-4 items-center h-full py-4 sm:py-8 lg:py-0">
 
           {/* LEFT COLUMN - Text Content */}
-          <div className="lg:col-span-5 flex flex-col justify-center space-y-4 lg:space-y-6 order-2 lg:order-1 z-10 overflow-hidden">
-            <div className="space-y-6">
+          <div className="lg:col-span-5 flex flex-col justify-center space-y-3 sm:space-y-4 lg:space-y-6 order-2 lg:order-1 z-10 overflow-hidden">
+            <div className="space-y-4 sm:space-y-6">
 
               {/* Headline & Subtitle */}
               <div
-                className={`space-y-4 transition-all duration-500 ease-out ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
+                className={`space-y-3 sm:space-y-4 transition-all duration-500 ease-out ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"
                   }`}
-              >              {/* Stock Status Badge */}
+              >
+                {/* Stock Status Badge */}
                 {currentProduct.stockStatus && (() => {
                   const badge = getStockBadge(currentProduct.stockStatus);
                   return (
-                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${badge.bgColor} ${badge.textColor} text-sm font-semibold`}>
+                    <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${badge.bgColor} ${badge.textColor} text-[11px] sm:text-sm font-semibold`}>
                       <span className={`w-2 h-2 rounded-full ${badge.dotColor} animate-pulse`}></span>
                       {badge.showOfferIcon && <Tag className="w-3 h-3" />}
                       {badge.label}
                     </div>
                   );
                 })()}
-                <h1 className="font-bold text-gray-900 leading-[1.05] text-[clamp(1.7rem,4.6vw,4.5rem)] line-clamp-2">
+                <h1 className="font-bold text-gray-900 leading-[1.05] text-[clamp(1.55rem,6.5vw,4.5rem)] sm:text-[clamp(1.7rem,4.6vw,4.5rem)] line-clamp-2">
                   {headline}
                 </h1>
-                <p className="text-gray-600 leading-relaxed text-[clamp(0.9rem,1.5vw,1.125rem)] line-clamp-3 lg:line-clamp-4">
+                <p className="text-gray-600 leading-relaxed text-[clamp(0.85rem,3.8vw,1.125rem)] sm:text-[clamp(0.9rem,1.5vw,1.125rem)] line-clamp-3 lg:line-clamp-4">
                   {subheadline}
                 </p>
               </div>
@@ -244,14 +245,14 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
               >
                 <Link
                   href={`/products/${currentProduct.id}`}
-                  className="inline-flex items-center justify-center gap-2 bg-[#FDB913] hover:bg-[#e5a811] text-[#001E3C] px-6 py-3 rounded-lg font-bold text-sm transition-all duration-200 group shadow-lg hover:shadow-xl hover:scale-[1.02]"
+                  className="inline-flex items-center justify-center gap-2 bg-[#FDB913] hover:bg-[#e5a811] text-[#001E3C] px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-bold text-xs sm:text-sm transition-all duration-200 group shadow-lg hover:shadow-xl hover:scale-[1.02]"
                 >
                   Explore Product
                   <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
                 <Link
                   href={`/products?category=${currentProduct.categorySlug}`}
-                  className="inline-flex items-center justify-center px-6 py-3 rounded-lg font-semibold text-sm text-[#001E3C] border-2 border-[#001E3C] hover:bg-[#001E3C] hover:text-white transition-all duration-200"
+                  className="inline-flex items-center justify-center px-4 py-2.5 sm:px-6 sm:py-3 rounded-lg font-semibold text-xs sm:text-sm text-[#001E3C] border-2 border-[#001E3C] hover:bg-[#001E3C] hover:text-white transition-all duration-200"
                 >
                   Browse {formatCategoryName(currentProduct.categorySlug)}
                 </Link>
@@ -282,7 +283,7 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
           <div className="lg:col-span-7 relative flex items-center justify-center order-1 lg:order-2">
 
             {/* Main Product Image */}
-            <div className="relative w-full h-[350px] sm:h-[450px] lg:h-[550px]">
+            <div className="relative w-full h-[260px] sm:h-[450px] lg:h-[550px]">
               <div
                 className={`relative w-full h-full transition-all duration-500 ease-out ${isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
                   }`}
@@ -300,7 +301,7 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
 
             {/* Floating Product Card */}
             <div
-              className={`absolute bottom-4 right-4 sm:bottom-8 sm:right-8 lg:bottom-12 lg:right-0 bg-white rounded-xl shadow-xl p-4 sm:p-5 w-[200px] sm:w-[240px] transition-all duration-500 ease-out delay-200 ${isTransitioning ? "opacity-0 translate-x-8" : "opacity-100 translate-x-0"
+              className={`hidden sm:block absolute bottom-4 right-4 sm:bottom-8 sm:right-8 lg:bottom-12 lg:right-0 bg-white rounded-xl shadow-xl p-4 sm:p-5 w-[200px] sm:w-[240px] transition-all duration-500 ease-out delay-200 ${isTransitioning ? "opacity-0 translate-x-8" : "opacity-100 translate-x-0"
                 }`}
             >
               <div className="relative w-full h-24 sm:h-28 mb-3 bg-gray-50 rounded-lg overflow-hidden">
