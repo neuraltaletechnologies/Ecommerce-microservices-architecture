@@ -129,7 +129,7 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex items-center justify-between h-14 sm:h-16">
             {/* Logo */}
@@ -417,6 +417,7 @@ const Navbar = () => {
           )}
         </div>
       </nav>
+      <div className="h-14 sm:h-16" aria-hidden="true" />
     </>
   );
 };

@@ -185,7 +185,7 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
 
   return (
     <section
-      className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-gradient-to-br from-[#F8F8F8] via-white to-[#F5E6D3]/30 overflow-hidden min-h-[600px] lg:min-h-[700px]"
+      className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] bg-gradient-to-br from-[#F8F8F8] via-white to-[#F5E6D3]/30 overflow-hidden h-[620px] lg:h-[700px]"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -208,10 +208,10 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
 
       {/* Main Content Container */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[600px] lg:min-h-[700px] py-12 lg:py-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-4 items-center h-full py-8 lg:py-0">
 
           {/* LEFT COLUMN - Text Content */}
-          <div className="lg:col-span-5 flex flex-col justify-center space-y-6 lg:space-y-8 order-2 lg:order-1 z-10">
+          <div className="lg:col-span-5 flex flex-col justify-center space-y-4 lg:space-y-6 order-2 lg:order-1 z-10 overflow-hidden">
             <div className="space-y-6">
 
               {/* Headline & Subtitle */}
@@ -229,10 +229,10 @@ const HeroSection = ({ initialProducts = [] }: HeroSectionProps) => {
                     </div>
                   );
                 })()}
-                <h1 className="text-6xl xl:text-7xl font-bold text-gray-900 leading-tight">
+                <h1 className="font-bold text-gray-900 leading-[1.05] text-[clamp(1.7rem,4.6vw,4.5rem)] line-clamp-2">
                   {headline}
                 </h1>
-                <p className="text-lg text-gray-600 leading-relaxed">
+                <p className="text-gray-600 leading-relaxed text-[clamp(0.9rem,1.5vw,1.125rem)] line-clamp-3 lg:line-clamp-4">
                   {subheadline}
                 </p>
               </div>
