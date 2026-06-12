@@ -1,6 +1,6 @@
 # E-commerce Microservices Architecture
 
-Production-grade e-commerce platform in a Turborepo monorepo. The backend is split into multiple services with direct HTTP communication. The frontend ships as two Next.js apps plus a Flutter mobile client.
+Production-grade e-commerce platform in a Turborepo monorepo. The backend is split into multiple services with direct HTTP communication. The frontend ships as two Next.js apps.
 
 ## Architecture
 
@@ -16,11 +16,10 @@ Production-grade e-commerce platform in a Turborepo monorepo. The backend is spl
 
 ### Frontends
 
-| App | Port | Framework | Auth |
+| App | Port (dev) | Framework | Auth |
 | --- | --- | --- | --- |
-| client | 3002 | Next.js 15 | @clerk/nextjs |
-| admin | 3003 | Next.js 15 | @clerk/nextjs |
-| mobile | N/A | Flutter | Clerk tokens via API |
+| client | 3004 | Next.js 16 | @clerk/nextjs |
+| admin | 3003 | Next.js 16 | @clerk/nextjs |
 
 ### Communication
 
@@ -29,7 +28,7 @@ Production-grade e-commerce platform in a Turborepo monorepo. The backend is spl
 
 ## Repository layout
 
-- Apps live in [apps](apps) (backend services, web clients, Flutter mobile).
+- Apps live in [apps](apps) (backend services and web clients).
 - Shared packages live in [packages](packages) (types, database clients, configs).
 - Deployment blueprint for Render lives in [render.yaml](render.yaml).
 - Turborepo config lives in [turbo.json](turbo.json).
@@ -113,16 +112,11 @@ Webhook logic is in [apps/payment-service/src/routes/webhooks.route.ts](apps/pay
 ## Admin external product API
 
 - Admin can search external APIs and import product details.
-- Priority order: TechSpecs -> DummyJSON -> FakeStore.
+- Priority order: TechSpecs -> DummyJSON -> Platzi -> FakeStore (see [EXTERNAL_APIS_STATUS.md](EXTERNAL_APIS_STATUS.md) for current status).
 - Rate limit: 30 requests per minute per user.
 - Cache duration: 10 minutes.
 
 Admin UI entry point is in [apps/admin/src/components/ExternalProductSearch.tsx](apps/admin/src/components/ExternalProductSearch.tsx).
-
-## Mobile app
-
-- Flutter app lives in [apps/mobile](apps/mobile).
-- Setup and onboarding docs are in [apps/mobile/SETUP.md](apps/mobile/SETUP.md) and [apps/mobile/GETTING_STARTED.md](apps/mobile/GETTING_STARTED.md).
 
 ## Build and lint
 
