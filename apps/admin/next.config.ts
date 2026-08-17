@@ -1,3 +1,4 @@
+import path from "path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -107,6 +108,14 @@ const nextConfig: NextConfig = {
   // Reduce symlink issues on Windows
   experimental: {
     optimizePackageImports: ['lucide-react'],
+  },
+  turbopack: {
+    // Point at the monorepo root, not this app's directory: pnpm hoists
+    // dependencies into <repoRoot>/node_modules/.pnpm and apps/admin's
+    // node_modules/next is just a symlink into it. If root is scoped to
+    // this app, Turbopack refuses to follow that symlink outside of it
+    // and fails with "couldn't find the Next.js package".
+    root: path.join(__dirname, "..", ".."),
   },
   // Better error reporting
   productionBrowserSourceMaps: process.env.VERCEL === '1',

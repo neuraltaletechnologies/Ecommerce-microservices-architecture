@@ -21,6 +21,11 @@ public final class GeneratedPluginRegistrant {
       Log.e(TAG, "Error registering plugin connectivity_plus, dev.fluttercommunity.plus.connectivity.ConnectivityPlugin", e);
     }
     try {
+      flutterEngine.getPlugins().add(new dev.fluttercommunity.plus.device_info.DeviceInfoPlusPlugin());
+    } catch (Exception e) {
+      Log.e(TAG, "Error registering plugin device_info_plus, dev.fluttercommunity.plus.device_info.DeviceInfoPlusPlugin", e);
+    }
+    try {
       flutterEngine.getPlugins().add(new io.flutter.plugins.flutter_plugin_android_lifecycle.FlutterAndroidLifecyclePlugin());
     } catch (Exception e) {
       Log.e(TAG, "Error registering plugin flutter_plugin_android_lifecycle, io.flutter.plugins.flutter_plugin_android_lifecycle.FlutterAndroidLifecyclePlugin", e);
@@ -31,9 +36,29 @@ public final class GeneratedPluginRegistrant {
       Log.e(TAG, "Error registering plugin image_picker_android, io.flutter.plugins.imagepicker.ImagePickerPlugin", e);
     }
     try {
-      flutterEngine.getPlugins().add(new io.flutter.plugins.pathprovider.PathProviderPlugin());
+      flutterEngine.getPlugins().add(new com.github.dart_lang.jni.JniPlugin());
     } catch (Exception e) {
-      Log.e(TAG, "Error registering plugin path_provider_android, io.flutter.plugins.pathprovider.PathProviderPlugin", e);
+      Log.e(TAG, "Error registering plugin jni, com.github.dart_lang.jni.JniPlugin", e);
+    }
+    try {
+      flutterEngine.getPlugins().add(new com.github.dart_lang.jni_flutter.JniFlutterPlugin());
+    } catch (Exception e) {
+      Log.e(TAG, "Error registering plugin jni_flutter, com.github.dart_lang.jni_flutter.JniFlutterPlugin", e);
+    }
+    try {
+      flutterEngine.getPlugins().add(new dev.fluttercommunity.plus.packageinfo.PackageInfoPlugin());
+    } catch (Exception e) {
+      Log.e(TAG, "Error registering plugin package_info_plus, dev.fluttercommunity.plus.packageinfo.PackageInfoPlugin", e);
+    }
+    try {
+      flutterEngine.getPlugins().add(new com.corbado.passkeys_android.FlutterPasskeysPlugin());
+    } catch (Exception e) {
+      Log.e(TAG, "Error registering plugin passkeys_android, com.corbado.passkeys_android.FlutterPasskeysPlugin", e);
+    }
+    try {
+      flutterEngine.getPlugins().add(new com.corbado.passkeys_doctor.PasskeysDoctorPlugin());
+    } catch (Exception e) {
+      Log.e(TAG, "Error registering plugin passkeys_doctor, com.corbado.passkeys_doctor.PasskeysDoctorPlugin", e);
     }
     try {
       flutterEngine.getPlugins().add(new io.flutter.plugins.sharedpreferences.SharedPreferencesPlugin());
@@ -49,6 +74,11 @@ public final class GeneratedPluginRegistrant {
       flutterEngine.getPlugins().add(new com.flutter.stripe.StripeAndroidPlugin());
     } catch (Exception e) {
       Log.e(TAG, "Error registering plugin stripe_android, com.flutter.stripe.StripeAndroidPlugin", e);
+    }
+    try {
+      flutterEngine.getPlugins().add(new jp.wasabeef.ua.client_hints.UAClientHintsPlugin());
+    } catch (Exception e) {
+      Log.e(TAG, "Error registering plugin ua_client_hints, jp.wasabeef.ua.client_hints.UAClientHintsPlugin", e);
     }
     try {
       flutterEngine.getPlugins().add(new io.flutter.plugins.urllauncher.UrlLauncherPlugin());

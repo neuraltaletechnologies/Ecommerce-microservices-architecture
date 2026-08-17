@@ -170,7 +170,7 @@ class HomeHeroSection extends StatelessWidget {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 20,
             offset: const Offset(0, 12),
           ),
@@ -185,7 +185,7 @@ class HomeHeroSection extends StatelessWidget {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: AppColors.goldenYellow.withOpacity(0.12),
+                color: AppColors.goldenYellow.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
             ),
@@ -197,7 +197,7 @@ class HomeHeroSection extends StatelessWidget {
               width: 160,
               height: 160,
               decoration: BoxDecoration(
-                color: AppColors.tealBlue.withOpacity(0.12),
+                color: AppColors.tealBlue.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
             ),
@@ -282,7 +282,7 @@ class _HeroProductCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
+            color: Colors.black.withValues(alpha: 0.08),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -542,7 +542,7 @@ class ProductCard extends StatelessWidget {
       margin: const EdgeInsets.only(right: 16),
       child: Card(
         elevation: 8,
-        shadowColor: Colors.black.withOpacity(0.08),
+        shadowColor: Colors.black.withValues(alpha: 0.08),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -634,7 +634,7 @@ class CategoryCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
+                    color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(999),
                   ),
                   child: Text(
@@ -683,7 +683,7 @@ class TrustIndicators extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),

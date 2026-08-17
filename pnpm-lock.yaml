@@ -157,7 +157,7 @@ importers:
         specifier: ^4
         version: 4.1.13
       typescript:
-        specifier: ^5
+        specifier: ^5.9.2
         version: 5.9.2
 
   apps/auth-service:
